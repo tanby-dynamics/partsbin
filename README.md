@@ -1,11 +1,15 @@
 # partsbin
 
-partsbin is (intended to be) a really simple CRUD app with some search capabilities, to
+partsbin is a really simple CRUD app with some search capabilities, to
 keep track of parts for hobbyist electrical experimenters.
 
 It's not really intended for use at a scale of more than a few simultaneous users - in
-fact I'm only planning to test a single user. The idea is to be able to spin an instance
-up on your workbench computer or a home server via a single Docker command.
+fact I'm only planning to test a single user, perhaps with a couple of instances on
+different machines pointing at the same data file. The idea is to be able to spin an
+instance up on your workbench computer or a home server via a single Docker command.
+
+The data file location will be configurable when the Docker container is spun up, I would
+suggest putting it in Dropbox or somewhere it will be backed up automatically.
 
 
 ## Design choices
@@ -20,9 +24,16 @@ up on your workbench computer or a home server via a single Docker command.
 ## Todos
 ### Core features
 - LiteDB database in a location that can be configured when creating the Docker container
+- Edit parts
+- Front page navigation and drill-down to parts
+- Auto-suggest for `PartType`, `Range`, `PartName`, `PackageType`, `ValueUnit`, `Location`,
+`Manufacturer`, `Supplier.Name`
+- If `PartNumber` isn't unique, throw up a warning and recommend editing existing part
+- Notes
 - Links to documentation (data sheets etc)
+- Upload documentation
 - Links to suppliers
-- Add images - a mini gallery for each part
+- Upload images - a mini gallery for each part
 
 
 ### Stretch goals and features
