@@ -8,4 +8,16 @@
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
+  <ItemGroup>
+    <None Remove="Blazored.Modal" />
+    <None Remove="Blazored.Toast" />
+    <None Remove="Blazored.TextEditor" />
+    <None Remove="Radzen.Blazor" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Blazored.Modal" Version="7.1.0" />
+    <PackageReference Include="Blazored.Toast" Version="4.0.0" />
+    <PackageReference Include="Blazored.TextEditor" Version="1.0.8" />
+    <PackageReference Include="Radzen.Blazor" Version="4.7.0" />
+  </ItemGroup>
 </Project>

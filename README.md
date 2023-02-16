@@ -18,6 +18,9 @@ Docker.
 	- [ ] EF migrations, to keep it simple
 - [ ] Distributed as a Docker image
 - [ ] No authentication or access management - that's up to you :-)
+- [ ] No tests - where we're going we don't need tests
+- [ ] Default dependency injection
+- [ ] Single project (if possible)
 
 ### Core features
 - [ ] SQLite in a location that can be configured when creating the Docker container
