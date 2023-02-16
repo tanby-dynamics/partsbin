@@ -1,37 +1,34 @@
 # partsbin
 
 partsbin is (intended to be) a really simple CRUD app with some search capabilities, to
-keep track of components for hobbyist electrical experimenters.
+keep track of parts for hobbyist electrical experimenters.
 
-It's not really intended for use at a scale of more than a few simultaneous users. The
-idea is to be able to spin an instance up on your workbench computer or a home server via
-Docker.
+It's not really intended for use at a scale of more than a few simultaneous users - in
+fact I'm only planning to test a single user. The idea is to be able to spin an instance
+up on your workbench computer or a home server via a single Docker command.
 
-## Goals
 
-### Implementation goals
-- [-] Server-side Blazor
-- [-] Off the shelf Blazor supported UI library, nothing fancy (TBD)
-	- [-] Blazored
-	- [-] Radzen.Blazor
-- [ ] Storage in [LiteDB](https://www.litedb.org/) (JSON store)
-- [ ] Distributed as a Docker image
-- [-] No authentication or access management - that's up to you :-)
-- [-] No tests - where we're going we don't need tests
-- [-] Default dependency injection
-- [-] Single project (if possible)
+## Design choices
+- Server-side Blazor, with help from [Blazored](https://github.com/Blazored) and 
+[Radzen.Blazor](https://blazor.radzen.com/get-started)
+- Storage in [LiteDB](https://www.litedb.org/) (JSON store)
+- Distributed as a Docker image
+- No authentication or access management
+- No tests - where we're going we don't need tests
 
+
+## Todos
 ### Core features
-- [ ] LiteDb database in a location that can be configured when creating the Docker container
-- [ ] Upload or search for images
-- [ ] Add information sheet links for each component
+- LiteDB database in a location that can be configured when creating the Docker container
+- Links to documentation (data sheets etc)
+- Links to suppliers
+- Add images - a mini gallery for each part
+
 
 ### Stretch goals and features
-- [ ] Desktop application wrapper
-- [ ] Search engine, possibly via [Sonic](https://github.com/valeriansaliou/sonic) (using
+- Search engine, possibly via [Sonic](https://github.com/valeriansaliou/sonic) (using
 [NSonic](https://github.com/spikensbror-dotnet/nsonic))
-- [ ] Adding and searching for part images
-- [ ] Adding and searching for information sheets
-- [ ] Minimal ChatGPT integration - generate a natural language question like "Please show
-me how to use a SN74HC595N shift register with an Arduino Nano to light up some LEDs"
+- Minimal ChatGPT integration - generate a natural language question like "Please show
+me how to use a SN74HC595N shift register with an Arduino Nano to light up some LEDs",
+button to copy to clipboard and open ChatGPT
 
