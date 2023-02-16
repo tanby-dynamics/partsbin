@@ -1,90 +1,115 @@
-﻿@inject IToastService _toastService
-@using System.Diagnostics.CodeAnalysis;
+﻿@inject IToastService ToastService
 
-<EditForm Model="@_part" OnValidSubmit="HandleValidSubmit">
+<EditForm Model="@Part" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator/>
     <ValidationSummary/>
     <div class="form-group" style="width: 400px">
-        <div>
+        <div style="margin-top: 10px;">
             <label for="partType">Part type</label>
             <!-- this needs to be an autocomplete -->
             <InputText id="partType"
                        class="form-control"
                        placeholder="Part type (eg. 'Capacitor')"
-                       @bind-Value="_part.PartType" />
+                       @bind-Value="Part.PartType" />
         </div>
-        <div>
+        <div style="margin-top: 10px;">
             <label for="range">Range</label>
             <!-- this needs to be an autocomplete -->
             <InputText id="range"
                        class="form-control"
                        placeholder="Range (eg. 'Film')"
-                       @bind-Value="_part.Range" />
+                       @bind-Value="Part.Range" />
         </div>
-        <div>
+        <div style="margin-top: 10px;">
             <label for="partName">Part name</label>
             <!-- this needs to be an autocomplete -->
             <InputText id="partName"
                        class="form-control"
                        placeholder="Part name (eg. 'Raspberry Pi B 4G')"
-                       @bind-Value="_part.PartName" />
+                       @bind-Value="Part.PartName" />
         </div>
-        <div>
+        <div style="margin-top: 10px;">
             <label for="packageType">Package type</label>
             <!-- this needs to be an autocomplete -->
             <InputText id="packageType"
                        class="form-control"
                        placeholder="Package type (eg. 'DIP', 'SMD')"
-                       @bind-Value="_part.PackageType" />
+                       @bind-Value="Part.PackageType" />
         </div>
-        <div>
+        <div style="margin-top: 10px;">
             <label for="value">Value</label>
             <InputNumber id="value"
                          class="form-control"
                          placeholder="Value (eg. '0.1')"
-                         @bind-Value="_part.Value" />
+                         @bind-Value="Part!.Value" />
         </div>
-        <div>
+        <div style="margin-top: 10px;">
             <label for="valueUnit">Value unit</label>
             <!-- this needs to be an autocomplete -->
             <InputText id="valueUnit"
                        class="form-control"
                        placeholder="Value unit (eg. 'uF')"
-                       @bind-Value="_part.ValueUnit" />
+                       @bind-Value="Part.ValueUnit" />
         </div>
-        <div>
+        <div style="margin-top: 10px;">
             <label for="quantity">Quantity</label>
             <InputNumber id="quantity"
                          class="form-control"
                          placeholder="Quantity"
-                         @bind-Value="_part.Quantity" />
+                         @bind-Value="Part!.Quantity" />
             <div>
-                <label for="Location">Location</label>
+                <label for="location">Location</label>
                 <!-- this needs to be an autocomplete -->
                 <InputText id="location"
                            class="form-control"
                            placeholder="Location (eg. 'Shelf 4 Rack 2 Tray 6')"
-                           @bind-Value="_part.Location" />
+                           @bind-Value="Part.Location" />
             </div>
         </div>
     </div>
-    <button type="submit" class="btn btn-outline-primary">Add part</button>
+    <div style="margin-top: 10px;">
+        <button type="submit" class="btn btn-outline-primary">
+            @(_isNew ? "Add" : "Update")
+        </button>
+    </div>
 </EditForm>
 
 @code {
-    private Part _part = new Part();
-        [CascadingParameter]
-        BlazoredModalInstance? Modal { get; set; }
+    [Parameter]
+    public Part? Part { get; set; }
+    private bool _isNew;
+    [CascadingParameter]
+    BlazoredModalInstance? Modal { get; set; }
 
-        private async void HandleValidSubmit()
+    protected override void OnInitialized()
+    {
+        _isNew = this.Part is null;
+        this.Part ??= new Part();
+
+        StateHasChanged();
+    }
+
+    private async void HandleValidSubmit()
+    {
+        try
         {
+            if (_isNew)
+            {
+                //await _partsService.AddPart(this.Part);
+            }
+            else
+            {
+                //await _partsService.UpdatePart(this.Part);
+            }
             if (Modal != null)
             {
-                await Modal.CloseAsync();
+                await Modal.CloseAsync(ModalResult.Ok(Part));
             }
-
-            _toastService.ShowSuccess("yay, added");
-            // redirect to part page
+        }
+        catch (InvalidOperationException ex)
+        {
+            ToastService.ShowError(ex.Message);
         }
     }
+}
 

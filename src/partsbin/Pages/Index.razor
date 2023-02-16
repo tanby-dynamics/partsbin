@@ -42,7 +42,7 @@
     private async void AddPart()
     {
         var parameters = new ModalParameters();
-        var modal = _modalService.Show<AddPartModal>("Add part", parameters);
+        var modal = _modalService.Show<AddEditPartModal>("Add part", parameters);
         var result = await modal.Result;
 
         if (result.Cancelled || result.Data is null)

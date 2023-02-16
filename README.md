@@ -28,7 +28,8 @@ suggest putting it in Dropbox or somewhere it will be backed up automatically.
 - Front page navigation and drill-down to parts
 - Auto-suggest for `PartType`, `Range`, `PartName`, `PackageType`, `ValueUnit`, `Location`,
 `Manufacturer`, `Supplier.Name`
-- If `PartNumber` isn't unique, throw up a warning and recommend editing existing part
+- If `PartNumber` isn't unique, throw up a warning and recommend editing existing part.
+*Note that this it should still be allowed to have multiple parts with the same `PartNumber`*
 - Notes
 - Links to documentation (data sheets etc)
 - Upload documentation
