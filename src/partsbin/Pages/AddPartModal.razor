@@ -1,0 +1,90 @@
+﻿@inject IToastService _toastService
+@using System.Diagnostics.CodeAnalysis;
+
+<EditForm Model="@_part" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="form-group" style="width: 400px">
+        <div>
+            <label for="partType">Part type</label>
+            <!-- this needs to be an autocomplete -->
+            <InputText id="partType"
+                       class="form-control"
+                       placeholder="Part type (eg. 'Capacitor')"
+                       @bind-Value="_part.PartType" />
+        </div>
+        <div>
+            <label for="range">Range</label>
+            <!-- this needs to be an autocomplete -->
+            <InputText id="range"
+                       class="form-control"
+                       placeholder="Range (eg. 'Film')"
+                       @bind-Value="_part.Range" />
+        </div>
+        <div>
+            <label for="partName">Part name</label>
+            <!-- this needs to be an autocomplete -->
+            <InputText id="partName"
+                       class="form-control"
+                       placeholder="Part name (eg. 'Raspberry Pi B 4G')"
+                       @bind-Value="_part.PartName" />
+        </div>
+        <div>
+            <label for="packageType">Package type</label>
+            <!-- this needs to be an autocomplete -->
+            <InputText id="packageType"
+                       class="form-control"
+                       placeholder="Package type (eg. 'DIP', 'SMD')"
+                       @bind-Value="_part.PackageType" />
+        </div>
+        <div>
+            <label for="value">Value</label>
+            <InputNumber id="value"
+                         class="form-control"
+                         placeholder="Value (eg. '0.1')"
+                         @bind-Value="_part.Value" />
+        </div>
+        <div>
+            <label for="valueUnit">Value unit</label>
+            <!-- this needs to be an autocomplete -->
+            <InputText id="valueUnit"
+                       class="form-control"
+                       placeholder="Value unit (eg. 'uF')"
+                       @bind-Value="_part.ValueUnit" />
+        </div>
+        <div>
+            <label for="quantity">Quantity</label>
+            <InputNumber id="quantity"
+                         class="form-control"
+                         placeholder="Quantity"
+                         @bind-Value="_part.Quantity" />
+            <div>
+                <label for="Location">Location</label>
+                <!-- this needs to be an autocomplete -->
+                <InputText id="location"
+                           class="form-control"
+                           placeholder="Location (eg. 'Shelf 4 Rack 2 Tray 6')"
+                           @bind-Value="_part.Location" />
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-outline-primary">Add part</button>
+</EditForm>
+
+@code {
+    private Part _part = new Part();
+        [CascadingParameter]
+        BlazoredModalInstance? Modal { get; set; }
+
+        private async void HandleValidSubmit()
+        {
+            if (Modal != null)
+            {
+                await Modal.CloseAsync();
+            }
+
+            _toastService.ShowSuccess("yay, added");
+            // redirect to part page
+        }
+    }
+

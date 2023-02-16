@@ -9,13 +9,12 @@ Docker.
 
 ## Goals
 
-### Implementation
+### Implementation goals
 - [ ] Server-side Blazor
 - [ ] Off the shelf Blazor supported UI library, nothing fancy (TBD)
 	- [ ] Blazored
 	- [ ] Radzen.Blazor
-- [ ] Storage in SQLite
-	- [ ] EF migrations, to keep it simple
+- [ ] Storage in [LiteDB](https://www.litedb.org/) (JSON store)
 - [ ] Distributed as a Docker image
 - [ ] No authentication or access management - that's up to you :-)
 - [ ] No tests - where we're going we don't need tests
@@ -23,7 +22,7 @@ Docker.
 - [ ] Single project (if possible)
 
 ### Core features
-- [ ] SQLite in a location that can be configured when creating the Docker container
+- [ ] LiteDb database in a location that can be configured when creating the Docker container
 - [ ] Upload or search for images
 - [ ] Add information sheet links for each component
 
