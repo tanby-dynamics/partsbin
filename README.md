@@ -10,16 +10,16 @@ Docker.
 ## Goals
 
 ### Implementation goals
-- [ ] Server-side Blazor
-- [ ] Off the shelf Blazor supported UI library, nothing fancy (TBD)
-	- [ ] Blazored
-	- [ ] Radzen.Blazor
+- [-] Server-side Blazor
+- [-] Off the shelf Blazor supported UI library, nothing fancy (TBD)
+	- [-] Blazored
+	- [-] Radzen.Blazor
 - [ ] Storage in [LiteDB](https://www.litedb.org/) (JSON store)
 - [ ] Distributed as a Docker image
-- [ ] No authentication or access management - that's up to you :-)
-- [ ] No tests - where we're going we don't need tests
-- [ ] Default dependency injection
-- [ ] Single project (if possible)
+- [-] No authentication or access management - that's up to you :-)
+- [-] No tests - where we're going we don't need tests
+- [-] Default dependency injection
+- [-] Single project (if possible)
 
 ### Core features
 - [ ] LiteDb database in a location that can be configured when creating the Docker container
@@ -28,8 +28,10 @@ Docker.
 
 ### Stretch goals and features
 - [ ] Desktop application wrapper
-- [ ] Search engine via [Sonic](https://github.com/valeriansaliou/sonic) (using
+- [ ] Search engine, possibly via [Sonic](https://github.com/valeriansaliou/sonic) (using
 [NSonic](https://github.com/spikensbror-dotnet/nsonic))
-- [ ] Auto search for part images
-- [ ] Auto search for information sheets
+- [ ] Adding and searching for part images
+- [ ] Adding and searching for information sheets
+- [ ] Minimal ChatGPT integration - generate a natural language question like "Please show
+me how to use a SN74HC595N shift register with an Arduino Nano to light up some LEDs"
 
