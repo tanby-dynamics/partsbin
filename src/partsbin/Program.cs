@@ -1,19 +1,19 @@
 ﻿using Blazored.Modal;
 using Blazored.Toast;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using partsbin.Data;
+using partsbin;
+using partsbin.Services;
+using partsbin.UiServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-//builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddBlazoredModal();
 builder.Services.AddBlazoredToast();
-
-// TODO add DbContext
-
+builder.Services.AddSingleton<IDbFactory>(new DbFactory(builder.Environment.IsProduction()));
+builder.Services.AddSingleton<IPartService, PartService>();
+builder.Services.AddSingleton<IPartTypeService, PartTypeService>();
+builder.Services.AddScoped<IPartUiService, PartUiService>();
 
 var app = builder.Build();
 
@@ -30,10 +30,6 @@ app.UseStaticFiles();
 app.UseRouting();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
-
-// test mounted volume
-File.WriteAllText("/data/test.txt", "Hey there!!!");
-
 
 app.Run();
 

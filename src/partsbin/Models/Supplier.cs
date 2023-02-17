@@ -1,4 +1,4 @@
-﻿namespace partsbin.Data
+﻿namespace partsbin.Models
 {
     public class Supplier
     {

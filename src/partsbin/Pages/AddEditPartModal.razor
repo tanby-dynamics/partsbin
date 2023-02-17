@@ -1,4 +1,7 @@
-﻿@inject IToastService ToastService
+﻿@using Microsoft.AspNetCore.Components
+@using partsbin.Services
+@inject IToastService ToastService;
+@inject IPartService PartService;
 
 <EditForm Model="@Part" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator/>
@@ -27,6 +30,21 @@
                        class="form-control"
                        placeholder="Part name (eg. 'Raspberry Pi B 4G')"
                        @bind-Value="Part.PartName" />
+        </div>
+        <div style="margin-top: 10px;">
+            <label for="partNumber">Part number</label>
+            <InputText id="partNumber"
+                       class="form-control"
+                       placeholder="Part number (eg. 'XC3802')"
+                       @bind-Value="Part.PartNumber" />
+        </div>
+        <div style="margin-top: 10px;">
+            <label for="manufacturer">Manufacturer</label>
+            <!-- this needs to be an autocomplete -->
+            <InputText id="manufacturer"
+                       class="form-control"
+                       placeholder="Manufacturer (eg. 'Qualcomm')"
+                       @bind-Value="Part.Manufacturer" />
         </div>
         <div style="margin-top: 10px;">
             <label for="packageType">Package type</label>
@@ -83,8 +101,8 @@
 
     protected override void OnInitialized()
     {
-        _isNew = this.Part is null;
-        this.Part ??= new Part();
+        _isNew = Part is null;
+        Part ??= new Part();
 
         StateHasChanged();
     }
@@ -95,16 +113,15 @@
         {
             if (_isNew)
             {
-                //await _partsService.AddPart(this.Part);
+                Part = PartService.AddPart(Part!);
+                // TODO redirect to /part/{Part.Id}
             }
             else
             {
                 //await _partsService.UpdatePart(this.Part);
             }
-            if (Modal != null)
-            {
-                await Modal.CloseAsync(ModalResult.Ok(Part));
-            }
+            
+            await Modal!.CloseAsync(ModalResult.Ok(Part));
         }
         catch (InvalidOperationException ex)
         {

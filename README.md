@@ -49,6 +49,7 @@ installation at <http://localhost:8080> (or whatever port you set in step 4).
 
 ## Todos
 ### Core features
+- Docker image is current arm64, need to get it working on amd64 as well
 - LiteDB database in a location that can be configured when creating the Docker container
 - Edit parts
 - Front page navigation and drill-down to parts

@@ -1,6 +1,9 @@
 ﻿@page "/"
-@inject IModalService _modalService
-@inject IToastService _toastService
+@using partsbin.Services
+@using partsbin.Services.Results
+@using partsbin.UiServices
+@inject IPartTypeService PartTypeService;
+@inject IPartUiService PartUiService; 
 
 <div class="row">
     <div class="container-fluid">
@@ -17,42 +20,68 @@
     </div>
 
     <div class="container-fluid">
-        <p><em>Loading...</em></p>
-        <div class="mt-2">
-            <table class="table border">
-                <thead>
-                    <tr>
-                        <th>Type</th>
-                        <th>Range</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><a href="/part-type/capacitor">capacitor</a></td>
-                        <td><a href="/part-type/capacitor/range/electrolytic">electolytic</a></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        @if (_data is null)
+        {
+            <p><em>Loading...</em></p>
+        } 
+        else if (!_data.Any())
+        {
+            <div class="alert alert-info" role="alert">
+                No parts have been added
+            </div>
+        }
+        else
+        {
+            <div class="mt-2">
+                <table class="table border">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Range</th>
+                            <th>Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in _data)
+                    {
+                        <tr>
+                            <td><a href="/part-type/@item.PartType">@(item.PartType ?? "-")</a></td>
+                            <td><a href="/range/@item.Range">@(item.Range ?? "-")</a></td>
+                            <td>@item.Count</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
     </div>
 </div>
 
 
 @code {
-    private async void AddPart()
+    private IList<PartTypeAndRangesResult>? _data;
+    
+    protected override void OnInitialized()
     {
-        var parameters = new ModalParameters();
-        var modal = _modalService.Show<AddEditPartModal>("Add part", parameters);
-        var result = await modal.Result;
-
-        if (result.Cancelled || result.Data is null)
-    {
-            return;
+        RefreshData();
     }
 
-        var part = result.Data as Part;
+    private void RefreshData()
+    {
+        _data = PartTypeService
+            .GetPartTypesAndRanges()
+            .OrderBy(x => x.PartType)
+            .ThenBy(x => x.Range)
+            .ToList();
+        
+        StateHasChanged();
+    }
 
-        _toastService.ShowSuccess($"Added part '{part?.Description ?? "<null>"}'");
+    private async void AddPart()
+    {
+        await PartUiService.AddPart();
+        // TODO redirect to /part/id instead of refreshing
+        RefreshData();
     }
 }
 
