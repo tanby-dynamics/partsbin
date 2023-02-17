@@ -12,6 +12,32 @@ The data file location will be configurable when the Docker container is spun up
 suggest putting it in Dropbox or somewhere it will be backed up automatically.
 
 
+## Installation
+It's possible to build and deploy this on a server from the source, however the easiest
+method is probably via Docker.
+
+You can do this using `docker run`:
+```
+docker run -d -p 8080:80 -v ~/Dropbox/appdata/partsbin/data/:/data --name partsbin partsbin
+```
+
+Or to make it a bit easier to manage the options:
+1. Copy `docker-compose.yaml` from this repository to somewhere safe (I usually put it at
+the top level of where the app volumes will be stored)
+3. Edit `docker-compose.yaml`
+4. (optional) Update the mapped port to something that won't clash with any other services you have running
+5. Change the `/data` volume location to somewhere on your NAS, Dropbox, etc
+4. `cd` to where your `docker-compose.yaml` copy is and execute `docker-compose up -d`
+
+If you skip step 4, port 8080 will be used.
+
+If you skip step 5, the database will be written to an internal location which will get
+deleted when the container is updated. You _probably_ don't want that.
+
+When the image is pulled down and the container is running, you can access your new partsbin
+installation at <http://localhost:8080> (or whatever port you set in step 4).
+
+
 ## Design choices
 - Server-side Blazor, with help from [Blazored](https://github.com/Blazored) and 
 [Radzen.Blazor](https://blazor.radzen.com/get-started)

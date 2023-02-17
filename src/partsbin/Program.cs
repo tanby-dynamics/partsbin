@@ -14,6 +14,7 @@ builder.Services.AddBlazoredToast();
 
 // TODO add DbContext
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -29,6 +30,10 @@ app.UseStaticFiles();
 app.UseRouting();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+
+// test mounted volume
+File.WriteAllText("/data/test.txt", "Hey there!!!");
+
 
 app.Run();
 
