@@ -8,7 +8,7 @@ public interface IPartService
     Part AddPart(Part part);
     void UpdatePart(Part part);
     Part GetPart(int id);
-    IEnumerable<Part> GetAllParts();
+    IEnumerable<Part> GetAllParts(string? byType = null, string? qualifier = null);
 }
 
 public class PartService : IPartService
@@ -45,11 +45,28 @@ public class PartService : IPartService
         return db.GetCollection<Part>().FindById(id);
     }
 
-    public IEnumerable<Part> GetAllParts()
+    public IEnumerable<Part> GetAllParts(string? byType = null, string? qualifier = null)
     {
         using var db = _dbFactory.GetDatabase();
 
-        return db.GetCollection<Part>().FindAll().ToList();
+        if (byType is not null && string.IsNullOrEmpty(qualifier))
+        {
+            return Array.Empty<Part>();
+        }
+        
+        var parts = db.GetCollection<Part>().FindAll();
+
+        // Apply the 'byType/qualifier' filter
+        var filteredParts = byType switch
+        {
+            "by-part-type" => parts.Where(x => x.PartType != null && x.PartType.ToLower() == qualifier),
+            "by-range" => parts.Where(x => x.Range != null && x.Range.ToLower() == qualifier),
+            "by-part-name" => parts.Where(x => x.PartName != null && x.PartName.ToLower() == qualifier),
+            "by-manufacturer" => parts.Where(x => x.Manufacturer != null && x.Manufacturer.ToLower() == qualifier),
+            _ => parts
+        };
+        
+        return filteredParts.ToList();
     }
 
     private static void CachePartFields(LiteDatabase db, Part part)

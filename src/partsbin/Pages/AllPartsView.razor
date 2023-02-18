@@ -1,4 +1,4 @@
-@page "/all-parts"
+@page "/all-parts/{byType?}/{qualifier?}"
 @using partsbin.Helpers
 @using partsbin.Services
 @using partsbin.UiServices
@@ -7,7 +7,39 @@
 @inject IPartUiService PartUiService;
 @inject IToastService ToastService;
 
-<h3>All parts</h3>
+<h3>
+    All parts
+    @if (ByType.HasContent())
+    {
+        <span>by </span>
+        switch (ByType)
+        {
+            case "by-part-type":
+                <span>part type</span>
+                break;
+            case "by-range":
+                <span>range</span>
+                break;
+            case "by-part-name":
+                <span>part name</span>
+                break;
+            case "by-manufacturer":
+                <span>manufacturer</span>
+                break;
+            default:
+                <span></span>
+                break;
+        }
+        <span>
+            <em>&nbsp;@Qualifier&nbsp;</em>
+            <button class="btn btn-link btn-sm"
+                    @onclick="@(() => NavigationManager.NavigateTo("/all-parts"))">
+                clear filter
+            </button>
+        </span>
+        
+    }
+</h3>
 
 <div class="row">
     <div class="container-fluid">
@@ -45,19 +77,25 @@
                             <td>
                                 @if (part.PartType.HasContent())
                                 {
-                                    <a href="/part-type/@part.PartType">@part.PartType</a>
+                                    <a href="/all-parts/by-part-type/@part.PartType">
+                                        @part.PartType
+                                    </a>
                                 }
                             </td>
                             <td>
                                 @if (part.Range.HasContent())
                                 {
-                                    <a href="/range/@part.Range">@part.Range</a>
+                                    <a href="/all-parts/by-range/@part.Range">
+                                        @part.Range
+                                    </a>
                                 }
                             </td>
                             <td>
                                 @if (part.PartName.HasContent())
                                 {
-                                    <a href="/part-by-name/@part.PartName">@part.PartName</a>
+                                    <a href="/all-parts/by-part-name/@part.PartName">
+                                        @part.PartName
+                                    </a>
                                 }
                             </td>
                             <td>
@@ -72,7 +110,9 @@
                             <td>
                                 @if (part.Manufacturer.HasContent())
                                 {
-                                    @part.Manufacturer
+                                    <a href="/all_parts/by-manufacturer/@part.Manufacturer">
+                                        @part.Manufacturer
+                                    </a>
                                 }
                             </td>
                             <td>
@@ -83,20 +123,23 @@
                             </td>
                             <td style="@(part.Quantity <= 0 ? "color:#f55" : "")">
                                 <button class="btn btn-light"
-                                        @onclick="@(() => IncreaseQuantity(part))"
-                                        title="Increase quantity">
-                                    <i class="oi oi-plus"></i>
+                                        @onclick="@(() => DecreaseQuantity(part))"
+                                        @onclick:preventDefault
+                                    title="Decrease quantity">
+                                    <i class="oi oi-minus"></i>
                                 </button>
                                 <button class="btn btn-light"
                                         style="min-width:4em;"
                                         @onclick="@(() => EditQuantity(part))"
+                                        @onclick:preventDefault
                                         title="Edit quantity">
                                     @part.Quantity
                                 </button>
                                 <button class="btn btn-light"
-                                        @onclick="@(() => DecreaseQuantity(part))"
-                                        title="Decrease quantity">
-                                    <i class="oi oi-minus"></i>
+                                        @onclick="@(() => IncreaseQuantity(part))"
+                                        @onclick:preventDefault
+                                        title="Increase quantity">
+                                    <i class="oi oi-plus"></i>
                                 </button>
                             </td>
                             <td>
@@ -110,6 +153,7 @@
                                 </button>
                                 <button class="btn btn-outline-info btn-sm"
                                         @onclick="@(() => EditPart(part))"
+                                        @onclick:preventDefault
                                         title="Edit part">
                                     <i class="oi oi-pencil"></i>
                                 </button>
@@ -125,20 +169,29 @@
 
 @code {
     private IEnumerable<Part>? _parts;
+
+    [Parameter]
+    public string? ByType { get; set; }
+    [Parameter]
+    public string? Qualifier { get; set; }
     
-    protected override void OnInitialized()
+    protected override void OnParametersSet()
     {
         RefreshData();
     }
 
     private void RefreshData()
     {
-        _parts = PartService.GetAllParts()
+        var qualifier = Qualifier?.ToLower();
+        
+        _parts = PartService.GetAllParts(ByType, qualifier)
             .OrderBy(x => x.PartType)
             .ThenBy(x => x.Range)
             .ThenBy(x => x.PartName)
             .ThenBy(x => x.PartNumber)
             .ThenBy(x => x.Value);
+        
+        StateHasChanged();
     }
 
     private async void EditPart(Part part)

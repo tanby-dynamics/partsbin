@@ -37,17 +37,25 @@
                 <table class="table border">
                     <thead>
                         <tr>
-                            <th>Type</th>
+                            <th>Part type</th>
                             <th>Range</th>
-                            <th>Count</th>
+                            <th>Quantity</th>
                         </tr>
                     </thead>
                     <tbody>
                     @foreach (var item in _data)
                     {
                         <tr>
-                            <td><a href="/part-type/@item.PartType">@(item.PartType ?? "-")</a></td>
-                            <td><a href="/range/@item.Range">@(item.Range ?? "-")</a></td>
+                            <td>
+                                <a href="/all-parts/by-part-type/@item.PartType">
+                                    @(item.PartType ?? "---")
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/all-parts/by-range/@item.Range">
+                                    @(item.Range ?? "---")
+                                </a>
+                            </td>
                             <td>@item.Count</td>
                         </tr>
                     }

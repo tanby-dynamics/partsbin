@@ -24,9 +24,9 @@ else
         <h5 class="card-header">
             <span>
                 <button class="btn btn-light"
-                        @onclick="IncreaseQuantity"
-                        title="Increase quantity">
-                    <i class="oi oi-plus"></i>
+                        @onclick="DecreaseQuantity"
+                        title="Decrease quantity">
+                    <i class="oi oi-minus"></i>
                 </button>
                 <button class="btn btn-sm @(_part.Quantity > 0 ? "btn-primary" : "btn-danger")"
                         style="margin-bottom:0.5rem;"
@@ -34,9 +34,9 @@ else
                     @_part.FormattedQuantity
                 </button>
                 <button class="btn btn-light"
-                        @onclick="DecreaseQuantity"
-                        title="Decrease quantity">
-                    <i class="oi oi-minus"></i>
+                        @onclick="IncreaseQuantity"
+                        title="Increase quantity">
+                    <i class="oi oi-plus"></i>
                 </button>
             </span>
         </h5>
