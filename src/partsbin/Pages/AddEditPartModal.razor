@@ -33,21 +33,6 @@
                        @bind-Value="Part.PartName" />
         </div>
         <div style="margin-top: 10px;">
-            <label for="partNumber">Part number</label>
-            <InputText id="partNumber"
-                       class="form-control"
-                       placeholder="Part number (eg. 'XC3802')"
-                       @bind-Value="Part.PartNumber" />
-        </div>
-        <div style="margin-top: 10px;">
-            <label for="manufacturer">Manufacturer</label>
-            <!-- this needs to be an autocomplete -->
-            <InputText id="manufacturer"
-                       class="form-control"
-                       placeholder="Manufacturer (eg. 'Qualcomm')"
-                       @bind-Value="Part.Manufacturer" />
-        </div>
-        <div style="margin-top: 10px;">
             <label for="packageType">Package type</label>
             <!-- this needs to be an autocomplete -->
             <InputText id="packageType"
@@ -71,19 +56,37 @@
                        @bind-Value="Part.ValueUnit" />
         </div>
         <div style="margin-top: 10px;">
-            <label for="quantity">Quantity</label>
-            <InputNumber id="quantity"
-                         class="form-control"
-                         placeholder="Quantity"
-                         @bind-Value="Part!.Quantity" />
-            <div>
-                <label for="location">Location</label>
-                <!-- this needs to be an autocomplete -->
-                <InputText id="location"
-                           class="form-control"
-                           placeholder="Location (eg. 'Shelf 4 Rack 2 Tray 6')"
-                           @bind-Value="Part.Location" />
+            <label for="manufacturer">Manufacturer</label>
+            <!-- this needs to be an autocomplete -->
+            <InputText id="manufacturer"
+                       class="form-control"
+                       placeholder="Manufacturer (eg. 'Qualcomm')"
+                       @bind-Value="Part.Manufacturer" />
+        </div>
+        <div style="margin-top: 10px;">
+            <label for="partNumber">Part number</label>
+            <InputText id="partNumber"
+                       class="form-control"
+                       placeholder="Part number (eg. 'XC3802')"
+                       @bind-Value="Part.PartNumber" />
+        </div>
+        @if (_isNew)
+        {
+            <div style="margin-top: 10px;">
+                <label for="quantity">Quantity</label>
+                <InputNumber id="quantity"
+                             class="form-control"
+                             placeholder="Quantity"
+                             @bind-Value="Part!.Quantity" />
             </div>
+        }
+        <div>
+            <label for="location">Location</label>
+            <!-- this needs to be an autocomplete -->
+            <InputText id="location"
+                       class="form-control"
+                       placeholder="Location (eg. 'Shelf 4 Rack 2 Tray 6')"
+                       @bind-Value="Part.Location" />
         </div>
     </div>
     <div style="margin-top: 10px;">
@@ -119,7 +122,7 @@
             }
             else
             {
-                //await _partsService.UpdatePart(this.Part);
+                PartService.UpdatePart(Part!);
             }
             
             await Modal!.CloseAsync(ModalResult.Ok(Part));

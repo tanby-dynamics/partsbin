@@ -4,6 +4,7 @@
 @using partsbin.UiServices
 @inject IPartTypeService PartTypeService;
 @inject IPartUiService PartUiService; 
+@inject NavigationManager NavigationManager;
 
 <div class="row">
     <div class="container-fluid">
@@ -77,11 +78,14 @@
         StateHasChanged();
     }
 
-    private async void AddPart()
+    private async Task AddPart()
     {
-        await PartUiService.AddPart();
-        // TODO redirect to /part/id instead of refreshing
-        RefreshData();
+        var part = await PartUiService.AddPart();
+
+        if (part is not null)
+        {
+            NavigationManager.NavigateTo($"/part/{part.Id}");
+        }
     }
 }
 

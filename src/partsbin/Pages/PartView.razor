@@ -1,7 +1,9 @@
 @page "/part/{Id:int}"
 @using partsbin.Services
 @using partsbin.Helpers
+@using partsbin.UiServices
 @inject IPartService PartService;
+@inject IPartUiService PartUiService;
 
 <div class="row">
     <div class="container-fluid">
@@ -55,7 +57,9 @@
                         {
                             <span>
                                 Value:
-                                @(_part.Value + (_part.ValueUnit ?? string.Empty))
+                                <strong>
+                                    @(_part.Value + (_part.ValueUnit ?? string.Empty))
+                                </strong>
                             </span>
                             <br/>
                         }
@@ -77,6 +81,16 @@
             }
         </div>
     </div>
+    
+    <!-- Documents -->
+    <div class="row">
+        <h5>Documents and data sheets (TODO)</h5>
+    </div>
+    
+    <!-- Suppliers -->
+    <div class="row">
+        <h5>Suppliers (TODO)</h5>
+    </div>
 </div>
 
 @code {
@@ -97,8 +111,11 @@
         StateHasChanged();
     }
 
-    private void Edit()
+    private async void Edit()
     {
-    // todo open edit dialog
+        if (_part is null) return;
+        
+        await PartUiService.EditPart(_part);
+        RefreshData();
     }
 }

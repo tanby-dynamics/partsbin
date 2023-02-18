@@ -49,14 +49,13 @@ installation at <http://localhost:8080> (or whatever port you set in step 4).
 
 ## Todos
 ### Core features
-- Docker image is current arm64, need to get it working on amd64 as well
-- LiteDB database in a location that can be configured when creating the Docker container
+- Docker image is currently arm64, need to get it working on amd64 as well
 - Edit parts
 - Front page navigation and drill-down to parts
 - Auto-suggest for `PartType`, `Range`, `PartName`, `PackageType`, `ValueUnit`, `Location`,
 `Manufacturer`, `Supplier.Name`
 - If `PartNumber` isn't unique, throw up a warning and recommend editing existing part.
-*Note that this it should still be allowed to have multiple parts with the same `PartNumber`*
+*Note that it should still be permitted to have multiple parts with the same `PartNumber`*
 - Notes
 - Links to documentation (data sheets etc)
 - Upload documentation
@@ -64,10 +63,19 @@ installation at <http://localhost:8080> (or whatever port you set in step 4).
 - Upload images - a mini gallery for each part
 
 
-### Stretch goals and features
+### Stretch goals and possible features
 - Search engine, possibly via [Sonic](https://github.com/valeriansaliou/sonic) (using
 [NSonic](https://github.com/spikensbror-dotnet/nsonic))
 - Minimal ChatGPT integration - generate a natural language question like "Please show
 me how to use a SN74HC595N shift register with an Arduino Nano to light up some LEDs",
 button to copy to clipboard and open ChatGPT
+- What about building up a BOM? that would be interesting
+
+
+## Technologies and libraries in use
+- Blazor (including Bootstrap)
+- [Blazored](https://github.com/Blazored)
+- [Radzen Blazor](https://blazor.radzen.com/)
+- [LiteDb](https://www.litedb.org/)
+
 

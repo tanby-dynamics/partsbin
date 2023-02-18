@@ -8,21 +8,20 @@ namespace partsbin.UiServices;
 
 public interface IPartUiService
 {
-    Task AddPart();
+    Task<Part?> AddPart();
+    Task EditPart(Part part);
 }
 
 public class PartUiService : IPartUiService
 {
     private readonly IModalService _modalService;
-    private readonly IToastService _toastService;
 
-    public PartUiService(IModalService modalService, IToastService toastService)
+    public PartUiService(IModalService modalService)
     {
         _modalService = modalService;
-        _toastService = toastService;
     }
     
-    public async Task AddPart()
+    public async Task<Part?> AddPart()
     {
         var parameters = new ModalParameters();
         var modal = _modalService.Show<AddEditPartModal>("Add part", parameters);
@@ -30,11 +29,17 @@ public class PartUiService : IPartUiService
 
         if (result.Cancelled || result.Data is null)
         {
-            return;
+            return null;
         }
 
-        var part = result.Data as Part;
+        return result.Data as Part;
+    }
 
-        _toastService.ShowSuccess($"Added part '{part?.Description ?? "<null>"}'");
+    public async Task EditPart(Part part)
+    {
+        var parameters = new ModalParameters { { "Part", part } };
+        var modal = _modalService.Show<AddEditPartModal>("Edit part", parameters);
+        
+        await modal.Result;
     }
 }
