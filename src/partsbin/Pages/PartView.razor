@@ -1,0 +1,104 @@
+@page "/part/{Id:int}"
+@using partsbin.Services
+@using partsbin.Helpers
+@inject IPartService PartService;
+
+<div class="row">
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="row">
+            <div class="col">
+                @if (_part is null)
+                {
+                    <h3>Part not found</h3>
+                }
+                else
+                {
+                    <h3>Part: @_part.Description</h3>
+                    <h5 style="@(_part.Quantity <= 0 ? "#f55" : string.Empty)">
+                        @_part.Quantity
+                        @(_part.Quantity > 1 ? "units" : "unit")
+                    </h5>
+                }
+            </div>
+        </div>
+
+        <!-- Part details -->
+        <div class="row">
+            @if (_part is null)
+            {
+                <div class="alert alert-info" role="alert">
+                    The requested part could not be found
+                </div>
+            }
+            else
+            {
+                <div class="col">
+                    <p>
+                        @if (_part.PartType.HasContent())
+                        {
+                            <span>Part type: <strong>@_part.PartType</strong></span><br/>
+                        }
+                        @if (_part.Range.HasContent())
+                        {
+                            <span>Range: <strong>@_part.Range</strong></span><br/>
+                        }
+                        @if (_part.PartName.HasContent())
+                        {
+                            <span>Part name: <strong>@_part.PartName</strong></span><br/>
+                        }
+                        @if (_part.PackageType.HasContent())
+                        {
+                            <span>Package type: <strong>@_part.PackageType</strong></span><br/>
+                        }
+                        @if (_part.Value.HasContent())
+                        {
+                            <span>
+                                Value:
+                                @(_part.Value + (_part.ValueUnit ?? string.Empty))
+                            </span>
+                            <br/>
+                        }
+                        @if (_part.Manufacturer.HasContent())
+                        {
+                            <span>Manufacturer: <strong>@_part.Manufacturer</strong></span><br/>
+                        }
+                        @if (_part.PartNumber.HasContent())
+                        {
+                            <span>Part number: <strong>@_part.PartNumber</strong></span><br/>
+                        }
+                    </p>
+                </div>
+                <div class="col-2 text-sm-right">
+                    <button @onclick="Edit" class="btn btn-primary">
+                        <i class="oi oi-pencil"></i> Edit details
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private Part? _part;
+
+    protected override void OnInitialized()
+    {
+        RefreshData();
+    }
+
+    private void RefreshData()
+    {
+        _part = PartService.GetPart(Id);
+        StateHasChanged();
+    }
+
+    private void Edit()
+    {
+    // todo open edit dialog
+    }
+}

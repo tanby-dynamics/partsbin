@@ -1,0 +1,123 @@
+@page "/all-parts"
+@using partsbin.Helpers
+@using partsbin.Services
+@inject NavigationManager NavigationManager;
+@inject IPartService PartService;
+
+<h3>All parts</h3>
+
+<div class="row">
+    <div class="container-fluid">
+        @if (_parts is null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else if (!_parts.Any())
+        {
+            <div class="alert alert-info" role="alert">
+                No parts have been added
+            </div>
+        }
+        else
+        {
+            <div class="mt-2">
+                <table class="table border">
+                    <thead>
+                    <tr>
+                        <th>Part type</th>
+                        <th>Range</th>
+                        <th>Part name</th>
+                        <th>Package type</th>
+                        <th>Value</th>
+                        <th>Manufacturer</th>
+                        <th>Part number</th>
+                        <th>Quantity</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var part in _parts)
+                    {
+                        <tr>
+                            <td>
+                                @if (part.PartType.HasContent())
+                                {
+                                    <a href="/part-type/@part.PartType">@part.PartType</a>
+                                }
+                            </td>
+                            <td>
+                                @if (part.Range.HasContent())
+                                {
+                                    <a href="/range/@part.Range">@part.Range</a>
+                                }
+                            </td>
+                            <td>
+                                @if (part.PartName.HasContent())
+                                {
+                                    <a href="/part-by-name/@part.PartName">@part.PartName</a>
+                                }
+                            </td>
+                            <td>
+                                @if (part.PackageType.HasContent())
+                                {
+                                    @part.PackageType
+                                }
+                            </td>
+                            <td>
+                                @if (part.Value.HasContent())
+                                {
+                                    @(part.Value + (part.ValueUnit ?? string.Empty))
+                                }
+                            </td>
+                            <td>
+                                @if (part.Manufacturer.HasContent())
+                                {
+                                    @part.Manufacturer
+                                }
+                            </td>
+                            <td>
+                                @if (part.PartNumber.HasContent())
+                                {
+                                    @part.PartNumber
+                                }
+                            </td>
+                            <td style="@(part.Quantity <= 0 ? "color:#f55" : "")">
+                                @part.Quantity
+                            </td>
+                            <td>
+                                <button
+                                        @onclick="@(() => NavigationManager.NavigateTo($"/part/{part.Id}"))"
+                                        @onclick:preventDefault
+                                        class="btn btn-outline-info btn-sm"
+                                        title="Open"
+                                >
+                                    <i class="oi oi-pencil"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private IEnumerable<Part>? _parts;
+    
+    protected override void OnInitialized()
+    {
+        RefreshData();
+    }
+
+    private void RefreshData()
+    {
+        _parts = PartService.GetAllParts()
+            .OrderBy(x => x.PartType)
+            .ThenBy(x => x.Range)
+            .ThenBy(x => x.PartName)
+            .ThenBy(x => x.PartNumber)
+            .ThenBy(x => x.Value);
+    }
+}
