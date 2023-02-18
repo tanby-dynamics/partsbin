@@ -70,6 +70,7 @@ installation at <http://localhost:8080> (or whatever port you set in step 4).
 me how to use a SN74HC595N shift register with an Arduino Nano to light up some LEDs",
 button to copy to clipboard and open ChatGPT
 - What about building up a BOM? that would be interesting
+- landing page could be a dashboard - common items that are running low?
 
 
 ## Technologies and libraries in use

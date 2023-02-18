@@ -1,8 +1,11 @@
 @page "/all-parts"
 @using partsbin.Helpers
 @using partsbin.Services
+@using partsbin.UiServices
 @inject NavigationManager NavigationManager;
 @inject IPartService PartService;
+@inject IPartUiService PartUiService;
+@inject IToastService ToastService;
 
 <h3>All parts</h3>
 
@@ -64,10 +67,7 @@
                                 }
                             </td>
                             <td>
-                                @if (part.Value.HasContent())
-                                {
-                                    @(part.Value + (part.ValueUnit ?? string.Empty))
-                                }
+                                @part.FormattedValue
                             </td>
                             <td>
                                 @if (part.Manufacturer.HasContent())
@@ -82,15 +82,35 @@
                                 }
                             </td>
                             <td style="@(part.Quantity <= 0 ? "color:#f55" : "")">
-                                @part.Quantity
+                                <button class="btn btn-light"
+                                        @onclick="@(() => IncreaseQuantity(part))"
+                                        title="Increase quantity">
+                                    <i class="oi oi-plus"></i>
+                                </button>
+                                <button class="btn btn-light"
+                                        style="min-width:4em;"
+                                        @onclick="@(() => EditQuantity(part))"
+                                        title="Edit quantity">
+                                    @part.Quantity
+                                </button>
+                                <button class="btn btn-light"
+                                        @onclick="@(() => DecreaseQuantity(part))"
+                                        title="Decrease quantity">
+                                    <i class="oi oi-minus"></i>
+                                </button>
                             </td>
                             <td>
                                 <button
-                                        @onclick="@(() => NavigationManager.NavigateTo($"/part/{part.Id}"))"
-                                        @onclick:preventDefault
-                                        class="btn btn-outline-info btn-sm"
-                                        title="Open"
+                                    @onclick="@(() => NavigationManager.NavigateTo($"/part/{part.Id}"))"
+                                    @onclick:preventDefault
+                                    class="btn btn-outline-info btn-sm"
+                                    title="View part"
                                 >
+                                    <i class="oi oi-eye"></i>
+                                </button>
+                                <button class="btn btn-outline-info btn-sm"
+                                        @onclick="@(() => EditPart(part))"
+                                        title="Edit part">
                                     <i class="oi oi-pencil"></i>
                                 </button>
                             </td>
@@ -119,5 +139,45 @@
             .ThenBy(x => x.PartName)
             .ThenBy(x => x.PartNumber)
             .ThenBy(x => x.Value);
+    }
+
+    private async void EditPart(Part part)
+    {
+        await PartUiService.EditPart(part);
+        StateHasChanged();
+    }
+
+    private async void EditQuantity(Part part)
+    {
+        var previousQuantity = part.Quantity;
+        
+        await PartUiService.EditQuantity(part);
+
+        if (previousQuantity == part.Quantity) return;
+        
+        if (part.Quantity < 0)
+        {
+            ToastService.ShowWarning("The part quantity has been set to less than zero. It has still been saved.");
+        }
+        else
+        {
+            ToastService.ShowSuccess("The part quantity has been updated");
+        }
+        
+        StateHasChanged();
+    }
+
+    private void IncreaseQuantity(Part part)
+    {
+        part.Quantity++;
+        PartService.UpdatePart(part);
+        StateHasChanged();
+    }
+    
+    private void DecreaseQuantity(Part part)
+    {
+        part.Quantity--;
+        PartService.UpdatePart(part);
+        StateHasChanged();
     }
 }

@@ -10,6 +10,7 @@ public interface IPartUiService
 {
     Task<Part?> AddPart();
     Task EditPart(Part part);
+    Task EditQuantity(Part part);
 }
 
 public class PartUiService : IPartUiService
@@ -40,6 +41,14 @@ public class PartUiService : IPartUiService
         var parameters = new ModalParameters { { "Part", part } };
         var modal = _modalService.Show<AddEditPartModal>("Edit part", parameters);
         
+        await modal.Result;
+    }
+
+    public async Task EditQuantity(Part part)
+    {
+        var parameters = new ModalParameters { { "Part", part } };
+        var modal = _modalService.Show<UpdatePartQuantityModal>("Update quantity", parameters);
+
         await modal.Result;
     }
 }

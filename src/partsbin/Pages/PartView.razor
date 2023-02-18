@@ -4,97 +4,152 @@
 @using partsbin.UiServices
 @inject IPartService PartService;
 @inject IPartUiService PartUiService;
+@inject IToastService ToastService;
 
-<div class="row">
-    <div class="container-fluid">
-        <!-- Header -->
-        <div class="row">
-            <div class="col">
-                @if (_part is null)
-                {
-                    <h3>Part not found</h3>
-                }
-                else
-                {
-                    <h3>Part: @_part.Description</h3>
-                    <h5 style="@(_part.Quantity <= 0 ? "#f55" : string.Empty)">
-                        @_part.Quantity
-                        @(_part.Quantity > 1 ? "units" : "unit")
-                    </h5>
-                }
+@if (_part is not null)
+{
+    <h3>@_part.Description - @_part.FormattedQuantity</h3>
+}
+else
+{
+    <div class="alert alert-danger" role="alert">
+        <h3 class="alert-heading">Part not found</h3>
+        <p>The part could not be found. You might have followed an invalid link, or the part may have been deleted.</p>
+    </div>
+}
+
+@if (_part is not null)
+{
+    <div class="card">
+        <h5 class="card-header">
+            <span>
+                <button class="btn btn-light"
+                        @onclick="IncreaseQuantity"
+                        title="Increase quantity">
+                    <i class="oi oi-plus"></i>
+                </button>
+                <button class="btn btn-sm @(_part.Quantity > 0 ? "btn-primary" : "btn-danger")"
+                        style="margin-bottom:0.5rem;"
+                        @onclick="EditQuantity">
+                    @_part.FormattedQuantity
+                </button>
+                <button class="btn btn-light"
+                        @onclick="DecreaseQuantity"
+                        title="Decrease quantity">
+                    <i class="oi oi-minus"></i>
+                </button>
+            </span>
+        </h5>
+        <div class="card">
+            <div class="card-body">
+                <div class="card-text">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="card-text">
+                                @if (_part.PartType.HasContent())
+                                {
+                                    <span>Part type: <strong>@_part.PartType</strong></span>
+                                    <br/>
+                                }
+                                @if (_part.Range.HasContent())
+                                {
+                                    <span>Range: <strong>@_part.Range</strong></span>
+                                    <br/>
+                                }
+                                @if (_part.PartName.HasContent())
+                                {
+                                    <span>Part name: <strong>@_part.PartName</strong></span>
+                                    <br/>
+                                }
+                                @if (_part.PackageType.HasContent())
+                                {
+                                    <span>Package type: <strong>@_part.PackageType</strong></span>
+                                    <br/>
+                                }
+                                @if (_part.Value.HasContent())
+                                {
+                                    <span>
+                                        Value:
+                                        <strong>
+                                            @(_part.Value + (_part.ValueUnit ?? string.Empty))
+                                        </strong>
+                                    </span>
+                                    <br/>
+                                }
+                                @if (_part.Manufacturer.HasContent())
+                                {
+                                    <span>Manufacturer: <strong>@_part.Manufacturer</strong></span>
+                                    <br/>
+                                }
+                                @if (_part.PartNumber.HasContent())
+                                {
+                                    <span>Part number: <strong>@_part.PartNumber</strong></span>
+                                    <br/>
+                                }
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p>notes???!?</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button @onclick="Edit" class="btn btn-sm btn-outline-primary">
+                    <i class="oi oi-pencil"></i> Edit details
+                </button>
             </div>
         </div>
+    </div>
 
-        <!-- Part details -->
-        <div class="row">
-            @if (_part is null)
-            {
-                <div class="alert alert-info" role="alert">
-                    The requested part could not be found
-                </div>
-            }
-            else
-            {
-                <div class="col">
-                    <p>
-                        @if (_part.PartType.HasContent())
-                        {
-                            <span>Part type: <strong>@_part.PartType</strong></span><br/>
-                        }
-                        @if (_part.Range.HasContent())
-                        {
-                            <span>Range: <strong>@_part.Range</strong></span><br/>
-                        }
-                        @if (_part.PartName.HasContent())
-                        {
-                            <span>Part name: <strong>@_part.PartName</strong></span><br/>
-                        }
-                        @if (_part.PackageType.HasContent())
-                        {
-                            <span>Package type: <strong>@_part.PackageType</strong></span><br/>
-                        }
-                        @if (_part.Value.HasContent())
-                        {
-                            <span>
-                                Value:
-                                <strong>
-                                    @(_part.Value + (_part.ValueUnit ?? string.Empty))
-                                </strong>
-                            </span>
-                            <br/>
-                        }
-                        @if (_part.Manufacturer.HasContent())
-                        {
-                            <span>Manufacturer: <strong>@_part.Manufacturer</strong></span><br/>
-                        }
-                        @if (_part.PartNumber.HasContent())
-                        {
-                            <span>Part number: <strong>@_part.PartNumber</strong></span><br/>
-                        }
-                    </p>
-                </div>
-                <div class="col-2 text-sm-right">
-                    <button @onclick="Edit" class="btn btn-primary">
-                        <i class="oi oi-pencil"></i> Edit details
-                    </button>
-                </div>
-            }
+    <br/>
+
+    <div class="card">
+        <h5 class="card-header">Documents and data sheets</h5>
+        <div class="list-group list-group-flush">
+            <button class="list-group-item list-group-item-action">
+                Data sheet
+            </button>
+            <button class="list-group-item list-group-item-action">
+                Data sheet #2
+            </button>
+            <button class="list-group-item list-group-item-action">
+                Data sheet #3
+            </button>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-sm btn-outline-primary"
+                    @onclick="@(() => { })">
+                Add new
+            </button>
         </div>
     </div>
-    
-    <!-- Documents -->
-    <div class="row">
-        <h5>Documents and data sheets (TODO)</h5>
+
+    <br/>
+
+    <div class="card">
+        <h5 class="card-header">Suppliers</h5>
+        <div class="list-group list-group-flush">
+            <button class="list-group-item list-group-item-action">
+                Jaycar
+            </button>
+            <button class="list-group-item list-group-item-action">
+                Mouser
+            </button>
+            <button class="list-group-item list-group-item-action">
+                eBay
+            </button>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-sm btn-outline-primary"
+                    @onclick="() => { }">
+                Add new
+            </button>
+        </div>
     </div>
-    
-    <!-- Suppliers -->
-    <div class="row">
-        <h5>Suppliers (TODO)</h5>
-    </div>
-</div>
+}
 
 @code {
-
     [Parameter]
     public int Id { get; set; }
 
@@ -114,8 +169,49 @@
     private async void Edit()
     {
         if (_part is null) return;
-        
+
         await PartUiService.EditPart(_part);
         RefreshData();
+        ToastService.ShowSuccess("The part details have been updated");
+    }
+
+    private async void EditQuantity()
+    {
+        if (_part is null) return;
+
+        var previousQuantity = _part.Quantity;
+
+        await PartUiService.EditQuantity(_part);
+
+        if (previousQuantity == _part.Quantity) return;
+
+        if (_part.Quantity < 0)
+        {
+            ToastService.ShowWarning("The part quantity has been set to less than zero. It has still been saved.");
+        }
+        else
+        {
+            ToastService.ShowSuccess("The part quantity has been updated");
+        }
+
+        StateHasChanged();
+    }
+
+    private void IncreaseQuantity()
+    {
+        if (_part == null) return;
+        
+        _part.Quantity++;
+        PartService.UpdatePart(_part);
+        StateHasChanged();
+    }
+    
+    private void DecreaseQuantity()
+    {
+        if (_part == null) return;
+        
+        _part.Quantity--;
+        PartService.UpdatePart(_part);
+        StateHasChanged();
     }
 }

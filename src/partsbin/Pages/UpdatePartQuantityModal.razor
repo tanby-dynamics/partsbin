@@ -1,0 +1,45 @@
+@using partsbin.Services
+@inject IPartService PartService;
+@inject IToastService ToastService;
+
+<EditForm Model="@Part" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="form-group" style="width:400px">
+        <div style="margin-top:10px">
+            <label for="quantity">Quantity</label>
+            <InputNumber id="quantity"
+                         class="form-control"
+                         placeholder="Quantity"
+                         @bind-Value="Part!.Quantity"/>
+        </div>
+    </div>
+    <div style="margin-top: 10px;">
+        <button type="submit" class="btn btn-outline-primary">
+            Update quantity
+        </button>
+    </div>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public Part? Part { get; set; }
+
+    [CascadingParameter]
+    BlazoredModalInstance? Modal { get; set; }
+
+    private async void HandleValidSubmit()
+    {
+        try
+        {
+            PartService.UpdatePart(Part!);
+            await Modal!.CloseAsync((ModalResult.Ok(Part)));
+        }
+        catch (InvalidOperationException ex)
+        {
+            ToastService.ShowError(ex.Message);
+        }
+    }
+
+}
