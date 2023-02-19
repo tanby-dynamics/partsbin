@@ -9,6 +9,7 @@ public interface IPartFieldService
     IEnumerable<string> GetUniquePartTypes();
     IEnumerable<(string partType, int quantity)> GetUniquePartTypesAndCounts();
     IEnumerable<string> GetUniqueRanges();
+    IEnumerable<(string range, int quantity)> GetUniqueRangesAndCounts();
     IEnumerable<string> GetUniquePackageTypes();
     IEnumerable<string> GetUniquePartNames();
     IEnumerable<string> GetUniqueValueUnits();
@@ -50,41 +51,11 @@ public class PartFieldService : IPartFieldService
 
     public IEnumerable<string> GetUniquePartTypes()
     {
-        using var db = _dbFactory.GetDatabase();
-        
-        var result = db.GetCollection<Part>()
-            .Query()
-            .Where(x => x.PartType != null && x.PartType != string.Empty)
-            .Select(x => x.PartType)
-            .ToList()
-            .Select(x => x!)
-            .Distinct();
-
-        return result;
-    }
-    
-    public IEnumerable<string> GetUniqueRanges()
-    {
-        using var db = _dbFactory.GetDatabase();
-        
-        var result = db.GetCollection<Part>()
-            .Query()
-            .Where(x => x.Range != null && x.Range != string.Empty)
-            .Select(x => x.Range)
-            .ToList()
-            .Select(x => x!)
-            .Distinct();
-
-        return result;
-    }
-    
-    public IEnumerable<string> GetUniquePartNames()
-    {
         return GetUniquePartTypesAndCounts()
             .Select(x => x.partType)
             .Distinct();
     }
-
+    
     public IEnumerable<(string partType, int quantity)> GetUniquePartTypesAndCounts()
     {
         using var db = _dbFactory.GetDatabase();
@@ -103,6 +74,47 @@ public class PartFieldService : IPartFieldService
 
         return result
             .Select(x => (x.PartType!, x.Quantity));
+    }
+
+    public IEnumerable<string> GetUniqueRanges()
+    {
+        return GetUniqueRangesAndCounts()
+            .Select(x => x.range)
+            .Distinct();
+    }
+
+    public IEnumerable<(string range, int quantity)> GetUniqueRangesAndCounts()
+    {
+        using var db = _dbFactory.GetDatabase();
+        
+        var result = db.GetCollection<Part>()
+            .Query()
+            .Where(x => x.Range != null && x.Range != string.Empty)
+            .Select(x => new { x.Range, x.Quantity})
+            .ToList()
+            .GroupBy(x => x.Range, x => x.Quantity)
+            .Select(x =>  new
+            {
+                Range =x.Key,
+                Quantity = x.Sum()
+            });
+
+        return result.Select(x => (x.Range!, x.Quantity));
+    }
+
+    public IEnumerable<string> GetUniquePartNames()
+    {
+        using var db = _dbFactory.GetDatabase();
+        
+        var result = db.GetCollection<Part>()
+            .Query()
+            .Where(x => x.PartName != null && x.PartName != string.Empty)
+            .Select(x => x.PartName)
+            .ToList()
+            .Select(x => x!)
+            .Distinct();
+
+        return result;
     }
     
     public IEnumerable<string> GetUniquePackageTypes()

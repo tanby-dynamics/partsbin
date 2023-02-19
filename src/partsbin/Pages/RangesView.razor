@@ -1,0 +1,45 @@
+@page "/ranges"
+@using partsbin.Services
+@inject IPartFieldService PartFieldService;
+
+<h3>Ranges</h3>
+
+@if (!_ranges.Any())
+{
+    <div class="alert alert-info" role="alert">
+        No ranges have been added
+    </div>
+}
+else
+{
+    <table class="table border">
+        <thead>
+        <tr>
+            <th>Range</th>
+            <th>Total quantity</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var range in _ranges)
+        {
+            <tr>
+                <td>
+                    <a href="/all-parts/by-range/@range.range">
+                        @range.range
+                    </a>
+                </td>
+                <td>@range.quantity</td>
+            </tr>
+        }
+        </tbody>
+    </table>    
+}
+
+@code {
+    private IEnumerable<(string range, int quantity)> _ranges = new List<(string, int)>();
+
+    protected override void OnInitialized()
+    {
+        _ranges = PartFieldService.GetUniqueRangesAndCounts();
+    }
+}
