@@ -50,10 +50,7 @@ installation at <http://localhost:8080> (or whatever port you set in step 4).
 ## Todos
 ### Core features
 - Docker image is currently arm64, need to get it working on amd64 as well
-- Edit parts
 - Front page navigation and drill-down to parts
-- Auto-suggest for `PartType`, `Range`, `PartName`, `PackageType`, `ValueUnit`, `Location`,
-`Manufacturer`, `Supplier.Name`
 - If `PartNumber` isn't unique, throw up a warning and recommend editing existing part.
 *Note that it should still be permitted to have multiple parts with the same `PartNumber`*
 - Notes

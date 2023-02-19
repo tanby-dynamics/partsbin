@@ -7,6 +7,7 @@ public interface IPartFieldService
 {
     IEnumerable<PartTypeAndRangesResult> GetPartTypesAndRanges();
     IEnumerable<string> GetUniquePartTypes();
+    IEnumerable<(string partType, int quantity)> GetUniquePartTypesAndCounts();
     IEnumerable<string> GetUniqueRanges();
     IEnumerable<string> GetUniquePackageTypes();
     IEnumerable<string> GetUniquePartNames();
@@ -79,17 +80,29 @@ public class PartFieldService : IPartFieldService
     
     public IEnumerable<string> GetUniquePartNames()
     {
+        return GetUniquePartTypesAndCounts()
+            .Select(x => x.partType)
+            .Distinct();
+    }
+
+    public IEnumerable<(string partType, int quantity)> GetUniquePartTypesAndCounts()
+    {
         using var db = _dbFactory.GetDatabase();
         
         var result = db.GetCollection<Part>()
             .Query()
-            .Where(x => x.PartName != null && x.PartName != string.Empty)
-            .Select(x => x.PartName)
+            .Where(x => x.PartType != null && x.PartType != string.Empty)
+            .Select(x => new { x.PartType, x.Quantity })
             .ToList()
-            .Select(x => x!)
-            .Distinct();
+            .GroupBy(x => x.PartType, x => x.Quantity)
+            .Select(x => new
+            {
+                PartType = x.Key, 
+                Quantity = x.Sum(),
+            });
 
-        return result;
+        return result
+            .Select(x => (x.PartType!, x.Quantity));
     }
     
     public IEnumerable<string> GetUniquePackageTypes()
