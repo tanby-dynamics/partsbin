@@ -181,12 +181,12 @@
                                 <button
                                     @onclick="@(() => NavigationManager.NavigateTo($"/part/{part.Id}"))"
                                     @onclick:preventDefault
-                                    class="btn btn-outline-info btn-sm"
+                                    class="btn btn-outline-info"
                                     title="Go to part details"
                                 >
                                     <i class="oi oi-list"></i>
                                 </button>
-                                <button class="btn btn-outline-info btn-sm"
+                                <button class="btn btn-outline-info"
                                         @onclick="@(() => EditPart(part))"
                                         @onclick:preventDefault
                                         title="Edit part">
