@@ -86,6 +86,11 @@ else
                                     <span>Part number: <strong>@_part.PartNumber</strong></span>
                                     <br/>
                                 }
+                                @if (_part.Location.HasContent())
+                                {
+                                    <span>Location: <strong>@_part.Location</strong></span>
+                                    <br/>
+                                }
                             </p>
                         </div>
                         <div class="col-md-6">

@@ -6,6 +6,7 @@ namespace partsbin.Services;
 public interface IPartTypeService
 {
     IEnumerable<PartTypeAndRangesResult> GetPartTypesAndRanges();
+    IEnumerable<string> GetUniquePartTypes();
 }
 
 public class PartTypeService : IPartTypeService
@@ -36,6 +37,21 @@ public class PartTypeService : IPartTypeService
                 Range = x.Key.Range,
                 Count = x.Count()
             });
+
+        return result;
+    }
+
+    public IEnumerable<string> GetUniquePartTypes()
+    {
+        using var db = _dbFactory.GetDatabase();
+        
+        var result = db.GetCollection<Part>()
+            .Query()
+            .Where(x => x.PartType != null && x.PartType != string.Empty)
+            .Select(x => x.PartType)
+            .ToList()
+            .Select(x => x!)
+            .Distinct();
 
         return result;
     }

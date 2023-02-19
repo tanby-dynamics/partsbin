@@ -1,8 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Components
 @using partsbin.Services
+@using partsbin.UiServices
 @inject IToastService ToastService;
 @inject IPartService PartService;
 @inject NavigationManager NavigationManager;
+@inject IPartUiService PartUiService;
 
 <EditForm Model="@Part" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator/>
@@ -10,11 +12,17 @@
     <div class="form-group" style="width: 400px">
         <div style="margin-top: 10px;">
             <label for="partType">Part type</label>
-            <!-- this needs to be an autocomplete -->
-            <InputText id="partType"
-                       class="form-control"
-                       placeholder="Part type (eg. 'Capacitor')"
-                       @bind-Value="Part!.PartType" />
+            <div class="input-group">
+                <InputText id="partType"
+                           class="form-control"
+                           placeholder="Part type (eg. 'Capacitor')"
+                           @bind-Value="Part!.PartType"/>
+                <button class="btn btn-outline-secondary"
+                        @onclick:preventDefault
+                        @onclick="SelectPartType">
+                    <i class="oi oi-magnifying-glass"></i>
+                </button>
+            </div>
         </div>
         <div style="margin-top: 10px;">
             <label for="range">Range</label>
@@ -131,6 +139,19 @@
         {
             ToastService.ShowError(ex.Message);
         }
+    }
+
+    private async void SelectPartType()
+    {
+        if (Part is null) return;
+
+        var previousPartType = Part.PartType;
+        
+        await PartUiService.SelectPartType(Part);
+        
+        if (previousPartType == Part.PartType) return;
+        
+        StateHasChanged();
     }
 }
 

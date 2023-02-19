@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using partsbin.Helpers;
 
 namespace partsbin.Models
@@ -86,7 +87,23 @@ namespace partsbin.Models
         /// </summary>
         public List<Supplier> Suppliers { get; set; } = new List<Supplier>();
 
-        public string Description => PartName ?? Range ?? PartType ?? "part";
+        public string Description
+        {
+            get
+            {
+                var sb = new StringBuilder();
+                
+                if (PartName.HasContent()) sb.Append(PartName + " - ");
+                if (Range.HasContent()) sb.Append(Range + " - ");
+                if (PartType.HasContent()) sb.Append(PartType + " - ");
+                if (sb.Length == 0) return "---";
+                
+                sb.Remove(sb.Length - 3, 3);
+                
+                return sb.ToString();
+            }
+        }
+
         public string FormattedQuantity => $"{Quantity} {(Quantity != 1 ? "units" : "unit")}";
         public string FormattedValue => Value is null
             ? "---" 

@@ -1,0 +1,62 @@
+@using partsbin.Helpers
+<EditForm Model="@this" 
+          OnValidSubmit="HandleValidSubmit"
+          @onkeypress="HandleKeyPress">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="form-group">
+        <div style="margin-top:10px">
+            <InputSelect id="select"
+                         class="form-select form-select-lg"
+                         @bind-Value="@SelectedString"
+                         size="16"
+                         @ondblclick="HandleValidSubmit">
+                @foreach (var selection in Selections)
+                {
+                    <option>@selection</option>
+                }
+            </InputSelect>
+        </div>
+        <div style="margin-top:10px">
+            <button type="submit"
+                    class="btn btn-outline-primary">
+                Select
+            </button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public string SelectedString { get; set; } = "";
+
+    [Parameter]
+    public IEnumerable<string> Selections { get; set; } = Array.Empty<string>();
+    
+    [CascadingParameter]
+    BlazoredModalInstance? Modal { get; set; }
+
+    private void UpdateSelection(string selection)
+    {
+        SelectedString = selection;
+        StateHasChanged();
+    }
+
+    private async void HandleValidSubmit()
+    {
+        await Modal!.CloseAsync(ModalResult.Ok(SelectedString));
+    }
+
+    private async void HandleKeyPress(KeyboardEventArgs e)
+    {
+        switch (e.Code)
+        {
+            case "Escape":
+                await Modal!.CloseAsync(ModalResult.Cancel());
+                break;
+            case "Enter" when SelectedString.HasContent():
+                await Modal!.CloseAsync(ModalResult.Ok(SelectedString));
+                break;
+        }
+    }
+}
