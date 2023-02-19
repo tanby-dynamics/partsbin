@@ -54,11 +54,17 @@
         </div>
         <div style="margin-top: 10px;">
             <label for="packageType">Package type</label>
-            <!-- this needs to be an autocomplete -->
-            <InputText id="packageType"
-                       class="form-control"
-                       placeholder="Package type (eg. 'DIP', 'SMD')"
-                       @bind-Value="Part.PackageType" />
+            <div class="input-group">
+                <InputText id="packageType"
+                           class="form-control"
+                           placeholder="Package type (eg. 'DIP', 'SMD')"
+                           @bind-Value="Part!.PackageType"/>
+                <button class="btn btn-outline-secondary"
+                        @onclick:preventDefault
+                        @onclick="@SelectPackageType">
+                    <i class="oi oi-magnifying-glass"></i>
+                </button>
+            </div>
         </div>
         <div style="margin-top: 10px;">
             <label for="value">Value</label>
@@ -177,6 +183,15 @@
         var previous = Part.PartName;
         await PartUiService.SelectPartName(Part);
         if (previous == Part.PartName) return;
+        StateHasChanged();
+    }
+
+    private async void SelectPackageType()
+    {
+        if (Part is null) return;
+        var previous = Part.PackageType;
+        await PartUiService.SelectPackageType(Part);
+        if (previous == Part.PackageType) return;
         StateHasChanged();
     }
 }

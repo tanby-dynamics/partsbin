@@ -15,6 +15,7 @@ public interface IPartUiService
     Task SelectPartType(Part part);
     Task SelectRange(Part part);
     Task SelectPartName(Part part);
+    Task SelectPackageType(Part part);
 }
 
 public class PartUiService : IPartUiService
@@ -98,6 +99,20 @@ public class PartUiService : IPartUiService
         if (result.Cancelled || result.Data is null) return;
 
         part!.PartName = result.Data as string;
+    }
+
+    public async Task SelectPackageType(Part part)
+    {
+        var packageTypes = _partTypeService.GetUniquePackageTypes()
+            .OrderBy(x => x);
+        var result = await ShowSelectStringModal(
+            part?.PackageType ?? string.Empty, 
+            packageTypes, 
+            "Select package type");
+
+        if (result.Cancelled || result.Data is null) return;
+
+        part!.PackageType = result.Data as string;
     }
 
     private async Task<ModalResult> ShowSelectStringModal(
