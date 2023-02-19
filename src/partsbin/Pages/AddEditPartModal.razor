@@ -117,11 +117,17 @@
         </div>
         <div style="margin-top: 10px;">
             <label for="manufacturer">Manufacturer</label>
-            <!-- this needs to be an autocomplete -->
-            <InputText id="manufacturer"
-                       class="form-control"
-                       placeholder="Manufacturer (eg. 'Qualcomm')"
-                       @bind-Value="Part.Manufacturer" />
+            <div class="input-group">
+                <InputText id="manufacturer"
+                           class="form-control"
+                           placeholder="Manufacturer (eg. 'Qualcomm')"
+                           @bind-Value="Part!.Manufacturer"/>
+                <button class="btn btn-outline-secondary"
+                        @onclick:preventDefault
+                        @onclick="@SelectManufacturer">
+                    <i class="oi oi-magnifying-glass"></i>
+                </button>
+            </div>
         </div>
         <div style="margin-top: 10px;">
             <label for="partNumber">Part number</label>
@@ -255,6 +261,15 @@
     {
         if (Part is null) return;
         Part.ValueUnit = symbol;
+        StateHasChanged();
+    }
+
+    private async void SelectManufacturer()
+    {
+        if (Part is null) return;
+        var previous = Part.Manufacturer;
+        await PartUiService.SelectManufacturer(Part);
+        if (previous == Part.Manufacturer) return;
         StateHasChanged();
     }
 }

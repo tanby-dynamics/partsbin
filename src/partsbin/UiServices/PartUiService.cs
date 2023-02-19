@@ -17,6 +17,7 @@ public interface IPartUiService
     Task SelectPartName(Part part);
     Task SelectPackageType(Part part);
     Task SelectValueUnit(Part part);
+    Task SelectManufacturer(Part part);
 }
 
 public class PartUiService : IPartUiService
@@ -128,6 +129,20 @@ public class PartUiService : IPartUiService
         if (result.Cancelled || result.Data is null) return;
 
         part!.ValueUnit = result.Data as string;
+    }
+
+    public async Task SelectManufacturer(Part part)
+    {
+        var valueUnits = _partTypeService.GetUniqueManufacturers()
+            .OrderBy(x => x);
+        var result = await ShowSelectStringModal(
+            part?.Manufacturer ?? string.Empty, 
+            valueUnits, 
+            "Select manufacturer");
+
+        if (result.Cancelled || result.Data is null) return;
+
+        part!.Manufacturer = result.Data as string;
     }
 
     private async Task<ModalResult> ShowSelectStringModal(

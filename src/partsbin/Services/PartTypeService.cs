@@ -11,6 +11,7 @@ public interface IPartTypeService
     IEnumerable<string> GetUniquePackageTypes();
     IEnumerable<string> GetUniquePartNames();
     IEnumerable<string> GetUniqueValueUnits();
+    IEnumerable<string> GetUniqueManufacturers();
 }
 
 public class PartTypeService : IPartTypeService
@@ -113,6 +114,21 @@ public class PartTypeService : IPartTypeService
             .Query()
             .Where(x => x.ValueUnit != null && x.ValueUnit != string.Empty)
             .Select(x => x.ValueUnit)
+            .ToList()
+            .Select(x => x!)
+            .Distinct();
+
+        return result;
+    }
+    
+    public IEnumerable<string> GetUniqueManufacturers()
+    {
+        using var db = _dbFactory.GetDatabase();
+        
+        var result = db.GetCollection<Part>()
+            .Query()
+            .Where(x => x.Manufacturer != null && x.Manufacturer != string.Empty)
+            .Select(x => x.Manufacturer)
             .ToList()
             .Select(x => x!)
             .Distinct();
