@@ -26,8 +26,11 @@
             case "by-manufacturer":
                 <span>manufacturer</span>
                 break;
+            case "by-location":
+                <span>location</span>
+                break;
             default:
-                <span></span>
+                <span>???</span>
                 break;
         }
         <span>
@@ -230,7 +233,7 @@
             .ThenBy(x => x.Range)
             .ThenBy(x => x.PartName)
             .ThenBy(x => x.PartNumber)
-            .ThenBy(x => x.Value)
+            .ThenBy(x => x.FormattedValue)
             .ToList();
         
         StateHasChanged();

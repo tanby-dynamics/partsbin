@@ -14,8 +14,10 @@ public interface IPartFieldService
     IEnumerable<string> GetUniquePartNames();
     IEnumerable<(string partName, int quantity)> GetUniquePartNamesAndCounts();
     IEnumerable<string> GetUniqueValueUnits();
+    IEnumerable<(string manufacturer, int quantity)> GetUniqueManufacturersAndCounts();
     IEnumerable<string> GetUniqueManufacturers();
     IEnumerable<string> GetUniqueLocations();
+    IEnumerable<(string location, int quantity)> GetUniqueLocationsAndCounts();
 }
 
 public class PartFieldService : IPartFieldService
@@ -161,31 +163,53 @@ public class PartFieldService : IPartFieldService
     
     public IEnumerable<string> GetUniqueManufacturers()
     {
+        return GetUniqueManufacturersAndCounts()
+            .Select(x => x.manufacturer)
+            .Distinct();
+    }
+
+    public IEnumerable<(string manufacturer, int quantity)> GetUniqueManufacturersAndCounts()
+    {
         using var db = _dbFactory.GetDatabase();
-        
+
         var result = db.GetCollection<Part>()
             .Query()
             .Where(x => x.Manufacturer != null && x.Manufacturer != string.Empty)
-            .Select(x => x.Manufacturer)
+            .Select(x => new { x.Manufacturer, x.Quantity })
             .ToList()
-            .Select(x => x!)
-            .Distinct();
-
-        return result;
+            .GroupBy(x => x.Manufacturer, x => x.Quantity)
+            .Select(x => new
+            {
+                Manufacturer = x.Key,
+                Quantity = x.Sum()
+            });
+        
+        return result.Select(x => (x.Manufacturer!, x.Quantity));
     }
-    
+
     public IEnumerable<string> GetUniqueLocations()
+    {
+        return GetUniqueLocationsAndCounts()
+            .Select(x => x.location)
+            .Distinct();
+    }
+
+    public IEnumerable<(string location, int quantity)> GetUniqueLocationsAndCounts()
     {
         using var db = _dbFactory.GetDatabase();
         
         var result = db.GetCollection<Part>()
             .Query()
             .Where(x => x.Location != null && x.Location != string.Empty)
-            .Select(x => x.Location)
+            .Select(x => new { x.Location, x.Quantity})
             .ToList()
-            .Select(x => x!)
-            .Distinct();
+            .GroupBy(x => x.Location, x=>x.Quantity)
+            .Select(x => new
+            {
+                Location = x.Key,
+                Quantity = x.Sum()
+            });
 
-        return result;
+        return result.Select(x => (x.Location!, x.Quantity));
     }
 }
