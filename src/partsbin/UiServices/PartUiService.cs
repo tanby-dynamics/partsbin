@@ -14,6 +14,7 @@ public interface IPartUiService
     Task EditQuantity(Part part);
     Task SelectPartType(Part part);
     Task SelectRange(Part part);
+    Task SelectPartName(Part part);
 }
 
 public class PartUiService : IPartUiService
@@ -59,34 +60,44 @@ public class PartUiService : IPartUiService
 
     public async Task SelectPartType(Part part)
     {
-        if (part.PartType == null) return;
-
         var partTypes = _partTypeService.GetUniquePartTypes()
             .OrderBy(x => x);
         var result = await ShowSelectStringModal(
-            part.PartType,
+            part?.PartType ?? string.Empty,
             partTypes,
             "Select part type");
 
         if (result.Cancelled || result.Data is null) return;
 
-        part.PartType = result.Data as string;
+        part!.PartType = result.Data as string;
     }
 
     public async Task SelectRange(Part part)
     {
-        if (part.Range == null) return;
-
         var ranges = _partTypeService.GetUniqueRanges()
             .OrderBy(x => x);
         var result = await ShowSelectStringModal(
-            part.Range, 
+            part?.Range ?? string.Empty, 
             ranges, 
             "Select range");
 
         if (result.Cancelled || result.Data is null) return;
 
-        part.Range = result.Data as string;
+        part!.Range = result.Data as string;
+    }
+
+    public async Task SelectPartName(Part part)
+    {
+        var partNames = _partTypeService.GetUniquePartNames()
+            .OrderBy(x => x);
+        var result = await ShowSelectStringModal(
+            part?.PartName ?? string.Empty, 
+            partNames, 
+            "Select part name");
+
+        if (result.Cancelled || result.Data is null) return;
+
+        part!.PartName = result.Data as string;
     }
 
     private async Task<ModalResult> ShowSelectStringModal(

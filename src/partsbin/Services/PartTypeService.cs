@@ -8,6 +8,7 @@ public interface IPartTypeService
     IEnumerable<PartTypeAndRangesResult> GetPartTypesAndRanges();
     IEnumerable<string> GetUniquePartTypes();
     IEnumerable<string> GetUniqueRanges();
+    IEnumerable<string> GetUniquePartNames();
 }
 
 public class PartTypeService : IPartTypeService
@@ -64,6 +65,21 @@ public class PartTypeService : IPartTypeService
         var result = db.GetCollection<Part>()
             .Query()
             .Where(x => x.Range != null && x.Range != string.Empty)
+            .Select(x => x.Range)
+            .ToList()
+            .Select(x => x!)
+            .Distinct();
+
+        return result;
+    }
+    
+    public IEnumerable<string> GetUniquePartNames()
+    {
+        using var db = _dbFactory.GetDatabase();
+        
+        var result = db.GetCollection<Part>()
+            .Query()
+            .Where(x => x.PartName != null && x.PartName != string.Empty)
             .Select(x => x.Range)
             .ToList()
             .Select(x => x!)

@@ -40,11 +40,17 @@
         </div>
         <div style="margin-top: 10px;">
             <label for="partName">Part name</label>
-            <!-- this needs to be an autocomplete -->
-            <InputText id="partName"
-                       class="form-control"
-                       placeholder="Part name (eg. 'Raspberry Pi B 4G')"
-                       @bind-Value="Part.PartName" />
+            <div class="input-group">
+                <InputText id="partName"
+                           class="form-control"
+                           placeholder="Part name (eg. 'Raspberry Pi B 4G')"
+                           @bind-Value="Part!.PartName"/>
+                <button class="btn btn-outline-secondary"
+                        @onclick:preventDefault
+                        @onclick="@SelectPartName">
+                    <i class="oi oi-magnifying-glass"></i>
+                </button>
+            </div>
         </div>
         <div style="margin-top: 10px;">
             <label for="packageType">Package type</label>
@@ -162,6 +168,15 @@
         var previous = Part.Range;
         await PartUiService.SelectRange(Part);
         if (previous == Part.Range) return;
+        StateHasChanged();
+    }
+
+    private async void SelectPartName()
+    {
+        if (Part is null) return;
+        var previous = Part.PartName;
+        await PartUiService.SelectPartName(Part);
+        if (previous == Part.PartName) return;
         StateHasChanged();
     }
 }
