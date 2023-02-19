@@ -3,7 +3,7 @@ using partsbin.Services.Results;
 
 namespace partsbin.Services;
 
-public interface IPartTypeService
+public interface IPartFieldService
 {
     IEnumerable<PartTypeAndRangesResult> GetPartTypesAndRanges();
     IEnumerable<string> GetUniquePartTypes();
@@ -15,11 +15,11 @@ public interface IPartTypeService
     IEnumerable<string> GetUniqueLocations();
 }
 
-public class PartTypeService : IPartTypeService
+public class PartFieldService : IPartFieldService
 {
     private readonly IDbFactory _dbFactory;
 
-    public PartTypeService(IDbFactory dbFactory)
+    public PartFieldService(IDbFactory dbFactory)
     {
         _dbFactory = dbFactory;
     }

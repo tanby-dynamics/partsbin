@@ -2,7 +2,7 @@
 @using partsbin.Services
 @using partsbin.Services.Results
 @using partsbin.UiServices
-@inject IPartTypeService PartTypeService;
+@inject IPartFieldService PartFieldService;
 @inject IPartUiService PartUiService; 
 @inject NavigationManager NavigationManager;
 
@@ -77,7 +77,7 @@
 
     private void RefreshData()
     {
-        _data = PartTypeService
+        _data = PartFieldService
             .GetPartTypesAndRanges()
             .OrderBy(x => x.PartType)
             .ThenBy(x => x.Range)

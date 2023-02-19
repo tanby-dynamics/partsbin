@@ -192,6 +192,12 @@
                                         title="Edit part">
                                     <i class="oi oi-pencil"></i>
                                 </button>
+                                <button class="btn btn-outline-danger"
+                                        @onclick="@(() => DeletePart(part))"
+                                        @onclick:preventDefault
+                                        title="Delete part">
+                                    <i class="oi oi-trash"></i>
+                                </button>
                             </td>
                         </tr>
                     }
@@ -203,7 +209,7 @@
 </div>
 
 @code {
-    private IEnumerable<Part>? _parts;
+    private List<Part>? _parts;
 
     [Parameter]
     public string? ByType { get; set; }
@@ -224,7 +230,8 @@
             .ThenBy(x => x.Range)
             .ThenBy(x => x.PartName)
             .ThenBy(x => x.PartNumber)
-            .ThenBy(x => x.Value);
+            .ThenBy(x => x.Value)
+            .ToList();
         
         StateHasChanged();
     }
@@ -266,6 +273,17 @@
     {
         part.Quantity--;
         PartService.UpdatePart(part);
+        StateHasChanged();
+    }
+
+    private void DeletePart(Part part)
+    {
+        part.IsDeleted = true;
+
+        PartService.UpdatePart(part);
+        _parts!.Remove(part);
+        
+        ToastService.ShowSuccess("The part has been deleted. You can recover it from the rubbish bin.");
         StateHasChanged();
     }
 }

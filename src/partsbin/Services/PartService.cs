@@ -9,6 +9,8 @@ public interface IPartService
     void UpdatePart(Part part);
     Part GetPart(int id);
     IEnumerable<Part> GetAllParts(string? byType = null, string? qualifier = null);
+    IEnumerable<Part> GetDeletedParts();
+    void EmptyRubbishBin();
 }
 
 public class PartService : IPartService
@@ -25,7 +27,6 @@ public class PartService : IPartService
         using var db = _dbFactory.GetDatabase();
 
         db.GetCollection<Part>().Insert(part);
-        CachePartFields(db, part);
 
         return part;
     }
@@ -35,7 +36,6 @@ public class PartService : IPartService
         using var db = _dbFactory.GetDatabase();
 
         db.GetCollection<Part>().Update(part);
-        CachePartFields(db, part);
     }
 
     public Part GetPart(int id)
@@ -54,7 +54,9 @@ public class PartService : IPartService
             return Array.Empty<Part>();
         }
         
-        var parts = db.GetCollection<Part>().FindAll();
+        var parts = db.GetCollection<Part>()
+            .FindAll()
+            .Where(x => !x.IsDeleted);
 
         // Apply the 'byType/qualifier' filter
         var filteredParts = byType switch
@@ -69,15 +71,20 @@ public class PartService : IPartService
         return filteredParts.ToList();
     }
 
-    private static void CachePartFields(LiteDatabase db, Part part)
+    public IEnumerable<Part> GetDeletedParts()
     {
-        // PartType
-        
-        // Range
-        // PartName
-        // PackageType
-        // ValueUnit
-        // Location
-        // Manufacturer
+        using var db = _dbFactory.GetDatabase();
+
+        return db.GetCollection<Part>()
+            .Find(x => x.IsDeleted)
+            .ToList();
+    }
+
+    public void EmptyRubbishBin()
+    {
+        using var db = _dbFactory.GetDatabase();
+
+        db.GetCollection<Part>()
+            .DeleteMany(x => x.IsDeleted);
     }
 }
