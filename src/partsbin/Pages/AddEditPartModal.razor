@@ -148,11 +148,17 @@
         }
         <div>
             <label for="location">Location</label>
-            <!-- this needs to be an autocomplete -->
-            <InputText id="location"
-                       class="form-control"
-                       placeholder="Location (eg. 'Shelf 4 Rack 2 Tray 6')"
-                       @bind-Value="Part.Location" />
+            <div class="input-group">
+                <InputText id="location"
+                           class="form-control"
+                           placeholder="Location (eg. 'Shelf 4 Rack 2 Tray 6')"
+                           @bind-Value="Part!.Location"/>
+                <button class="btn btn-outline-secondary"
+                        @onclick:preventDefault
+                        @onclick="@SelectLocation">
+                    <i class="oi oi-magnifying-glass"></i>
+                </button>
+            </div>
         </div>
     </div>
     <div style="margin-top: 10px;">
@@ -270,6 +276,15 @@
         var previous = Part.Manufacturer;
         await PartUiService.SelectManufacturer(Part);
         if (previous == Part.Manufacturer) return;
+        StateHasChanged();
+    }
+
+    private async void SelectLocation()
+    {
+        if (Part is null) return;
+        var previous = Part.Location;
+        await PartUiService.SelectLocation(Part);
+        if (previous == Part.Location) return;
         StateHasChanged();
     }
 }
