@@ -13,6 +13,7 @@ public interface IPartUiService
     Task EditPart(Part part);
     Task EditQuantity(Part part);
     Task SelectPartType(Part part);
+    Task SelectRange(Part part);
 }
 
 public class PartUiService : IPartUiService
@@ -62,17 +63,45 @@ public class PartUiService : IPartUiService
 
         var partTypes = _partTypeService.GetUniquePartTypes()
             .OrderBy(x => x);
-        var parameters = new ModalParameters
-        {
-            { "SelectedString", part.PartType },
-            { "Selections", partTypes },
-        };
-        var options = new ModalOptions { Position = ModalPosition.Middle };
-        var modal = _modalService.Show<SelectStringModal>("Select part type", parameters, options);
-        var result = await modal.Result;
+        var result = await ShowSelectStringModal(
+            part.PartType,
+            partTypes,
+            "Select part type");
 
         if (result.Cancelled || result.Data is null) return;
 
         part.PartType = result.Data as string;
+    }
+
+    public async Task SelectRange(Part part)
+    {
+        if (part.Range == null) return;
+
+        var ranges = _partTypeService.GetUniqueRanges()
+            .OrderBy(x => x);
+        var result = await ShowSelectStringModal(
+            part.Range, 
+            ranges, 
+            "Select range");
+
+        if (result.Cancelled || result.Data is null) return;
+
+        part.Range = result.Data as string;
+    }
+
+    private async Task<ModalResult> ShowSelectStringModal(
+        string selected, 
+        IEnumerable<string> selections,
+        string title = "Select item")
+    {
+        var parameters = new ModalParameters
+        {
+            { "SelectedString", selected },
+            { "Selections", selections },
+        };
+        var options = new ModalOptions { Position = ModalPosition.Middle };
+        var modal = _modalService.Show<SelectStringModal>(title, parameters, options);
+        
+        return await modal.Result;
     }
 }

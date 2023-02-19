@@ -19,18 +19,24 @@
                            @bind-Value="Part!.PartType"/>
                 <button class="btn btn-outline-secondary"
                         @onclick:preventDefault
-                        @onclick="SelectPartType">
+                        @onclick="@SelectPartType">
                     <i class="oi oi-magnifying-glass"></i>
                 </button>
             </div>
         </div>
         <div style="margin-top: 10px;">
             <label for="range">Range</label>
-            <!-- this needs to be an autocomplete -->
-            <InputText id="range"
-                       class="form-control"
-                       placeholder="Range (eg. 'Film')"
-                       @bind-Value="Part.Range" />
+            <div class="input-group">
+                <InputText id="range"
+                           class="form-control"
+                           placeholder="Range (eg. 'Film')"
+                           @bind-Value="Part!.Range"/>
+                <button class="btn btn-outline-secondary"
+                        @onclick:preventDefault
+                        @onclick="@SelectRange">
+                    <i class="oi oi-magnifying-glass"></i>
+                </button>
+            </div>
         </div>
         <div style="margin-top: 10px;">
             <label for="partName">Part name</label>
@@ -144,13 +150,18 @@
     private async void SelectPartType()
     {
         if (Part is null) return;
-
-        var previousPartType = Part.PartType;
-        
+        var previous = Part.PartType;
         await PartUiService.SelectPartType(Part);
-        
-        if (previousPartType == Part.PartType) return;
-        
+        if (previous == Part.PartType) return;
+        StateHasChanged();
+    }
+
+    private async void SelectRange()
+    {
+        if (Part is null) return;
+        var previous = Part.Range;
+        await PartUiService.SelectRange(Part);
+        if (previous == Part.Range) return;
         StateHasChanged();
     }
 }
