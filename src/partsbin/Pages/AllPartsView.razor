@@ -66,6 +66,7 @@
                         <th>Value</th>
                         <th>Manufacturer</th>
                         <th>Part number</th>
+                        <th>Location</th>
                         <th>Quantity</th>
                         <th>Actions</th>
                     </tr>
@@ -81,6 +82,10 @@
                                         @part.PartType
                                     </a>
                                 }
+                                else
+                                {
+                                    <span>---</span>
+                                }
                             </td>
                             <td>
                                 @if (part.Range.HasContent())
@@ -88,6 +93,10 @@
                                     <a href="/all-parts/by-range/@part.Range">
                                         @part.Range
                                     </a>
+                                }
+                                else
+                                {
+                                    <span>---</span>
                                 }
                             </td>
                             <td>
@@ -97,11 +106,19 @@
                                         @part.PartName
                                     </a>
                                 }
+                                else
+                                {
+                                    <span>---</span>
+                                }
                             </td>
                             <td>
                                 @if (part.PackageType.HasContent())
                                 {
                                     @part.PackageType
+                                }
+                                else
+                                {
+                                    <span>---</span>
                                 }
                             </td>
                             <td>
@@ -114,18 +131,36 @@
                                         @part.Manufacturer
                                     </a>
                                 }
+                                else
+                                {
+                                    <span>---</span>
+                                }
                             </td>
                             <td>
                                 @if (part.PartNumber.HasContent())
                                 {
                                     @part.PartNumber
                                 }
+                                else
+                                {
+                                    <span>---</span>
+                                }
+                            </td>
+                            <td>
+                                @if (part.Location.HasContent())
+                                {
+                                    @part.Location
+                                }
+                                else
+                                {
+                                    <span>---</span>
+                                }
                             </td>
                             <td style="@(part.Quantity <= 0 ? "color:#f55" : "")">
                                 <button class="btn btn-light"
-                                        @onclick="@(() => DecreaseQuantity(part))"
-                                        @onclick:preventDefault
-                                    title="Decrease quantity">
+                                       @onclick="@(() => DecreaseQuantity(part))"
+                                       @onclick:preventDefault
+                                       title="Decrease quantity">
                                     <i class="oi oi-minus"></i>
                                 </button>
                                 <button class="btn btn-light"
