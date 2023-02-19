@@ -93,9 +93,12 @@ namespace partsbin.Models
             {
                 var sb = new StringBuilder();
                 
-                if (PartName.HasContent()) sb.Append(PartName + " - ");
-                if (Range.HasContent()) sb.Append(Range + " - ");
                 if (PartType.HasContent()) sb.Append(PartType + " - ");
+                if (Range.HasContent()) sb.Append(Range + " - ");
+                if (PartName.HasContent()) sb.Append(PartName + " - ");
+                if (Value is not null) sb.Append(FormattedValue + " - ");
+                if (PartNumber.HasContent()) sb.Append(PartNumber + " - ");
+
                 if (sb.Length == 0) return "---";
                 
                 sb.Remove(sb.Length - 3, 3);

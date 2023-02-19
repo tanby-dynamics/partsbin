@@ -9,7 +9,7 @@
 <EditForm Model="@Part" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator/>
     <ValidationSummary/>
-    <div class="form-group" style="width: 400px">
+    <div class="form-group">
         <div style="margin-top: 10px;">
             <label for="partType">Part type</label>
             <div class="input-group">
@@ -75,11 +75,45 @@
         </div>
         <div style="margin-top: 10px;">
             <label for="valueUnit">Value unit</label>
-            <!-- this needs to be an autocomplete -->
-            <InputText id="valueUnit"
-                       class="form-control"
-                       placeholder="Value unit (eg. 'uF')"
-                       @bind-Value="Part.ValueUnit" />
+            <div class="input-group">
+                <InputText id="valueUnit"
+                           class="form-control"
+                           placeholder="Value unit (eg. 'uF')"
+                           @bind-Value="Part!.ValueUnit"/>
+                 <button class="btn btn-outline-secondary"
+                         @onclick:preventDefault
+                         @onclick="@SelectValueUnit">
+                     <i class="oi oi-magnifying-glass"></i>
+                 </button>
+                <button class="btn btn-outline-secondary dropdown-toggle"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    <i class="oi oi-arrow-circle-left"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    @foreach (var section in _defaultValueUnits)
+                    {
+                        foreach (var valueUnit in section)
+                        {
+                            if (valueUnit == GroupEndToken)
+                            {
+                                <li><hr class="dropdown-divider"/></li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <button class="btn dropdown-item"
+                                            @onclick:preventDefault
+                                            @onclick="@(() => ReplaceValueUnit(valueUnit))">
+                                        @valueUnit
+                                    </button>
+                                </li>
+                            }
+                        }
+                    }
+                </ul>
+             </div>
         </div>
         <div style="margin-top: 10px;">
             <label for="manufacturer">Manufacturer</label>
@@ -123,12 +157,25 @@
 </EditForm>
 
 @code {
+    private const string GroupEndToken = "<<<HR>>>";
+    
     [Parameter]
     public Part? Part { get; set; }
+
     private bool _isNew;
+
     [CascadingParameter]
     BlazoredModalInstance? Modal { get; set; }
 
+    private readonly string[][] _defaultValueUnits =
+    {
+        new[] { "Ω", "kΩ", "MΩ", GroupEndToken },
+        new[] { "pF", "nF", "μF", "mF", GroupEndToken },
+        new[] { "mV", "V", GroupEndToken },
+        new[] { "Vf", GroupEndToken },
+        new[] { "Hz", "kHz", "MHz", "GHz" },
+    };
+    
     protected override void OnInitialized()
     {
         _isNew = Part is null;
@@ -192,6 +239,22 @@
         var previous = Part.PackageType;
         await PartUiService.SelectPackageType(Part);
         if (previous == Part.PackageType) return;
+        StateHasChanged();
+    }
+
+    private async void SelectValueUnit()
+    {
+        if (Part is null) return;
+        var previous = Part.ValueUnit;
+        await PartUiService.SelectValueUnit(Part);
+        if (previous == Part.ValueUnit) return;
+        StateHasChanged();
+    }
+
+    private void ReplaceValueUnit(string symbol)
+    {
+        if (Part is null) return;
+        Part.ValueUnit = symbol;
         StateHasChanged();
     }
 }
