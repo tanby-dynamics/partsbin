@@ -36,12 +36,6 @@
     [CascadingParameter]
     BlazoredModalInstance? Modal { get; set; }
 
-    private void UpdateSelection(string selection)
-    {
-        SelectedString = selection;
-        StateHasChanged();
-    }
-
     private async void HandleValidSubmit()
     {
         await Modal!.CloseAsync(ModalResult.Ok(SelectedString));

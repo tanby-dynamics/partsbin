@@ -79,6 +79,9 @@ namespace partsbin.Models
         /// </summary>
         public string? Manufacturer { get; set; }
 
+        public string Notes { get; set; } = string.Empty;
+        public string HtmlNotes { get; set; } = string.Empty;
+
         /// <summary>
         /// Documents relating to the part - eg. data sheets, programming guides
         /// </summary>

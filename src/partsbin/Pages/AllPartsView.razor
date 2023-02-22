@@ -79,85 +79,100 @@
                     {
                         <tr>
                             <td>
-                                @if (part.PartType.HasContent())
-                                {
-                                    <a href="/all-parts/by-part-type/@part.PartType">
+                                <a href="/part/@part.Id">
+                                    @if (part.PartType.HasContent())
+                                    {
                                         @part.PartType
-                                    </a>
-                                }
-                                else
-                                {
-                                    <span>---</span>
-                                }
+                                    }
+                                    else
+                                    {
+                                        <span>---</span>
+                                    }
+                                </a>
                             </td>
                             <td>
-                                @if (part.Range.HasContent())
-                                {
-                                    <a href="/all-parts/by-range/@part.Range">
+                                <a href="/part/@part.Id">
+                                    @if (part.Range.HasContent())
+                                    {
                                         @part.Range
-                                    </a>
-                                }
-                                else
-                                {
-                                    <span>---</span>
-                                }
+                                    }
+                                    else
+                                    {
+                                        <span>---</span>
+                                    }
+                                </a>
                             </td>
                             <td>
-                                @if (part.PartName.HasContent())
-                                {
-                                    <a href="/all-parts/by-part-name/@part.PartName">
-                                        @part.PartName
-                                    </a>
-                                }
-                                else
-                                {
-                                    <span>---</span>
-                                }
+                                <a href="/part/@part.Id">
+                                    @if (part.Range.HasContent())
+                                    {
+                                        @part.Range
+                                    }
+                                    else
+                                    {
+                                        <span>---</span>
+                                    }
+                                </a>
                             </td>
                             <td>
-                                @if (part.PackageType.HasContent())
-                                {
-                                    @part.PackageType
-                                }
-                                else
-                                {
-                                    <span>---</span>
-                                }
+                                <a href="/part/@part.Id">
+                                    @if (part.PackageType.HasContent())
+                                    {
+                                        @part.PackageType
+                                    }
+                                    else
+                                    {
+                                        <span>---</span>
+                                    }
+                                </a>
                             </td>
                             <td>
-                                @part.FormattedValue
+                                <a href="/part/@part.Id">
+                                    @if (part.FormattedValue.HasContent())
+                                    {
+                                        @part.FormattedValue
+                                    }
+                                    else
+                                    {
+                                        <span>---</span>
+                                    }
+                                </a>
                             </td>
                             <td>
-                                @if (part.Manufacturer.HasContent())
-                                {
-                                    <a href="/all_parts/by-manufacturer/@part.Manufacturer">
+                                <a href="/part/@part.Id">
+                                    @if (part.Manufacturer.HasContent())
+                                    {
                                         @part.Manufacturer
-                                    </a>
-                                }
-                                else
-                                {
-                                    <span>---</span>
-                                }
+                                    }
+                                    else
+                                    {
+                                        <span>---</span>
+                                    }
+                                </a>
                             </td>
                             <td>
-                                @if (part.PartNumber.HasContent())
-                                {
-                                    @part.PartNumber
-                                }
-                                else
-                                {
-                                    <span>---</span>
-                                }
+                                <a href="/part/@part.Id">
+                                    @if (part.Location.HasContent())
+                                    {
+                                        @part.Location
+                                    }
+                                    else
+                                    {
+                                        <span>---</span>
+                                    }
+                                </a>
                             </td>
                             <td>
-                                @if (part.Location.HasContent())
-                                {
-                                    @part.Location
-                                }
-                                else
-                                {
-                                    <span>---</span>
-                                }
+                                <a href="/part/@part.Id">
+                                    @if (part.PackageType.HasContent())
+                                    {
+                                        @part.PackageType
+                                    }
+                                    else
+                                    {
+                                        <span>---</span>
+                                    }
+                                </a>
                             </td>
                             <td style="@(part.Quantity <= 0 ? "color:#f55" : "")">
                                 <button class="btn btn-light"

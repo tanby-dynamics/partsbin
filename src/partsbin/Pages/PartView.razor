@@ -2,9 +2,11 @@
 @using partsbin.Services
 @using partsbin.Helpers
 @using partsbin.UiServices
+@using Microsoft.AspNetCore.Html
 @inject IPartService PartService;
 @inject IPartUiService PartUiService;
 @inject IToastService ToastService;
+@inject IModalService ModalService;
 
 @if (_part is not null)
 {
@@ -94,7 +96,28 @@ else
                             </p>
                         </div>
                         <div class="col-md-6">
-                            <p>notes???!?</p>
+                            <div class="row">
+                                <div class="col">
+                                    <h4>Notes</h4>
+                                </div>
+                                <div class="col text-end">
+                                    <button class="btn btn-sm btn-outline-primary"
+                                            @onclick:preventDefault
+                                            @onclick="@EditNotes">
+                                        <i class="oi oi-pencil"></i> Edit notes
+                                    </button>
+                                </div>
+                            </div>
+                            @if (_part.HtmlNotes.HasContent())
+                            {
+                                @((MarkupString)_part.HtmlNotes)
+                            }
+                            else
+                            {
+                                <div class="alert alert-info" role="alert">
+                                    No notes
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -217,6 +240,24 @@ else
         
         _part.Quantity--;
         PartService.UpdatePart(_part);
+        StateHasChanged();
+    }
+
+    private async void EditNotes()
+    {
+        if (_part is null) return;
+        
+        var parameters = new ModalParameters { { "Part", _part } };
+        var options = new ModalOptions()
+        {
+            Size = ModalSize.Large
+        };
+        var modal = ModalService.Show<Pages.EditPartNotesModal>(
+            "Edit part notes", 
+            parameters,
+            options);
+        
+        await modal.Result;
         StateHasChanged();
     }
 }
