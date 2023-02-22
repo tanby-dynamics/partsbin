@@ -20,7 +20,7 @@ So hang in there :-)
 
 Follow development at <https://github.com/becdetat/partsbin>
 
-partsbin is a project by [Rebecca Scott](https://becdetat.com), allegedly a human who codes and plays with Arduinos, and pays for hundreds of dollars of components at ebay and aliexpress by working as an IT consultant at [SixPivot](https://sixpivot.com.au). [Contact me](http://becdetat.com/contact/) for commercial enquiries.
+partsbin is a project by [Rebecca Scott](https://becdetat.com), allegedly a human who codes and plays with Arduinos, and pays for hundreds of dollars of components at ebay and aliexpress by working as an IT consultant at [SixPivot](https://sixpivot.com.au).
 
 Thanks to my good friend ChatGPT for helping out with the above copy.
 
