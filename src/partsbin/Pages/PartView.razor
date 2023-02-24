@@ -46,77 +46,45 @@ else
             <div class="card-body">
                 <div class="card-text">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <p class="card-text">
-                                @if (_part.PartType.HasContent())
-                                {
-                                    <span>Part type: <strong>@_part.PartType</strong></span>
-                                    <br/>
-                                }
-                                @if (_part.Range.HasContent())
-                                {
-                                    <span>Range: <strong>@_part.Range</strong></span>
-                                    <br/>
-                                }
-                                @if (_part.PartName.HasContent())
-                                {
-                                    <span>Part name: <strong>@_part.PartName</strong></span>
-                                    <br/>
-                                }
-                                @if (_part.PackageType.HasContent())
-                                {
-                                    <span>Package type: <strong>@_part.PackageType</strong></span>
-                                    <br/>
-                                }
-                                @if (_part.Value.HasContent())
-                                {
-                                    <span>
-                                        Value:
-                                        <strong>
-                                            @(_part.Value + (_part.ValueUnit ?? string.Empty))
-                                        </strong>
-                                    </span>
-                                    <br/>
-                                }
-                                @if (_part.Manufacturer.HasContent())
-                                {
-                                    <span>Manufacturer: <strong>@_part.Manufacturer</strong></span>
-                                    <br/>
-                                }
-                                @if (_part.PartNumber.HasContent())
-                                {
-                                    <span>Part number: <strong>@_part.PartNumber</strong></span>
-                                    <br/>
-                                }
-                                @if (_part.Location.HasContent())
-                                {
-                                    <span>Location: <strong>@_part.Location</strong></span>
-                                    <br/>
-                                }
+                                <PartDetails Part="_part"/>
                             </p>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-8">
                             <div class="row">
                                 <div class="col">
                                     <h4>Notes</h4>
                                 </div>
                                 <div class="col text-end">
-                                    <button class="btn btn-sm btn-outline-primary"
-                                            @onclick:preventDefault
-                                            @onclick="@EditNotes">
-                                        <i class="oi oi-pencil"></i> Edit notes
-                                    </button>
+                                    @if (!_isEditingNotes)
+                                    {
+                                        <button class="btn btn-sm btn-outline-primary"
+                                                @onclick:preventDefault
+                                                @onclick="@EditNotes">
+                                            <i class="oi oi-pencil"></i> Edit notes
+                                        </button>
+                                    }
                                 </div>
                             </div>
-                            @if (_part.HtmlNotes.HasContent())
+                            @if (!_isEditingNotes)
                             {
-                                @((MarkupString)_part.HtmlNotes)
+                                @if (_part.HtmlNotes.HasContent())
+                                {
+                                    @((MarkupString)_part.HtmlNotes)
+                                }
+                                else
+                                {
+                                    <div class="alert alert-info" role="alert">
+                                        No notes
+                                    </div>
+                                }
                             }
                             else
                             {
-                                <div class="alert alert-info" role="alert">
-                                    No notes
-                                </div>
+                                <PartNotesEditor Part="_part"
+                                                 OnEditComplete="CompleteEditingNotes"
+                                                 OnEditCancelled="CancelEditingNotes"/>
                             }
                         </div>
                     </div>
@@ -180,8 +148,8 @@ else
 @code {
     [Parameter]
     public int Id { get; set; }
-
     private Part? _part;
+    private bool _isEditingNotes;
 
     protected override void OnInitialized()
     {
@@ -196,18 +164,14 @@ else
 
     private async void Edit()
     {
-        if (_part is null) return;
-
-        await PartUiService.EditPart(_part);
+        await PartUiService.EditPart(_part!);
         RefreshData();
         ToastService.ShowSuccess("The part details have been updated");
     }
 
     private async void EditQuantity()
     {
-        if (_part is null) return;
-
-        var previousQuantity = _part.Quantity;
+        var previousQuantity = _part!.Quantity;
 
         await PartUiService.EditQuantity(_part);
 
@@ -227,37 +191,36 @@ else
 
     private void IncreaseQuantity()
     {
-        if (_part == null) return;
-        
-        _part.Quantity++;
+        _part!.Quantity++;
         PartService.UpdatePart(_part);
+        ToastService.ShowSuccess("The part quantity has been increased");
         StateHasChanged();
     }
     
     private void DecreaseQuantity()
     {
-        if (_part == null) return;
-        
-        _part.Quantity--;
+        _part!.Quantity--;
         PartService.UpdatePart(_part);
+        ToastService.ShowSuccess("The part quantity has been decreased");
         StateHasChanged();
     }
 
-    private async void EditNotes()
+    private void EditNotes()
     {
-        if (_part is null) return;
-        
-        var parameters = new ModalParameters { { "Part", _part } };
-        var options = new ModalOptions()
-        {
-            Size = ModalSize.Large
-        };
-        var modal = ModalService.Show<Pages.EditPartNotesModal>(
-            "Edit part notes", 
-            parameters,
-            options);
-        
-        await modal.Result;
+        _isEditingNotes = true;
+        StateHasChanged();
+    }
+
+    private void CompleteEditingNotes()
+    {
+        _isEditingNotes = false;
+        ToastService.ShowSuccess("The notes have been updated");
+        StateHasChanged();
+    }
+
+    private void CancelEditingNotes()
+    {
+        _isEditingNotes = false;
         StateHasChanged();
     }
 }

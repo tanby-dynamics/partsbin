@@ -1,0 +1,115 @@
+@using partsbin.Helpers
+@using partsbin.Services
+@inject IPartService PartService;
+
+<div class="form-group">
+    <div>
+        <QuillEditor @ref="@_quillEditor"
+                     Placeholder="Enter notes here">
+            <ToolbarContent>
+                <span class="ql-formats">
+                    <select class="ql-font">
+                        <option selected=""></option>
+                        <option value="serif"></option>
+                        <option value="monospace"></option>
+                    </select>
+                    <select class="ql-size">
+                        <option value="small"></option>
+                        <option selected=""></option>
+                        <option value="large"></option>
+                        <option value="huge"></option>
+                    </select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                    <button class="ql-strike"></button>
+                </span>
+                <span class="ql-formats">
+                    <select class="ql-color"></select>
+                    <select class="ql-background"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="bullet"></button>
+                    <button class="ql-indent" value="-1"></button>
+                    <button class="ql-indent" value="+1"></button>
+                    <select class="ql-align">
+                        <option selected=""></option>
+                        <option value="center"></option>
+                        <option value="right"></option>
+                        <option value="justify"></option>
+                    </select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-link"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-image"></button>
+                </span>
+            </ToolbarContent>
+            <EditorContent></EditorContent>
+        </QuillEditor>
+    </div>
+    <div style="margin-top:10px">
+        <button @onclick="SaveNotes"
+                class="btn btn-sm btn-outline-primary">
+            Save
+        </button>
+        <button @onclick="CancelEditNotes"
+                class="btn btn-sm btn-outline-primary">
+            Cancel
+        </button>
+    </div>
+</div>
+
+@code {
+    /* This will probably have to be reused and refactored when
+     implementing documentation and suppliers */
+    [Parameter]
+    public required Part Part { get; set; }
+    [Parameter]
+    public EventCallback OnEditComplete { get; set; }
+    [Parameter]
+    public EventCallback OnEditCancelled { get; set; }
+
+    private QuillEditor? _quillEditor;
+    private bool _contentLoaded;
+    private string _originalNotes = string.Empty;
+    private string _originalHtmlNotes = string.Empty;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_quillEditor is null) return;
+        if (_contentLoaded) return;
+
+        if (Part.Notes.HasContent())
+        {
+            _originalNotes = Part.Notes;
+            _originalHtmlNotes = Part.HtmlNotes;
+            
+            await _quillEditor.LoadContent(Part.Notes);
+        }
+
+        _contentLoaded = true;
+    }
+
+    private async void SaveNotes()
+    {
+        Part!.Notes = await _quillEditor!.GetContent();
+        Part.HtmlNotes = await _quillEditor.GetHtml();
+        
+        PartService.UpdatePart(Part);
+        await OnEditComplete.InvokeAsync();
+    }
+
+    private async void CancelEditNotes()
+    {
+        Part.Notes = _originalNotes;
+        Part.HtmlNotes = _originalHtmlNotes;
+        await OnEditCancelled.InvokeAsync();
+    }
+}
+
+

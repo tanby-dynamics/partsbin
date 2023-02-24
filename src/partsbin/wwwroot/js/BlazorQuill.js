@@ -24,9 +24,15 @@
             return quillElement.__quill.root.innerHTML;
         },
         loadQuillContent: function (quillElement, quillContent) {
-            console.log('in loadQuillContent', quillContent);
             var content = JSON.parse(quillContent);
-            return quillElement.__quill.setContents(content, 'api');
+            
+            // WARNING: Hacky hacky hack hack
+            function setContents() {
+                if (quillElement.__quill === undefined) return setTimeout(setContents, 10);
+                
+                return quillElement.__quill.setContents(content, 'api'); 
+            }
+            setContents();
         },
         enableQuillEditor: function (quillElement, mode) {
             quillElement.__quill.enable(mode);

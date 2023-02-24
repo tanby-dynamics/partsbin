@@ -1,0 +1,52 @@
+@using partsbin.Helpers
+
+@if (Part.PartType.HasContent())
+{
+    <span>Part type: <strong>@Part.PartType</strong></span>
+    <br/>
+}
+@if (Part.Range.HasContent())
+{
+    <span>Range: <strong>@Part.Range</strong></span>
+    <br/>
+}
+@if (Part.PartName.HasContent())
+{
+    <span>Part name: <strong>@Part.PartName</strong></span>
+    <br/>
+}
+@if (Part.PackageType.HasContent())
+{
+    <span>Package type: <strong>@Part.PackageType</strong></span>
+    <br/>
+}
+@if (Part.Value.HasContent())
+{
+    <span>
+        Value:
+        <strong>
+            @(Part.Value + (Part.ValueUnit ?? string.Empty))
+        </strong>
+    </span>
+    <br/>
+}
+@if (Part.Manufacturer.HasContent())
+{
+    <span>Manufacturer: <strong>@Part.Manufacturer</strong></span>
+    <br/>
+}
+@if (Part.PartNumber.HasContent())
+{
+    <span>Part number: <strong>@Part.PartNumber</strong></span>
+    <br/>
+}
+@if (Part.Location.HasContent())
+{
+    <span>Location: <strong>@Part.Location</strong></span>
+    <br/>
+}
+
+@code {
+    [Parameter]
+    public required Part Part { get; set; }
+}
