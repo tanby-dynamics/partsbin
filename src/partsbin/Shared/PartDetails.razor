@@ -2,22 +2,40 @@
 
 @if (Part.PartType.HasContent())
 {
-    <span>Part type: <strong>@Part.PartType</strong></span>
+    <span>
+        Part type:
+        <a href="/all-parts/by-part-type/@Part.PartType">
+            <strong>@Part.PartType</strong>
+        </a>
+    </span>
     <br/>
 }
 @if (Part.Range.HasContent())
 {
-    <span>Range: <strong>@Part.Range</strong></span>
+    <span>
+        Range:
+        <a href="/all-parts/by-range/@Part.Range">
+            <strong>@Part.Range</strong>
+        </a>
+    </span>
     <br/>
 }
 @if (Part.PartName.HasContent())
 {
-    <span>Part name: <strong>@Part.PartName</strong></span>
+    <span>
+        Part name: 
+        <a href="/all-parts/by-part-name/@Part.PartName">
+            <strong>@Part.PartName</strong>
+        </a>
+    </span>
     <br/>
 }
 @if (Part.PackageType.HasContent())
 {
-    <span>Package type: <strong>@Part.PackageType</strong></span>
+    <span>
+        Package type:
+        <strong>@Part.PackageType</strong>
+    </span>
     <br/>
 }
 @if (Part.Value.HasContent())
@@ -32,7 +50,12 @@
 }
 @if (Part.Manufacturer.HasContent())
 {
-    <span>Manufacturer: <strong>@Part.Manufacturer</strong></span>
+    <span>
+        Manufacturer:
+        <a href="/all-parts/by-manufacturer/@Part.Manufacturer">
+            <strong>@Part.Manufacturer</strong>
+        </a>
+    </span>
     <br/>
 }
 @if (Part.PartNumber.HasContent())
@@ -42,7 +65,12 @@
 }
 @if (Part.Location.HasContent())
 {
-    <span>Location: <strong>@Part.Location</strong></span>
+    <span>
+        Location:
+        <a href="/all-parts/by-location/@Part.Location">
+            <strong>@Part.Location</strong>
+        </a>
+    </span>
     <br/>
 }
 
