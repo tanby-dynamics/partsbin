@@ -35,6 +35,7 @@ public class PartFieldService : IPartFieldService
 
         var result = db.GetCollection<Part>()
             .Query()
+            .Where(x => !x.IsDeleted)
             .Select(x => new
             {
                 x.PartType,
@@ -65,6 +66,7 @@ public class PartFieldService : IPartFieldService
         
         var result = db.GetCollection<Part>()
             .Query()
+            .Where(x => !x.IsDeleted)
             .Where(x => x.PartType != null && x.PartType != string.Empty)
             .Select(x => new { x.PartType, x.Quantity })
             .ToList()
@@ -92,6 +94,7 @@ public class PartFieldService : IPartFieldService
         
         var result = db.GetCollection<Part>()
             .Query()
+            .Where(x => !x.IsDeleted)
             .Where(x => x.Range != null && x.Range != string.Empty)
             .Select(x => new { x.Range, x.Quantity})
             .ToList()
@@ -118,6 +121,7 @@ public class PartFieldService : IPartFieldService
         
         var result = db.GetCollection<Part>()
             .Query()
+            .Where(x => !x.IsDeleted)
             .Where(x => x.PartName != null && x.PartName != string.Empty)
             .Select(x => new { x.PartName, x.Quantity})
             .ToList()
@@ -137,6 +141,7 @@ public class PartFieldService : IPartFieldService
         
         var result = db.GetCollection<Part>()
             .Query()
+            .Where(x => !x.IsDeleted)
             .Where(x => x.PackageType != null && x.PackageType != string.Empty)
             .Select(x => x.PackageType)
             .ToList()
@@ -152,6 +157,7 @@ public class PartFieldService : IPartFieldService
         
         var result = db.GetCollection<Part>()
             .Query()
+            .Where(x => !x.IsDeleted)
             .Where(x => x.ValueUnit != null && x.ValueUnit != string.Empty)
             .Select(x => x.ValueUnit)
             .ToList()
@@ -174,6 +180,7 @@ public class PartFieldService : IPartFieldService
 
         var result = db.GetCollection<Part>()
             .Query()
+            .Where(x => !x.IsDeleted)
             .Where(x => x.Manufacturer != null && x.Manufacturer != string.Empty)
             .Select(x => new { x.Manufacturer, x.Quantity })
             .ToList()
@@ -200,6 +207,7 @@ public class PartFieldService : IPartFieldService
         
         var result = db.GetCollection<Part>()
             .Query()
+            .Where(x => !x.IsDeleted)
             .Where(x => x.Location != null && x.Location != string.Empty)
             .Select(x => new { x.Location, x.Quantity})
             .ToList()
