@@ -6,7 +6,6 @@
 @inject IPartService PartService;
 @inject IPartUiService PartUiService;
 @inject IToastService ToastService;
-@inject IModalService ModalService;
 
 @if (_part is not null)
 {
@@ -24,23 +23,7 @@ else
 {
     <div class="card">
         <h5 class="card-header">
-            <span>
-                <button class="btn btn-light"
-                        @onclick="DecreaseQuantity"
-                        title="Decrease quantity">
-                    <i class="oi oi-minus"></i>
-                </button>
-                <button class="btn btn-sm @(_part.Quantity > 0 ? "btn-primary" : "btn-danger")"
-                        style="margin-bottom:0.5rem;"
-                        @onclick="EditQuantity">
-                    @_part.FormattedQuantity
-                </button>
-                <button class="btn btn-light"
-                        @onclick="IncreaseQuantity"
-                        title="Increase quantity">
-                    <i class="oi oi-plus"></i>
-                </button>
-            </span>
+            <PartQuantity Part="_part"/>
         </h5>
         <div class="card">
             <div class="card-body">
@@ -167,42 +150,6 @@ else
         await PartUiService.EditPart(_part!);
         RefreshData();
         ToastService.ShowSuccess("The part details have been updated");
-    }
-
-    private async void EditQuantity()
-    {
-        var previousQuantity = _part!.Quantity;
-
-        await PartUiService.EditQuantity(_part);
-
-        if (previousQuantity == _part.Quantity) return;
-
-        if (_part.Quantity < 0)
-        {
-            ToastService.ShowWarning("The part quantity has been set to less than zero. It has still been saved.");
-        }
-        else
-        {
-            ToastService.ShowSuccess("The part quantity has been updated");
-        }
-
-        StateHasChanged();
-    }
-
-    private void IncreaseQuantity()
-    {
-        _part!.Quantity++;
-        PartService.UpdatePart(_part);
-        ToastService.ShowSuccess("The part quantity has been increased");
-        StateHasChanged();
-    }
-    
-    private void DecreaseQuantity()
-    {
-        _part!.Quantity--;
-        PartService.UpdatePart(_part);
-        ToastService.ShowSuccess("The part quantity has been decreased");
-        StateHasChanged();
     }
 
     private void EditNotes()

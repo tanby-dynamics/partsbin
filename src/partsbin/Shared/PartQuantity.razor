@@ -1,0 +1,67 @@
+@using partsbin.UiServices
+@using partsbin.Services
+@inject IPartUiService PartUiService;
+@inject IToastService ToastService;
+@inject IPartService PartService;
+
+<span>
+    <button class="btn btn-light"
+           @onclick="DecreaseQuantity"
+           @onclick:preventDefault
+           title="Decrease quantity">
+        <i class="oi oi-minus"></i>
+    </button>
+    <button class="btn btn-sm @(Part.Quantity > 0 ? "btn-primary" : "btn-danger")"
+            style="min-width:4em;"
+            @onclick="EditQuantity"
+            @onclick:preventDefault
+            title="Edit quantity">
+        @Part.Quantity
+    </button>
+    <button class="btn btn-light"
+            @onclick="IncreaseQuantity"
+            @onclick:preventDefault
+            title="Increase quantity">
+        <i class="oi oi-plus"></i>
+    </button>
+</span>
+                                
+@code {
+    [Parameter]
+    public required Part Part { get; set; }
+    
+    private async void EditQuantity()
+    {
+        var previousQuantity = Part.Quantity;
+        
+        await PartUiService.EditQuantity(Part);
+
+        if (previousQuantity == Part.Quantity) return;
+        
+        if (Part.Quantity < 0)
+        {
+            ToastService.ShowWarning("The part quantity has been set to less than zero. It has still been saved.");
+        }
+        else
+        {
+            ToastService.ShowSuccess("The part quantity has been updated");
+        }
+        
+        StateHasChanged();
+    }
+
+    private void IncreaseQuantity()
+    {
+        Part.Quantity++;
+        PartService.UpdatePart(Part);
+        StateHasChanged();
+    }
+    
+    private void DecreaseQuantity()
+    {
+        Part.Quantity--;
+        PartService.UpdatePart(Part);
+        StateHasChanged();
+    }
+
+}
