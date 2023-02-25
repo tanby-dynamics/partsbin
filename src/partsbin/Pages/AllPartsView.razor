@@ -80,100 +80,101 @@
                     {
                         <tr>
                             <td>
-                                <a href="/part/@part.Id">
-                                    @if (part.PartType.HasContent())
-                                    {
+
+                                @if (part.PartType.HasContent())
+                                {
+                                    <a href="/part/@part.Id">
                                         @part.PartType
-                                    }
-                                    else
-                                    {
-                                        <span>---</span>
-                                    }
-                                </a>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>---</span>
+                                }
                             </td>
                             <td>
-                                <a href="/part/@part.Id">
-                                    @if (part.Range.HasContent())
-                                    {
+                                @if (part.Range.HasContent())
+                                {
+                                    <a href="/part/@part.Id">
                                         @part.Range
-                                    }
-                                    else
-                                    {
-                                        <span>---</span>
-                                    }
-                                </a>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>---</span>
+                                }
                             </td>
                             <td>
-                                <a href="/part/@part.Id">
-                                    @if (part.Range.HasContent())
-                                    {
+                                @if (part.Range.HasContent())
+                                {
+                                    <a href="/part/@part.Id">
                                         @part.Range
-                                    }
-                                    else
-                                    {
-                                        <span>---</span>
-                                    }
-                                </a>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>---</span>
+                                }
                             </td>
                             <td>
-                                <a href="/part/@part.Id">
-                                    @if (part.PackageType.HasContent())
-                                    {
+                                @if (part.PackageType.HasContent())
+                                {
+                                    <a href="/part/@part.Id">
                                         @part.PackageType
-                                    }
-                                    else
-                                    {
-                                        <span>---</span>
-                                    }
-                                </a>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>---</span>
+                                }
                             </td>
                             <td>
-                                <a href="/part/@part.Id">
-                                    @if (part.FormattedValue.HasContent())
-                                    {
+                                @if (part.FormattedValue.HasContent())
+                                {
+                                    <a href="/part/@part.Id">
                                         @part.FormattedValue
-                                    }
-                                    else
-                                    {
-                                        <span>---</span>
-                                    }
-                                </a>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>---</span>
+                                }
                             </td>
                             <td>
-                                <a href="/part/@part.Id">
-                                    @if (part.Manufacturer.HasContent())
-                                    {
+                                @if (part.Manufacturer.HasContent())
+                                {
+                                    <a href="/part/@part.Id">
                                         @part.Manufacturer
-                                    }
-                                    else
-                                    {
-                                        <span>---</span>
-                                    }
-                                </a>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>---</span>
+                                }
                             </td>
                             <td>
-                                <a href="/part/@part.Id">
-                                    @if (part.Location.HasContent())
-                                    {
+                                @if (part.PartNumber.HasContent())
+                                {
+                                    <a href="/part/@part.Id">
+                                        @part.PartNumber
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>---</span>
+                                }
+                            </td>
+                            <td>
+                                @if (part.Location.HasContent())
+                                {
+                                    <a href="/part/@part.Id">
                                         @part.Location
-                                    }
-                                    else
-                                    {
-                                        <span>---</span>
-                                    }
-                                </a>
-                            </td>
-                            <td>
-                                <a href="/part/@part.Id">
-                                    @if (part.PackageType.HasContent())
-                                    {
-                                        @part.PackageType
-                                    }
-                                    else
-                                    {
-                                        <span>---</span>
-                                    }
-                                </a>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>---</span>
+                                }
                             </td>
                             <td style="@(part.Quantity <= 0 ? "color:#f55" : "")">
                                 <PartQuantity Part="@part"
@@ -182,28 +183,20 @@
                             <td>
                                 <div class="btn-group" role="group">
                                     <button type="button"
-                                        @onclick="@(() => NavigationManager.NavigateTo($"/part/{part.Id}"))"
-                                        @onclick:preventDefault
-                                        class="btn btn-outline-primary"
-                                        title="Open part details">
+                                            @onclick="@(() => NavigationManager.NavigateTo($"/part/{part.Id}"))"
+                                            @onclick:preventDefault
+                                            class="btn btn-outline-primary"
+                                            title="Open part details">
                                         <i class="oi oi-eye"></i>
                                     </button>
                                     <div class="btn-group" role="group">
                                         <button class="btn btn-outline-primary dropdown-toggle"
-                                             type="button"
-                                             data-bs-toggle="dropdown"
-                                             aria-expanded="false">
+                                                type="button"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false">
                                             Actions
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <li>
-                                                <button class="dropdown-item"
-                                                        type="button"
-                                                        @onclick:preventDefault
-                                                        @onclick="@(() => NavigationManager.NavigateTo($"/part/{part.Id}"))">
-                                                    Open part details
-                                                </button>
-                                            </li>
                                             <li>
                                                 <button class="dropdown-item"
                                                         type="button"
@@ -216,11 +209,21 @@
                                                 <button class="dropdown-item"
                                                         type="button"
                                                         @onclick:preventDefault
+                                                        @onclick="@(() => NavigationManager.NavigateTo($"/part/{part.Id}"))">
+                                                    Open part details
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button class="dropdown-item"
+                                                        type="button"
+                                                        @onclick:preventDefault
                                                         @onclick="@(() => DuplicatePart(part))">
                                                     Duplicate part
                                                 </button>
                                             </li>
-                                            <li><hr class="dropdown-divider"/></li>
+                                            <li>
+                                                <hr class="dropdown-divider"/>
+                                            </li>
                                             <li>
                                                 <button class="dropdown-item"
                                                         type="button"
@@ -294,4 +297,5 @@
         NavigationManager.NavigateTo($"/part/{duplicatePart.Id}");
         ToastService.ShowSuccess("The part has been duplicated, you are working on the duplicate part now");
     }
+
 }
