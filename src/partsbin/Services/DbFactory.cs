@@ -1,4 +1,5 @@
 using LiteDB;
+using partsbin.Models;
 
 namespace partsbin.Services;
 
@@ -19,7 +20,21 @@ public class DbFactory : IDbFactory
         ? "/data/partsbin.db"
         : "./partsbin-dev.db";
 
-    public LiteDatabase GetDatabase() => new(DbPath);
+    public LiteDatabase GetDatabase()
+    {
+        var db = new LiteDatabase(DbPath);
+
+        // set up some indices
+        var partCollection = db.GetCollection<Part>();
+        partCollection.EnsureIndex(x => x.Location);    
+        partCollection.EnsureIndex(x => x.Manufacturer);    
+        partCollection.EnsureIndex(x => x.PartName);    
+        partCollection.EnsureIndex(x => x.PartType);    
+        partCollection.EnsureIndex(x => x.Range);    
+        partCollection.EnsureIndex(x => x.PartNumber);    
+
+        return db;
+    }
 }
 
 

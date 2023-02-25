@@ -12,6 +12,7 @@ builder.Services.AddBlazoredModal();
 builder.Services.AddBlazoredToast();
 builder.Services.AddSingleton<IDbFactory>(new DbFactory(builder.Environment.IsProduction()));
 builder.Services.AddSingleton<IPartService, PartService>();
+builder.Services.AddSingleton<IPartSearchService, PartSearchService>();
 builder.Services.AddSingleton<IPartFieldService, PartFieldService>();
 builder.Services.AddScoped<IPartUiService, PartUiService>();
 

@@ -1,0 +1,49 @@
+@page "/search/{searchPhrase}"
+@using partsbin.Services
+@inject IPartSearchService PartSearchService;
+
+@if (_parts is null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!_parts.Any())
+{
+    <div class="alert alert-info" role="alert">
+        No results matching <em>@SearchPhrase</em>
+    </div>
+}
+else
+{
+    <h3>
+        Showing 
+        <strong>@_parts.Count</strong> 
+        results for 
+        <em>@SearchPhrase</em>
+    </h3>
+    <PartsList Parts="_parts"/>
+}                                                                             
+
+@code {
+    [Parameter]
+    public required string SearchPhrase { get; set; }
+
+    private List<Part>? _parts;
+
+    protected override void OnInitialized()
+    {
+        RefreshData();
+    }
+
+    private void RefreshData()
+    {
+        _parts = PartSearchService.Search(SearchPhrase)
+            .OrderBy(x => x.PartType)
+            .ThenBy(x => x.Range)
+            .ThenBy(x => x.PartName)
+            .ThenBy(x => x.PartNumber)
+            .ThenBy(x => x.FormattedValue)
+            .ToList();
+
+        StateHasChanged();
+    }
+}
