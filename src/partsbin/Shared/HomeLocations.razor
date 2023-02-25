@@ -4,7 +4,7 @@
 @inject IPartUiService PartUiService;
 @inject NavigationManager NavigationManager;
 
-<h3>Part types</h3>
+<h3>Locations</h3>
 
 @if (_data is null)
 {
@@ -13,7 +13,7 @@
 else if (!_data.Any())
 {
     <div class="alert alert-info" role="alert">
-        No parts with a part type specified have been added
+        No parts with a location specified have been added
     </div>
 }
 else
@@ -21,7 +21,7 @@ else
     <table class="table border">
         <thead>
         <tr>
-            <th>Type</th>
+            <th>Location</th>
             <th>Quantity</th>
             <th></th>
         </tr>
@@ -31,8 +31,8 @@ else
         {
             <tr>
                 <td>
-                    <a href="/all-parts/by-part-type/@item.partType">
-                        @item.partType
+                    <a href="/all-parts/by-location/@item.location">
+                        @item.location
                     </a>
                 </td>
                 <td>@item.quantity</td>
@@ -40,8 +40,8 @@ else
                     <button class="btn btn-sm btn-outline-primary"
                             type="button"
                             onclick:preventDefault
-                            onclick="@(() => AddPart(item.partType))"
-                            title="@($"Add a part of type {item.partType}")">
+                            onclick="@(() => AddPart(item.location))"
+                            title="@($"Add a part stored in the {item.location} location")">
                         <i class="oi oi-plus"></i>
                     </button>
                 </td>
@@ -60,21 +60,21 @@ else
     private void RefreshData()
     {
         _data = PartFieldService
-            .GetUniquePartTypesAndCounts()
-            .OrderBy(x => x.partType)
+            .GetUniqueLocationsAndCounts()
+            .OrderBy(x => x.location)
             .ToList();
         StateHasChanged();
     }
 
-    private List<(string partType, int quantity)>? _data;
+    private List<(string location, int quantity)>? _data;
 
-    private async void AddPart(string partType)
+    private async void AddPart(string location)
     {
-        var part = await PartUiService.AddPart(partType: partType);
+        var part = await PartUiService.AddPart(location: location);
 
         if (part is not null)
         {
-            NavigationManager.NavigateTo($"/part/{part.Id}");
+            NavigationManager.NavigateTo("/");
         }
     }
 }

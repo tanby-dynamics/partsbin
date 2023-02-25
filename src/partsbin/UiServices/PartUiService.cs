@@ -4,13 +4,15 @@ using Blazored.Toast.Services;
 using partsbin.Models;
 using partsbin.Pages;
 using partsbin.Services;
+using partsbin.Shared;
 
 namespace partsbin.UiServices;
 
 public interface IPartUiService
 {
     Task<Part?> AddPart(
-        string? partType = null);
+        string? partType = null,
+        string? location = null);
     Task EditPart(Part part);
     Task EditQuantity(Part part);
     Task SelectPartType(Part part);
@@ -34,13 +36,19 @@ public class PartUiService : IPartUiService
     }
     
     public async Task<Part?> AddPart(
-        string? partType = null)
+        string? partType = null,
+        string? location = null)
     {
         var parameters = new ModalParameters();
         
         if (partType is not null)
         {
             parameters.Add("PartType", partType);
+        }
+
+        if (location is not null)
+        {
+            parameters.Add("Location", location);
         }
         
         var modal = _modalService.Show<AddEditPartModal>("Add part", parameters);

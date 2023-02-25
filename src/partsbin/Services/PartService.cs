@@ -60,13 +60,14 @@ public class PartService : IPartService
             .FindAll()
             .Where(x => !x.IsDeleted);
 
-        // Apply the 'byType/qualifier' filter
-        var filteredParts = byType switch
+        // Apply the optional 'byType/qualifier' filter
+        var filteredParts = (byType ?? string.Empty) switch
         {
             "by-part-type" => parts.Where(x => x.PartType != null && x.PartType.ToLower() == qualifier),
             "by-range" => parts.Where(x => x.Range != null && x.Range.ToLower() == qualifier),
             "by-part-name" => parts.Where(x => x.PartName != null && x.PartName.ToLower() == qualifier),
             "by-manufacturer" => parts.Where(x => x.Manufacturer != null && x.Manufacturer.ToLower() == qualifier),
+            "by-location" => parts.Where(x => x.Location != null && x.Location.ToLower() == qualifier),
             _ => parts
         };
         
