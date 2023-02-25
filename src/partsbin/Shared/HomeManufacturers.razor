@@ -4,7 +4,7 @@
 @inject IPartUiService PartUiService;
 @inject NavigationManager NavigationManager;
 
-<h4>Locations</h4>
+<h4>Manufacturers</h4>
 
 @if (_data is null)
 {
@@ -13,7 +13,7 @@
 else if (!_data.Any())
 {
     <div class="alert alert-info" role="alert">
-        No parts with a location specified have been added
+        No parts with a manufacturer specified have been added
     </div>
 }
 else
@@ -21,7 +21,7 @@ else
     <table class="table border">
         <thead>
         <tr>
-            <th>Location</th>
+            <th>Manufacturer</th>
             <th>Quantity</th>
             <th></th>
         </tr>
@@ -31,8 +31,8 @@ else
         {
             <tr>
                 <td>
-                    <a href="/all-parts/by-location/@item.location">
-                        @item.location
+                    <a href="/all-parts/by-manufacturer/@item.manufacturer">
+                        @item.manufacturer
                     </a>
                 </td>
                 <td>@item.quantity</td>
@@ -40,8 +40,8 @@ else
                     <button class="btn btn-sm btn-outline-primary"
                             type="button"
                             onclick:preventDefault
-                            onclick="@(() => AddPart(item.location))"
-                            title="@($"Add a part stored in the {item.location} location")">
+                            onclick="@(() => AddPart(item.manufacturer))"
+                            title="@($"Add a part manufactured by {item.manufacturer}")">
                         <i class="oi oi-plus"></i>
                     </button>
                 </td>
@@ -60,17 +60,17 @@ else
     private void RefreshData()
     {
         _data = PartFieldService
-            .GetUniqueLocationsAndCounts()
-            .OrderBy(x => x.location)
+            .GetUniqueManufacturersAndCounts()
+            .OrderBy(x => x.manufacturer)
             .ToList();
         StateHasChanged();
     }
 
-    private List<(string location, int quantity)>? _data;
+    private List<(string manufacturer, int quantity)>? _data;
 
-    private async void AddPart(string location)
+    private async void AddPart(string manufacturer)
     {
-        var part = await PartUiService.AddPart(location: location);
+        var part = await PartUiService.AddPart(manufacturer: manufacturer);
 
         if (part is not null)
         {

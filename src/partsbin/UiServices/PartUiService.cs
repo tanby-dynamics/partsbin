@@ -12,7 +12,8 @@ public interface IPartUiService
 {
     Task<Part?> AddPart(
         string? partType = null,
-        string? location = null);
+        string? location = null,
+        string? manufacturer = null);
     Task EditPart(Part part);
     Task EditQuantity(Part part);
     Task SelectPartType(Part part);
@@ -37,7 +38,8 @@ public class PartUiService : IPartUiService
     
     public async Task<Part?> AddPart(
         string? partType = null,
-        string? location = null)
+        string? location = null,
+        string? manufacturer = null)
     {
         var parameters = new ModalParameters();
         
@@ -49,6 +51,11 @@ public class PartUiService : IPartUiService
         if (location is not null)
         {
             parameters.Add("Location", location);
+        }
+
+        if (manufacturer is not null)
+        {
+            parameters.Add("Manufacturer", manufacturer);
         }
         
         var modal = _modalService.Show<AddEditPartModal>("Add part", parameters);

@@ -180,6 +180,8 @@
     public string? PartType { get; set; }
     [Parameter]
     public string? Location { get; set; }
+    [Parameter]
+    public string? Manufacturer { get; set; }
 
     private bool _isNew;
 
@@ -201,7 +203,8 @@
         Part ??= new Part
         {
             PartType = PartType,
-            Location = Location
+            Location = Location,
+            Manufacturer = Manufacturer
         };
 
         StateHasChanged();
