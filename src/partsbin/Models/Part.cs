@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection.Metadata;
 using System.Text;
 using partsbin.Helpers;
 
@@ -116,5 +117,30 @@ namespace partsbin.Models
         public string FormattedValue => Value is null
             ? "---" 
             : $"{Value.FormatCompact(0)}{ValueUnit}";
+
+        /// <summary>
+        /// Clones every property of this part, except for the ID
+        /// </summary>
+        /// <returns>A deep clone of this part</returns>
+        public Part DeepClone()
+        {
+            return new Part
+            {
+                PartType = PartType,
+                Range = Range,
+                Location = Location,
+                Manufacturer = Manufacturer,
+                HtmlNotes = HtmlNotes,
+                Documents = Documents.ToList(),
+                Suppliers = Suppliers.ToList(),
+                Notes = Notes,
+                PackageType = PackageType,
+                Value = Value,
+                ValueUnit = ValueUnit,
+                PartName = PartName,
+                PartNumber = PartNumber,
+                Quantity = Quantity
+            };
+        }
     }
 }

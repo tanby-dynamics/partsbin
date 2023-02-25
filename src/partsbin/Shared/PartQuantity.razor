@@ -1,5 +1,6 @@
 @using partsbin.UiServices
 @using partsbin.Services
+@using System.Text
 @inject IPartUiService PartUiService;
 @inject IToastService ToastService;
 @inject IPartService PartService;
@@ -11,7 +12,7 @@
            title="Decrease quantity">
         <i class="oi oi-minus"></i>
     </button>
-    <button class="btn btn-sm @(Part.Quantity > 0 ? "btn-primary" : "btn-danger")"
+    <button class="btn btn-sm @GetButtonClass()"
             style="min-width:4em;"
             @onclick="EditQuantity"
             @onclick:preventDefault
@@ -29,7 +30,26 @@
 @code {
     [Parameter]
     public required Part Part { get; set; }
+
+    [Parameter]
+    public bool Outline { get; set; } = false;
     
+    private string GetButtonClass()
+    {
+        var sb = new StringBuilder();
+        
+        sb.Append("btn");
+        
+        if (Outline)
+        {
+            sb.Append("-outline");
+        }
+
+        sb.Append(Part.Quantity > 0 ? "-primary" : "-danger");
+        
+        return sb.ToString();
+    }
+
     private async void EditQuantity()
     {
         var previousQuantity = Part.Quantity;
@@ -63,5 +83,4 @@
         PartService.UpdatePart(Part);
         StateHasChanged();
     }
-
 }

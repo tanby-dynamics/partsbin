@@ -40,7 +40,6 @@
                 clear filter
             </button>
         </span>
-        
     }
 </h3>
 
@@ -48,7 +47,9 @@
     <div class="container-fluid">
         @if (_parts is null)
         {
-            <p><em>Loading...</em></p>
+            <p>
+                <em>Loading...</em>
+            </p>
         }
         else if (!_parts.Any())
         {
@@ -175,29 +176,62 @@
                                 </a>
                             </td>
                             <td style="@(part.Quantity <= 0 ? "color:#f55" : "")">
-                                <PartQuantity Part="@part"/>
+                                <PartQuantity Part="@part"
+                                              Outline="true"/>
                             </td>
                             <td>
-                                <button
-                                    @onclick="@(() => NavigationManager.NavigateTo($"/part/{part.Id}"))"
-                                    @onclick:preventDefault
-                                    class="btn btn-outline-info"
-                                    title="Go to part details"
-                                >
-                                    <i class="oi oi-list"></i>
-                                </button>
-                                <button class="btn btn-outline-info"
-                                        @onclick="@(() => EditPart(part))"
+                                <div class="btn-group" role="group">
+                                    <button type="button"
+                                        @onclick="@(() => NavigationManager.NavigateTo($"/part/{part.Id}"))"
                                         @onclick:preventDefault
-                                        title="Edit part">
-                                    <i class="oi oi-pencil"></i>
-                                </button>
-                                <button class="btn btn-outline-danger"
-                                        @onclick="@(() => DeletePart(part))"
-                                        @onclick:preventDefault
-                                        title="Delete part">
-                                    <i class="oi oi-trash"></i>
-                                </button>
+                                        class="btn btn-outline-primary"
+                                        title="Open part details">
+                                        <i class="oi oi-eye"></i>
+                                    </button>
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-outline-primary dropdown-toggle"
+                                             type="button"
+                                             data-bs-toggle="dropdown"
+                                             aria-expanded="false">
+                                            Actions
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <button class="dropdown-item"
+                                                        type="button"
+                                                        @onclick:preventDefault
+                                                        @onclick="@(() => NavigationManager.NavigateTo($"/part/{part.Id}"))">
+                                                    Open part details
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button class="dropdown-item"
+                                                        type="button"
+                                                        @onclick:preventDefault
+                                                        @onclick="@(() => EditPart(part))">
+                                                    Edit in place
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button class="dropdown-item"
+                                                        type="button"
+                                                        @onclick:preventDefault
+                                                        @onclick="@(() => DuplicatePart(part))">
+                                                    Duplicate part
+                                                </button>
+                                            </li>
+                                            <li><hr class="dropdown-divider"/></li>
+                                            <li>
+                                                <button class="dropdown-item"
+                                                        type="button"
+                                                        @onclick:preventDefault
+                                                        @onclick="@(() => DeletePart(part))">
+                                                    Delete part
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     }
@@ -213,9 +247,10 @@
 
     [Parameter]
     public string? ByType { get; set; }
+
     [Parameter]
     public string? Qualifier { get; set; }
-    
+
     protected override void OnParametersSet()
     {
         RefreshData();
@@ -224,7 +259,7 @@
     private void RefreshData()
     {
         var qualifier = Qualifier?.ToLower();
-        
+
         _parts = PartService.GetAllParts(ByType, qualifier)
             .OrderBy(x => x.PartType)
             .ThenBy(x => x.Range)
@@ -232,7 +267,7 @@
             .ThenBy(x => x.PartNumber)
             .ThenBy(x => x.FormattedValue)
             .ToList();
-        
+
         StateHasChanged();
     }
 
@@ -241,15 +276,22 @@
         await PartUiService.EditPart(part);
         StateHasChanged();
     }
-    
+
     private void DeletePart(Part part)
     {
         part.IsDeleted = true;
 
         PartService.UpdatePart(part);
         _parts!.Remove(part);
-        
+
         ToastService.ShowSuccess("The part has been deleted. You can recover it from the rubbish bin.");
         StateHasChanged();
+    }
+
+    private void DuplicatePart(Part part)
+    {
+        var duplicatePart = PartService.Duplicate(part!);
+        NavigationManager.NavigateTo($"/part/{duplicatePart.Id}");
+        ToastService.ShowSuccess("The part has been duplicated, you are working on the duplicate part now");
     }
 }

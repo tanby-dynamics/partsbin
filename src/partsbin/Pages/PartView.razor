@@ -5,6 +5,7 @@
 @inject IPartService PartService;
 @inject IPartUiService PartUiService;
 @inject IToastService ToastService;
+@inject NavigationManager NavigationManager;
 
 @if (_part is not null)
 {
@@ -22,7 +23,31 @@ else
 {
     <div class="card">
         <h5 class="card-header">
-            <PartQuantity Part="_part"/>
+            <div class="row">
+                <div class="col-6">
+                    <PartQuantity Part="_part"/>
+                </div>
+                <div class="col-6 text-end">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                            Actions
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <button class="dropdown-item"
+                                        type="button"
+                                        @onclick:preventDefault
+                                        @onclick="@DuplicatePart">
+                                    Duplicate part
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </h5>
         <div class="card">
             <div class="card-body">
@@ -168,5 +193,12 @@ else
     {
         _isEditingNotes = false;
         StateHasChanged();
+    }
+
+    private void DuplicatePart()
+    {
+        var duplicatePart = PartService.Duplicate(_part!);
+        NavigationManager.NavigateTo($"/part/{duplicatePart.Id}");
+        ToastService.ShowSuccess("The part has been duplicated, you are working on the duplicate part now");
     }
 }

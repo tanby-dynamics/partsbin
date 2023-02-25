@@ -1,3 +1,4 @@
+using System.Xml.Linq;
 using LiteDB;
 using partsbin.Models;
 
@@ -11,6 +12,7 @@ public interface IPartService
     IEnumerable<Part> GetAllParts(string? byType = null, string? qualifier = null);
     IEnumerable<Part> GetDeletedParts();
     void EmptyRubbishBin();
+    Part Duplicate(Part source);
 }
 
 public class PartService : IPartService
@@ -87,4 +89,6 @@ public class PartService : IPartService
         db.GetCollection<Part>()
             .DeleteMany(x => x.IsDeleted);
     }
+
+    public Part Duplicate(Part source) => AddPart(source.DeepClone());
 }
