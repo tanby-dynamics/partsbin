@@ -44,6 +44,15 @@ else
                                     Duplicate part
                                 </button>
                             </li>
+                            <li><hr class="dropdown-divider"/></li>
+                            <li>
+                                <button class="dropdown-item"
+                                        type="button"
+                                        @onclick:preventDefault
+                                        @onclick="@DeletePart">
+                                    Delete part
+                                </button>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -200,5 +209,13 @@ else
         var duplicatePart = PartService.Duplicate(_part!);
         NavigationManager.NavigateTo($"/part/{duplicatePart.Id}");
         ToastService.ShowSuccess("The part has been duplicated, you are working on the duplicate part now");
+    }
+
+    private void DeletePart()
+    {
+        _part!.IsDeleted = true;
+        PartService.UpdatePart(_part);
+        ToastService.ShowSuccess("The part has been deleted. You can recover it from the rubbish bin.");
+        NavigationManager.NavigateTo("/");
     }
 }

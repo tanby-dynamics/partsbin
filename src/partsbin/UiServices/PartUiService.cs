@@ -9,7 +9,8 @@ namespace partsbin.UiServices;
 
 public interface IPartUiService
 {
-    Task<Part?> AddPart();
+    Task<Part?> AddPart(
+        string? partType = null);
     Task EditPart(Part part);
     Task EditQuantity(Part part);
     Task SelectPartType(Part part);
@@ -32,9 +33,16 @@ public class PartUiService : IPartUiService
         _partFieldService = partFieldService;
     }
     
-    public async Task<Part?> AddPart()
+    public async Task<Part?> AddPart(
+        string? partType = null)
     {
         var parameters = new ModalParameters();
+        
+        if (partType is not null)
+        {
+            parameters.Add("PartType", partType);
+        }
+        
         var modal = _modalService.Show<AddEditPartModal>("Add part", parameters);
         var result = await modal.Result;
 

@@ -1,0 +1,79 @@
+@using partsbin.Services
+@using partsbin.UiServices
+@inject IPartFieldService PartFieldService;
+@inject IPartUiService PartUiService;
+@inject NavigationManager NavigationManager;
+
+<h3>Part types</h3>
+
+@if (_data is null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!_data.Any())
+{
+    <div class="alert alert-info" role="alert">
+        No parts with a part type specified have been added
+    </div>
+}
+else
+{
+    <table class="table border">
+        <thead>
+        <tr>
+            <th>Type</th>
+            <th>Quantity</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in _data)
+        {
+            <tr>
+                <td>
+                    <a href="/all-parts/by-part-type/@item.partType">
+                        @item.partType
+                    </a>
+                </td>
+                <td>@item.quantity</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary"
+                            type="button"
+                            onclick:preventDefault
+                            onclick="@(() => AddEditPartModal(item.partType))">
+                        <i class="oi oi-plus"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        RefreshData();
+    }
+
+    private void RefreshData()
+    {
+        _data = PartFieldService
+            .GetUniquePartTypesAndCounts()
+            .OrderBy(x => x.partType)
+            .ToList();
+        StateHasChanged();
+    }
+
+    private List<(string partType, int quantity)>? _data;
+
+    private async void AddEditPartModal(string partType)
+    {
+        var part = await PartUiService.AddPart(partType: partType);
+
+        if (part is not null)
+        {
+            NavigationManager.NavigateTo($"/part/{part.Id}");
+        }
+    }
+}

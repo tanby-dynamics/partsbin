@@ -71,7 +71,7 @@
             <InputNumber id="value"
                          class="form-control"
                          placeholder="Value (eg. '0.1')"
-                         @bind-Value="Part!.Value" />
+                         @bind-Value="Part!.Value"/>
         </div>
         <div style="margin-top: 10px;">
             <label for="valueUnit">Value unit</label>
@@ -80,11 +80,11 @@
                            class="form-control"
                            placeholder="Value unit (eg. 'uF')"
                            @bind-Value="Part!.ValueUnit"/>
-                 <button class="btn btn-outline-secondary"
-                         @onclick:preventDefault
-                         @onclick="@SelectValueUnit">
-                     <i class="oi oi-magnifying-glass"></i>
-                 </button>
+                <button class="btn btn-outline-secondary"
+                        @onclick:preventDefault
+                        @onclick="@SelectValueUnit">
+                    <i class="oi oi-magnifying-glass"></i>
+                </button>
                 <button class="btn btn-outline-secondary dropdown-toggle"
                         type="button"
                         data-bs-toggle="dropdown"
@@ -98,7 +98,9 @@
                         {
                             if (valueUnit == GroupEndToken)
                             {
-                                <li><hr class="dropdown-divider"/></li>
+                                <li>
+                                    <hr class="dropdown-divider"/>
+                                </li>
                             }
                             else
                             {
@@ -113,7 +115,7 @@
                         }
                     }
                 </ul>
-             </div>
+            </div>
         </div>
         <div style="margin-top: 10px;">
             <label for="manufacturer">Manufacturer</label>
@@ -134,7 +136,7 @@
             <InputText id="partNumber"
                        class="form-control"
                        placeholder="Part number (eg. 'XC3802')"
-                       @bind-Value="Part.PartNumber" />
+                       @bind-Value="Part.PartNumber"/>
         </div>
         @if (_isNew)
         {
@@ -143,7 +145,7 @@
                 <InputNumber id="quantity"
                              class="form-control"
                              placeholder="Quantity"
-                             @bind-Value="Part!.Quantity" />
+                             @bind-Value="Part!.Quantity"/>
             </div>
         }
         <div>
@@ -169,10 +171,13 @@
 </EditForm>
 
 @code {
-    private const string GroupEndToken = "<<<HR>>>";
-    
+        private const string GroupEndToken = "<<<HR>>>";
+
     [Parameter]
     public Part? Part { get; set; }
+
+    [Parameter]
+    public string? PartType { get; set; }
 
     private bool _isNew;
 
@@ -187,11 +192,14 @@
         new[] { "Vf", GroupEndToken },
         new[] { "Hz", "kHz", "MHz", "GHz" },
     };
-    
+
     protected override void OnInitialized()
     {
         _isNew = Part is null;
-        Part ??= new Part();
+        Part ??= new Part
+        {
+            PartType = PartType
+        };
 
         StateHasChanged();
     }
@@ -209,7 +217,7 @@
             {
                 PartService.UpdatePart(Part!);
             }
-            
+
             await Modal!.CloseAsync(ModalResult.Ok(Part));
         }
         catch (InvalidOperationException ex)
@@ -287,5 +295,5 @@
         if (previous == Part.Location) return;
         StateHasChanged();
     }
-}
 
+}
