@@ -353,3 +353,5 @@ MigrationBackup/
 published/
 *.db
 src/partsbin/.DS_Store
+src/partsbin/partsbin-lucene-index
+src/.DS_Store

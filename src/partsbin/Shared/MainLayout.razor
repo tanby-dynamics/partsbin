@@ -23,8 +23,7 @@
                             type="submit"
                             title="Perform search"
                             @onclick:preventDefault
-                            @onclick="@PerformSearch"
-                            @disabled="@(() => _searchPhrase != string.Empty)">
+                            @onclick="@PerformSearch">
                         <i class="oi oi-magnifying-glass"></i> Search
                     </button>
                 </div>

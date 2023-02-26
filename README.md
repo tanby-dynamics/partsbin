@@ -36,6 +36,7 @@ When the image is pulled down and the container is running, you can access your 
 - Distributed as a Docker image
 - No authentication or access management
 - No tests - where we're going we don't need tests
+- No external dependencies, everything file based and in process - database is a single file document db, search is via Lucene.NET
 
 
 ## Todos
@@ -49,8 +50,6 @@ When the image is pulled down and the container is running, you can access your 
 
 
 ### Stretch goals and possible features
-- Search engine, possibly via [Sonic](https://github.com/valeriansaliou/sonic) (using
-[NSonic](https://github.com/spikensbror-dotnet/nsonic))
 - Minimal ChatGPT integration - generate a natural language question like "Please show me how to use a SN74HC595N shift register with an Arduino Nano to light up some LEDs", button to copy to clipboard and open ChatGPT
 - What about building up a BOM? that would be interesting
 - landing page could be a dashboard - common items that are running low?
@@ -60,5 +59,6 @@ When the image is pulled down and the container is running, you can access your 
 - Blazor (including Bootstrap)
 - [Blazored](https://github.com/Blazored) -  modals and toasts
 - [LiteDb](https://www.litedb.org/)
+- [Lucene.NET](https://lucenenet.apache.org/)
 
 

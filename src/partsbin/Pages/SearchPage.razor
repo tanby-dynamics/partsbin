@@ -1,6 +1,7 @@
 @page "/search/{searchPhrase}"
 @using partsbin.Services
 @inject IPartSearchService PartSearchService;
+@inject IPartService PartService;
 
 @if (_parts is null)
 {
@@ -34,9 +35,16 @@ else
         RefreshData();
     }
 
+    protected override void OnParametersSet()
+    {
+        RefreshData();
+    }
+
     private void RefreshData()
     {
-        _parts = PartSearchService.Search(SearchPhrase)
+        var partIds = PartSearchService.Search(SearchPhrase);
+        
+        _parts = PartService.GetPartsWithIds(partIds)
             .OrderBy(x => x.PartType)
             .ThenBy(x => x.Range)
             .ThenBy(x => x.PartName)

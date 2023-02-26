@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Xml.Linq;
 using LiteDB;
 using partsbin.Models;
@@ -13,15 +14,18 @@ public interface IPartService
     IEnumerable<Part> GetDeletedParts();
     void EmptyRubbishBin();
     Part Duplicate(Part source);
+    IEnumerable<Part> GetPartsWithIds(IEnumerable<int> ids);
 }
 
 public class PartService : IPartService
 {
     private readonly IDbFactory _dbFactory;
+    private readonly IPartSearchService _partSearchService;
 
-    public PartService(IDbFactory dbFactory)
+    public PartService(IDbFactory dbFactory, IPartSearchService partSearchService)
     {
         _dbFactory = dbFactory;
+        _partSearchService = partSearchService;
     }
     
     public Part AddPart(Part part)
@@ -29,6 +33,7 @@ public class PartService : IPartService
         using var db = _dbFactory.GetDatabase();
 
         db.GetCollection<Part>().Insert(part);
+        _partSearchService.IndexPart(part);
 
         return part;
     }
@@ -36,6 +41,8 @@ public class PartService : IPartService
     public void UpdatePart(Part part)
     {
         using var db = _dbFactory.GetDatabase();
+        _partSearchService.RemovePart(part);
+        _partSearchService.IndexPart(part);
 
         db.GetCollection<Part>().Update(part);
     }
@@ -87,9 +94,28 @@ public class PartService : IPartService
     {
         using var db = _dbFactory.GetDatabase();
 
+        // Drop from search index
+        var deletedParts = db.GetCollection<Part>().Query()
+            .Where(x => x.IsDeleted)
+            .ToArray();
+        foreach (var part in deletedParts) _partSearchService.RemovePart(part);
+        
+        // Delete from database
         db.GetCollection<Part>()
             .DeleteMany(x => x.IsDeleted);
     }
 
     public Part Duplicate(Part source) => AddPart(source.DeepClone());
+
+    public IEnumerable<Part> GetPartsWithIds(IEnumerable<int> ids)
+    {
+        using var db = _dbFactory.GetDatabase();
+        var partsCollection = db.GetCollection<Part>();
+        var parts = partsCollection.Query()
+            .Where(x => ids.Contains(x.Id))
+            .ToList();
+
+        return parts;
+
+    }
 }

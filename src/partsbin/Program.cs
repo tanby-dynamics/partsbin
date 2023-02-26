@@ -1,6 +1,5 @@
 ﻿using Blazored.Modal;
 using Blazored.Toast;
-using partsbin;
 using partsbin.Services;
 using partsbin.UiServices;
 
@@ -14,6 +13,7 @@ builder.Services.AddSingleton<IDbFactory>(new DbFactory(builder.Environment.IsPr
 builder.Services.AddSingleton<IPartService, PartService>();
 builder.Services.AddSingleton<IPartSearchService, PartSearchService>();
 builder.Services.AddSingleton<IPartFieldService, PartFieldService>();
+builder.Services.AddSingleton<ISearchFactory>(new SearchFactory(builder.Environment.IsProduction()));
 builder.Services.AddScoped<IPartUiService, PartUiService>();
 
 var app = builder.Build();
