@@ -7,6 +7,17 @@
 @inject IToastService ToastService;
 @inject NavigationManager NavigationManager;
 
+@if (Duplicate == 1)
+{
+    <div class="alert alert-warning" role="alert">
+        <h3 class="alert-heading">Duplicate part</h3>
+        <p>
+            You are editing a duplicated part. If you didn't mean to
+            do this, you should delete this part now.
+        </p>
+    </div>
+}
+
 @if (_part is not null)
 {
     <h3>@_part.Description - @_part.FormattedQuantity</h3>
@@ -189,6 +200,10 @@ else
     private Part? _part;
     private bool _isEditingNotes;
 
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "d")]
+    public int? Duplicate { get; set; } = 0;
+
     protected override void OnInitialized()
     {
         RefreshData();
@@ -229,7 +244,7 @@ else
     private void DuplicatePart()
     {
         var duplicatePart = PartService.Duplicate(_part!);
-        NavigationManager.NavigateTo($"/part/{duplicatePart.Id}");
+        NavigationManager.NavigateTo($"/part/{duplicatePart.Id}?d=1");
         ToastService.ShowSuccess("The part has been duplicated, you are working on the duplicate part now");
     }
 
