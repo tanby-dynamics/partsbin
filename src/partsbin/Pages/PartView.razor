@@ -68,21 +68,18 @@ else
                             </p>
                         </div>
                         <div class="col-md-8">
-                            <div class="row">
-                                <div class="col">
-                                    <h4>Notes</h4>
-                                </div>
-                                <div class="col text-end">
-                                    @if (!_isEditingNotes)
-                                    {
-                                        <button class="btn btn-sm btn-outline-primary"
-                                                @onclick:preventDefault
-                                                @onclick="@EditNotes">
-                                            <i class="oi oi-pencil"></i> Edit notes
-                                        </button>
-                                    }
-                                </div>
-                            </div>
+                            <h4>
+                                Notes
+                                @if (!_isEditingNotes)
+                                {
+                                    <button class="btn btn-sm btn-outline-primary"
+                                            style="margin-left:1rem"
+                                            @onclick:preventDefault
+                                            @onclick="@EditNotes">
+                                        <i class="oi oi-pencil"></i> Edit
+                                    </button>
+                                }
+                            </h4>
                             @if (!_isEditingNotes)
                             {
                                 @if (_part.HtmlNotes.HasContent())
@@ -115,7 +112,31 @@ else
     </div>
 
     <br/>
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-text">
+                        <h4>Coming soon!</h4>
+                        <ul>
+                            <li>Documents and data sheets</li>
+                            <li>Suppliers</li>
+                            <li>
+                                <em>Your idea here!</em>
+                                Contribute at
+                                <a href="https://github.com/becdetat/partsbin"
+                                   target="_blank">
+                                    https://github.com/becdetat/partsbin
+                                </a>.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!--
     <div class="card">
         <h5 class="card-header">Documents and data sheets</h5>
         <div class="list-group list-group-flush">
@@ -159,6 +180,7 @@ else
             </button>
         </div>
     </div>
+    -->
 }
 
 @code {
