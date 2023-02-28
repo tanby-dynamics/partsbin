@@ -7,8 +7,8 @@ jobs:
   build_and_push:
     strategy:
       matrix:
-        architecture: [ amd64, arm64 ]
-    runs-on: ${{ matrix.architecture }}
+        architecture: [ ARM64, AMD64 ]
+    runs-on: ${{ matrix.os }}
     steps:
       - 
         name: Checkout
@@ -29,14 +29,5 @@ jobs:
           context: ./src
           push: true
           tags: becdetat/partsbin:latest-${{ matrix.architecture }}
-      -
-        name: Install manifest-tool
-        run: |
-          curl -fsSL https://github.com/estesp/manifest-tool/releases/download/v2.0.6/binaries-manifest-tool-2.0.6.tar.gz > manifest-tool.tar.gz
-          tar -xf manifest-tool.tar.gz
-      -
-        name: Create multi-architecture manifest
-        run: |
-          manifest-tool-linux-{{ matrix.architecture }} push from-args --platforms amd64,arm64 --template becdetat/partsbin:${{ matrix.architecture }} --target becdetat/partsbin:latest
-
+# TODO create a combined manifest...
           
