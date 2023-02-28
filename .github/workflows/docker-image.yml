@@ -7,7 +7,7 @@ jobs:
   build_and_push:
     strategy:
       matrix:
-        architecture: [ x64, ARM64 ]
+        architecture: [x64, arm64]
     runs-on: ${{ matrix.architecture }}
     steps:
       - 
