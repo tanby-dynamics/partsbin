@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  build_and_push:
+  build-and-push:
     strategy:
       matrix:
         os: [ubuntu-latest, macOS]
@@ -32,5 +32,16 @@ jobs:
           context: ./src
           push: true
           tags: becdetat/partsbin:latest-${{ matrix.os }}
-# TODO create a combined manifest...
-          
+  create-combined-manifest:
+    needs: build-and-push
+    steps:
+      - 
+        name: Create manifest
+        run: |
+          docker manifest create \
+            becdetat/partsbin:latest \
+            becdetat/partsbin:latest-macOS \
+            becdetat/partsbin:latest-ubuntu-latest
+      -
+        name: Push manifest
+          run: docker manifest push becdetat/partsbin:latest          
