@@ -61,4 +61,9 @@ When the image is pulled down and the container is running, you can access your 
 - [LiteDb](https://www.litedb.org/)
 - [Lucene.NET](https://lucenenet.apache.org/)
 
+## Contributing
+You can contribute just by making bug reports or suggestions, or you can put your valuable time into writing new features or fixing bugs. See <CONTRIB.md> for more information. Read through the <code-of-conduct.md> too.
+
+All contributors (code, bug reports, suggestions) wiil be noted in the <hall-of-fame.md> (which will probably be included in the app some time).
+
 
