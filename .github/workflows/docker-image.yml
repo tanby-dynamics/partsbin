@@ -2,6 +2,9 @@ name: CI - Build image and deploy to Docker Hub
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      -main
 
 jobs:
   build_and_push:
