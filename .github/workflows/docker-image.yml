@@ -10,15 +10,15 @@ jobs:
   build_and_push:
     strategy:
       matrix:
-        architecture: [x64, arm64]
-    runs-on: ${{ matrix.architecture }}
+        os: [ubuntu-latest, macOS]
+    runs-on: ${{ matrix.os }}
     steps:
       - 
         name: Checkout
         uses: actions/checkout@v3
       -
         name: Build the image
-        run: docker build -t becdetat/partsbin:latest-${{ matrix.architecture }} ./src
+        run: docker build -t becdetat/partsbin:latest-${{ matrix.os }} ./src
       - 
         name: Log in to Docker Hub
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
@@ -31,6 +31,6 @@ jobs:
         with:  
           context: ./src
           push: true
-          tags: becdetat/partsbin:latest-${{ matrix.architecture }}
+          tags: becdetat/partsbin:latest-${{ matrix.os }}
 # TODO create a combined manifest...
           
