@@ -62,7 +62,7 @@ When the image is pulled down and the container is running, you can access your 
 - [Lucene.NET](https://lucenenet.apache.org/)
 
 ## Contributing
-You can contribute just by making bug reports or suggestions, or you can put your valuable time into writing new features or fixing bugs. See [the contributor's guide](CONTRIB.md) for more information. Read through the [Code of Conduct](code-of-conduct.md) too please.
+You can contribute just by making bug reports or suggestions, or you can put your valuable time into writing new features or fixing bugs. See the [contribution guide](CONTRIB.md) for more information. Read through the [Code of Conduct](code-of-conduct.md) too please.
 
 All contributors (code, bug reports, suggestions) wiil be noted in the [Hall of Fame](hall-of-fame.md) (which will probably be included in the app some time).
 
