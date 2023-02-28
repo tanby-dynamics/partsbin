@@ -212,7 +212,7 @@
     private void DuplicatePart(Part part)
     {
         var duplicatePart = PartService.Duplicate(part!);
-        NavigationManager.NavigateTo($"/part/{duplicatePart.Id}");
+        NavigationManager.NavigateTo($"/part/{duplicatePart.Id}?d=1");
         ToastService.ShowSuccess("The part has been duplicated, you are working on the duplicate part now");
     }
 
