@@ -44,4 +44,5 @@ jobs:
             becdetat/partsbin:latest-ubuntu-latest
       -
         name: Push manifest
-          run: docker manifest push becdetat/partsbin:latest          
+          run: |
+            docker manifest push becdetat/partsbin:latest          
