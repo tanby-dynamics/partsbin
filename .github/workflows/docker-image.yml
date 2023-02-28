@@ -7,9 +7,9 @@ on:
 
 jobs:
   build_and_push:
-    runs-on: [linux, x86]
+#    runs-on: [linux, x86]
     runs-on: [macOS, ARM64]
-    steps:
+    steps:g
       - 
         name: Checkout
         uses: actions/checkout@v3
