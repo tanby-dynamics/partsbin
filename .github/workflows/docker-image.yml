@@ -34,6 +34,7 @@ jobs:
           tags: becdetat/partsbin:latest-${{ matrix.os }}
   create-combined-manifest:
     needs: build-and-push
+    runs-on: ubuntu-latest
     steps:
       - 
         name: Create manifest
