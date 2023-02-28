@@ -32,12 +32,11 @@ jobs:
       -
         name: Install manifest-tool
         run: |
-          curl -fsSL https://github.com/estesp/manifest-tool/releases/download/v1.0.3/manifest-tool-linux-amd64 > manifest-tool
-          chmod +x manifest-tool
-          sudo mv manifest-tool /usr/local/bin
+          curl -fsSL https://github.com/estesp/manifest-tool/releases/download/v2.0.6/binaries-manifest-tool-2.0.6.tar.gz > manifest-tool.tar.gz
+          tar -xf manifest-tool.tar.gz
       -
         name: Create multi-architecture manifest
         run: |
-          manifest-tool push from-args --platforms amd64,arm64 --template becdetat/partsbin:${{ matrix.architecture }} --target becdetat/partsbin:latest
+          manifest-tool-linux-{{ matrix.architecture }} push from-args --platforms amd64,arm64 --template becdetat/partsbin:${{ matrix.architecture }} --target becdetat/partsbin:latest
 
           
