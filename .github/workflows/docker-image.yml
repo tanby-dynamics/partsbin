@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         architecture: [ ARM64, AMD64 ]
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.architecture }}
     steps:
       - 
         name: Checkout
