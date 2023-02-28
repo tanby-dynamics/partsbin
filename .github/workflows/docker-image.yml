@@ -7,15 +7,15 @@ jobs:
   build_and_push:
     strategy:
       matrix:
-        os: [ ubuntu-latest, macOS ]
-    runs-on: ${{ matrix.os }}
+        architecture: [ amd64, arm64 ]
+    runs-on: ${{ matrix.architecture }}
     steps:
       - 
         name: Checkout
         uses: actions/checkout@v3
       -
         name: Build the image
-        run: docker build -t becdetat/partsbin:latest ./src
+        run: docker build -t becdetat/partsbin:latest-${{ matrix.architecture }} ./src
       - 
         name: Log in to Docker Hub
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
@@ -28,6 +28,16 @@ jobs:
         with:  
           context: ./src
           push: true
-          tags: becdetat/partsbin:latest
-          
+          tags: becdetat/partsbin:latest-${{ matrix.architecture }}
+      -
+        name: Install manifest-tool
+        run: |
+          curl -fsSL https://github.com/estesp/manifest-tool/releases/download/v1.0.3/manifest-tool-linux-amd64 > manifest-tool
+          chmod +x manifest-tool
+          sudo mv manifest-tool /usr/local/bin
+      -
+        name: Create multi-architecture manifest
+        run: |
+          manifest-tool push from-args --platforms amd64,arm64 --template becdetat/partsbin:${{ matrix.architecture }} --target becdetat/partsbin:latest
+
           
