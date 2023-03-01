@@ -21,10 +21,11 @@
                     updated and the usual indexing was broken for some
                     reason, such as from a buggy release (sorry!).
                 </p>
-                <a href="#"
-                   class="card-link"
-                   @onclick:preventDefault
-                   @onclick="@TriggerReindex">Start reindexing parts</a>
+                <button class="btn btn-warning"
+                        @onclick:preventDefault
+                        @onclick="@TriggerReindex">
+                    Start reindexing parts
+                </button>
             </div>
         </div>
     </div>

@@ -1,0 +1,31 @@
+<p>@Caption</p>
+<p>
+    <button class="btn btn-outline-primary"
+            type="button"
+            onclick="@Confirm">
+        Confirm
+    </button>
+    <button class="btn btn-outline-danger"
+            type="button"
+            onclick="@Cancel">
+        Cancel
+    </button>
+</p>
+
+@code {
+
+    [Parameter]
+    public required string Caption { get; set; } = "Are you sure?";
+    [CascadingParameter]
+    public required BlazoredModalInstance Modal { get; set; }
+
+    private Task Confirm()
+    {
+        return Modal.CloseAsync(ModalResult.Ok());
+    }
+
+    private Task Cancel()
+    {
+        return Modal.CloseAsync(ModalResult.Cancel());
+    }
+}

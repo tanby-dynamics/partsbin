@@ -1,0 +1,27 @@
+@inject NavigationManager NavigationManager;
+
+<form class="d-flex" role="search">
+    <div class="input-group">
+        <InputText type="search"
+                   class="form-control"
+                   placeholder="Search for parts"
+                   aria-label="Search for parts"
+                   @bind-Value="_searchPhrase"/>
+        <button class="btn btn-outline-success"
+                type="submit"
+                title="Search"
+                @onclick:preventDefault
+                @onclick="@PerformSearch">
+            <i class="oi oi-magnifying-glass"></i>
+        </button>
+    </div>
+</form>
+
+@code {
+    private string _searchPhrase = string.Empty;
+
+    private void PerformSearch()
+    {
+        NavigationManager.NavigateTo($"/search/{_searchPhrase}");
+    }
+}

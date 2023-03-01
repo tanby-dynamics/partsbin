@@ -1,8 +1,6 @@
 using Blazored.Modal;
 using Blazored.Modal.Services;
-using Blazored.Toast.Services;
 using partsbin.Models;
-using partsbin.Pages;
 using partsbin.Services;
 using partsbin.Shared;
 
@@ -23,6 +21,7 @@ public interface IPartUiService
     Task SelectValueUnit(Part part);
     Task SelectManufacturer(Part part);
     Task SelectLocation(Part part);
+    Task<bool> Confirm(string title, string caption = "Are you sure?");
 }
 
 public class PartUiService : IPartUiService
@@ -197,5 +196,24 @@ public class PartUiService : IPartUiService
         var modal = _modalService.Show<SelectStringModal>(title, parameters, options);
         
         return await modal.Result;
+    }
+
+    public async Task<bool> Confirm(string title, string caption = "Are you sure")
+    {
+        var parameters = new ModalParameters
+        {
+            { "Caption", caption }
+        };
+        var options = new ModalOptions
+        {
+            Position = ModalPosition.Middle
+        };
+        var modal = _modalService.Show<ConfirmationModal>(
+            title,
+            parameters,
+            options);
+        var result = await modal.Result;
+
+        return result.Confirmed;
     }
 }

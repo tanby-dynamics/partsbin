@@ -31,19 +31,27 @@ else
         {
             <tr>
                 <td>
-                    <a href="/all-parts/by-part-type/@item.partType">
+                    <a href="/all-parts/by-part-type/@item.partType"
+                       title="View all parts of this type">
                         @item.partType
                     </a>
                 </td>
                 <td>@item.quantity</td>
                 <td>
-                    <button class="btn btn-sm btn-outline-primary"
-                            type="button"
-                            onclick:preventDefault
-                            onclick="@(() => AddPart(item.partType))"
-                            title="@($"Add a part of type {item.partType}")">
-                        <i class="oi oi-plus"></i>
-                    </button>
+                    <div class="input-group">
+                        <button class="btn btn-sm btn-outline-primary form-control"
+                                type="button"
+                                onclick:preventDefault
+                                onclick="@(() => AddPart(item.partType))"
+                                title="@($"Add a part of type {item.partType}")">
+                            <i class="oi oi-plus"></i>
+                        </button>
+                        <a class="btn btn-sm btn-outline-secondary form-control"
+                           href="/all-parts/by-part-type/@item.partType"
+                           title="@($"View all parts of type {item.partType}")">
+                            <i class="oi oi-eye" aria-hidden="true"></i>
+                        </a>
+                    </div>
                 </td>
             </tr>
         }

@@ -37,13 +37,20 @@ else
                 </td>
                 <td>@item.quantity</td>
                 <td>
-                    <button class="btn btn-sm btn-outline-primary"
-                            type="button"
-                            onclick:preventDefault
-                            onclick="@(() => AddPart(item.manufacturer))"
-                            title="@($"Add a part manufactured by {item.manufacturer}")">
-                        <i class="oi oi-plus"></i>
-                    </button>
+                    <div class="input-group">
+                        <button class="btn btn-sm btn-outline-primary form-control"
+                                type="button"
+                                onclick:preventDefault
+                                onclick="@(() => AddPart(item.manufacturer))"
+                                title="@($"Add a part manufactured by {item.manufacturer}")">
+                            <i class="oi oi-plus"></i>
+                        </button>
+                        <a class="btn btn-sm btn-outline-secondary form-control"
+                           href="/all-parts/by-manufacturer/@item.manufacturer"
+                           title="@($"View all parts manufactured by {item.manufacturer}")">
+                            <i class="oi oi-eye" aria-hidden="true"></i>
+                        </a>
+                    </div>
                 </td>
             </tr>
         }
