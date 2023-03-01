@@ -38,6 +38,8 @@ a, .btn-link {
     color: red;
 }
 
+.
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
@@ -67,3 +69,6 @@ a, .btn-link {
         content: "An error has occurred."
     }
 
+.page .navbar li.nav-item.dropdown ul.dropdown-menu li a.nav-link {
+    margin-left: 1rem;
+} 

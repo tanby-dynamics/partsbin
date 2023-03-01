@@ -1,46 +1,23 @@
 ﻿@using Blazored.Toast.Configuration
 @inherits LayoutComponentBase
-@inject NavigationManager NavigationManager;
 
 <PageTitle>partsbin</PageTitle>
 <BlazoredToasts Position="ToastPosition.BottomRight"/>
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu/>
-    </div>
-
-    <div class="main">
-        <div class="top-row px-4 search-bar">
-            <div class="form-group translate-middle"
-                 style="width:50%;margin-top:38px">
-                <div class="input-group">
-                    <InputText type="search"
-                               class="form-control"
-                               placeholder="Search for parts"
-                               @bind-Value="_searchPhrase"/>
-                    <button class="btn btn-primary"
-                            type="submit"
-                            title="Perform search"
-                            @onclick:preventDefault
-                            @onclick="@PerformSearch">
-                        <i class="oi oi-magnifying-glass"></i> Search
-                    </button>
-                </div>
+    <div class="table">
+        <div class="row">
+            <div class="col-12">
+                <Main_NavigationComponent/>
             </div>
         </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
+        <div class="row">
+            <div class="col-12">
+                @Body
+            </div>
+        </div>
     </div>
 </div>
 
 @code {
-    private string _searchPhrase = string.Empty;
-
-    private void PerformSearch()
-    {
-        NavigationManager.NavigateTo($"/search/{_searchPhrase}");
-    }
 }
