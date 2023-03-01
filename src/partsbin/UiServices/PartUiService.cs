@@ -200,11 +200,18 @@ public class PartUiService : IPartUiService
 
     public async Task<bool> Confirm(string title, string caption = "Are you sure")
     {
-        var parameters = new ModalParameters()
+        var parameters = new ModalParameters
         {
             { "Caption", caption }
         };
-        var modal = _modalService.Show<ConfirmationModal>(title, parameters);
+        var options = new ModalOptions
+        {
+            Position = ModalPosition.Middle
+        };
+        var modal = _modalService.Show<ConfirmationModal>(
+            title,
+            parameters,
+            options);
         var result = await modal.Result;
 
         return result.Confirmed;
