@@ -15,6 +15,7 @@ public interface IPartService
     void EmptyRubbishBin();
     Part Duplicate(Part source);
     IEnumerable<Part> GetPartsWithIds(IEnumerable<int> ids);
+    bool CheckForDuplicatePartNumber(string partNumber, int? excludePartId = null);
 }
 
 public class PartService : IPartService
@@ -116,6 +117,24 @@ public class PartService : IPartService
             .ToList();
 
         return parts;
+    }
 
+    /// <summary>
+    /// Note that this does an exact search, different capitalization
+    /// etc will return a false result
+    /// </summary>
+    /// <param name="partNumber"></param>
+    /// <param name="excludePartId">If provided, excludes the identified part (for updates)</param>
+    /// <returns>True if the provided part number is already used in one or more existing parts</returns>
+    public bool CheckForDuplicatePartNumber(string partNumber, int? excludePartId = null)
+    {
+        using var db = _dbFactory.GetDatabase();
+        var partsCollection = db.GetCollection<Part>();
+        var matchingPart = partsCollection.Query()
+            .Where (x => excludePartId == null || x.Id != excludePartId)
+            .Where(x => x.PartNumber == partNumber)
+            .FirstOrDefault();
+
+        return matchingPart is not null;
     }
 }

@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Components
+@using partsbin.Helpers
 @using partsbin.Services
 @using partsbin.UiServices
 @inject IToastService ToastService;
@@ -212,15 +213,44 @@
 
     private async void HandleValidSubmit()
     {
+        if (Part is null)
+        {
+            throw new InvalidOperationException("Part should not be null at this point");
+        }
+        
         try
         {
             if (_isNew)
             {
+                if (
+                    Part.PartNumber.HasContent()
+                    && PartService.CheckForDuplicatePartNumber(Part.PartNumber!)
+                )
+                {
+                    var continueAdding = await PartUiService.Confirm(
+                        "The part number is not unique",
+                        "There is another part with the same part number. Do you want to continue adding this part?");
+
+                    if (!continueAdding) return;
+                }
+                
                 Part = PartService.AddPart(Part!);
                 NavigationManager.NavigateTo($"/part/{Part.Id}");
             }
             else
             {
+                if (
+                    Part.PartNumber.HasContent()
+                    && PartService.CheckForDuplicatePartNumber(Part.PartNumber!, Part.Id)
+                    )
+                {
+                    var continueAdding = await PartUiService.Confirm(
+                        "The part number is not unique",
+                        "There is another part with the same part number. Do you want to continue adding this part?");
+
+                    if (!continueAdding) return;
+                }
+
                 PartService.UpdatePart(Part!);
             }
 
