@@ -1,4 +1,4 @@
-name: CI - Build image and deploy to Docker Hub
+name: Build image and deploy to Docker Hub
 
 on:
   workflow_dispatch:
@@ -7,6 +7,7 @@ on:
       - main
 
 jobs:
+  # Build and push an image built on both ubuntu-latest (AMD64) and macOS (ARM64)
   build-and-push:
     strategy:
       matrix:
@@ -20,7 +21,7 @@ jobs:
         name: Build the image
         run: docker build -t becdetat/partsbin:latest-${{ matrix.os }} ./src
       - 
-        name: Log in to Docker Hub
+        name: Log into Docker Hub
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -32,12 +33,13 @@ jobs:
           context: ./src
           push: true
           tags: becdetat/partsbin:latest-${{ matrix.os }}
+  # Create and push up a combined manifest, so both architectures can be pulled via becdetat/partsbin:latest
   create-combined-manifest:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
       - 
-        name: Log in to Docker Hub
+        name: Log into Docker Hub
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
