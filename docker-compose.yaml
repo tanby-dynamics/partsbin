@@ -1,12 +1,12 @@
 services:
   app:
-    image: becdetat/partsbin
+    image: becdetat/partsbin:latest
     ports:
       # Map port 80 (internal) to port 8080 (host)
       - 8080:80
     volumes:
       # Update the first part of this (before the ':') to somewhere safe
-      - ~/Dropbox/appdata/partsbin/data:/data
+      - ./data:/data
 volumes:
   data:
 
