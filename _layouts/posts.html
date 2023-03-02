@@ -2,15 +2,12 @@
 layout: base
 ---
 
-<!-- This is intended to be used when (if) I add a blog section to the site -->
-
 <div class="home">
   {%- if page.title -%}
     <h1 class="page-heading">{{ page.title }}</h1>
   {%- endif -%}
 
   {{ content }}
-
 
   {% if site.paginate %}
     {% assign posts = paginator.posts %}

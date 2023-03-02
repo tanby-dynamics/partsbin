@@ -20,12 +20,12 @@
 
 title: partsbin
 email: me@becdetat.com
-description: >- # this means to ignore newlines until "baseurl:"
+description: >-
   The ultimate tool for hobbyist hardware hackers and engineers, giving you a
-  simple application with intuitive search capabilities, designed to streamline
+  simple application with smart search capabilities, designed to streamline
   managing your parts inventory
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://partsbin.page" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://partsbin.page"
 github_username:  becdetat
 
 # Build settings

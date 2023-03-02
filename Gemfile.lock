@@ -256,7 +256,7 @@ DEPENDENCIES
   github-pages (~> 228)
   http_parser.rb (~> 0.6.0)
   jekyll-feed (~> 0.12)
-  minima (~> 2.5)
+  minima
   public_suffix (~> 4.0.7)
   tzinfo (>= 1, < 3)
   tzinfo-data
