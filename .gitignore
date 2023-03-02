@@ -355,3 +355,4 @@ published/
 src/partsbin/.DS_Store
 src/partsbin/partsbin-lucene-index
 src/.DS_Store
+partsbin-lucene-index
