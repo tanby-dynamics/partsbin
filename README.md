@@ -26,6 +26,7 @@ Note that this is subject to change.
 - "Add to home screen" option in Admin for mobile devices
 - Supplier management for parts
 - List supplier name/site/contact details separately from parts, and allow selecting them when editing a part (for some data normalisation)
+- Order management - what have I ordered from which suppliers
 - Documentation management for parts
 - Perhaps uploading arbitrary files (docs, images, etc)
 - Adding arbitrary links
