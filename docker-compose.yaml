@@ -1,0 +1,9 @@
+version: "3"
+services:
+  web:
+    image: partsbin-home
+    ports:
+      - 8811:80
+
+
+
