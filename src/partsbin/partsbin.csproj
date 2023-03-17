@@ -4,8 +4,9 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Version>1.1</Version>
+    <Version></Version>
     <Authors>Rebecca Scott &lt;me@becdetat.com&gt;</Authors>
+    <AssemblyVersion>0.2</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
