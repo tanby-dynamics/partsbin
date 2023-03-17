@@ -47,6 +47,8 @@ public class PartSearchService : IPartSearchService
     /// <returns>A list of part ids that match the search phrase</returns>
     public IEnumerable<int> Search(string phrase)
     {
+        phrase = phrase.ToLower();
+        
         var fieldNames = GetIndexFields()
             .Select(x => x.FieldName)
             .ToArray();
@@ -100,7 +102,7 @@ public class PartSearchService : IPartSearchService
         var indexFields = GetIndexFields()
             .Select(field => new StringField(
                 field.FieldName,
-                field.ValueAccessor(part),
+                field.ValueAccessor(part).ToLower(),
                 Field.Store.YES));
         
         foreach (var field in indexFields)
