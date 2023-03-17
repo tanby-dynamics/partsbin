@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace partsbin.Services;
+namespace partsbin.Helpers;
 
 public static class ObjectExtensions
 {

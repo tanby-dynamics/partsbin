@@ -19,7 +19,8 @@ builder.Services
     .AddScoped<INavService, NavService>()
     .AddScoped<ISupplierUiService, SupplierUiService>()
     .AddScoped<ISelectStringUiService, SelectStringUiService>()
-    .AddScoped<ISupplierService, SupplierService>();
+    .AddScoped<ISupplierService, SupplierService>()
+    .AddScoped<IPartDocumentUiService, PartDocumentUiService>();
 
 var app = builder.Build();
 

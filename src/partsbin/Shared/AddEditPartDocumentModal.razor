@@ -1,0 +1,89 @@
+@using partsbin.Services
+@using partsbin.Helpers
+@inject IPartService PartService
+
+<EditForm Model="@Document"
+          OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="form-group">
+        <div style="margin-top:10px">
+            <label for="name">Name</label>
+            <InputText id="name"
+                       class="form-control"
+                       placeholder="Document name"
+                       @bind-Value="Document!.Name"/>
+        </div>
+        <div style="margin-top:10px">
+            <label for="url">Document link</label>
+            <InputText id="url"
+                       class="form-control"
+                       placeholder="Document link"
+                       @bind-Value="Document!.Url"/>
+        </div>
+        <div style="margin-top:10px">
+            <label>Notes</label>
+            <QuillEditor @ref="@_quillEditor" Placeholder="Enter notes here">
+                <ToolbarContent><EditorToolbarContent/></ToolbarContent>
+                <EditorContent/>
+            </QuillEditor>
+        </div>
+        <div style="margin-top:10px">
+            <button type="submit"
+                    class="btn btn-sm btn-outline-primary">
+                @(_isNew ? "Add" : "Update")
+            </button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private bool _isNew;
+    [Parameter]
+    public required Part Part { get; set; }
+    [Parameter]
+    public PartDocument? Document { get; set; }
+    [CascadingParameter]
+    BlazoredModalInstance? Modal { get; set; }
+    private QuillEditor? _quillEditor;
+    private bool _contentLoaded;
+
+    protected override void OnInitialized()
+    {
+        _isNew = Document is null;
+        Document ??= new PartDocument();
+        StateHasChanged();
+    }
+
+    private async void HandleValidSubmit()
+    {
+        if (Document is null)
+        {
+            throw new NotSupportedException("Supplier is null");
+        }
+        
+        Document.Notes = await _quillEditor!.GetContent();
+        Document.HtmlNotes = await _quillEditor.GetHtml();
+        
+        if (_isNew)
+        {
+            Part.Documents.Add(Document);
+        }
+        
+        PartService.UpdatePart(Part);
+        await Modal!.CloseAsync(ModalResult.Ok(Document));
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_quillEditor is null) return;
+        if (_contentLoaded) return;
+
+        if (Document!.Notes.HasContent())
+        {
+            await _quillEditor.LoadContent(Document.Notes);
+        }
+
+        _contentLoaded = true;
+    }
+}

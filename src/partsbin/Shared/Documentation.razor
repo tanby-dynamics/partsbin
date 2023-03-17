@@ -1,0 +1,82 @@
+@using partsbin.Helpers
+@using partsbin.Services
+@inject IPartService PartService; 
+@inject IToastService ToastService;
+@inject IPartDocumentUiService PartDocumentUiService;
+
+<div class="row">
+    <div class="col-6">
+        <h4>Docs and links</h4>
+    </div>
+    <div class="col-6 text-end">
+        <button class="btn btn-outline-primary"
+                type="button"
+                @onclick="Add">
+            Add
+        </button>
+    </div>
+</div>
+
+@foreach (var document in Part.Documents)
+{
+    <div class="row" style="margin-top:10px">
+        <div class="col-12">
+            <div class="card">
+                <h5 class="card-header">
+                    @if (document.Url.HasContent())
+                    {
+                        <a href="@document.Url" target="_blank">
+                            @document.Name
+                        </a>
+                    }
+                    else
+                    {
+                        @document.Name
+                    }
+                </h5>
+                <div class="card-body">
+                    @if (document.HtmlNotes.HasContent())
+                    {
+                        <span>Notes:</span><br/>
+                        @((MarkupString)document.HtmlNotes)
+                    }
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-sm btn-outline-primary"
+                            @onclick="() => Edit(document)">
+                        <i class="oi oi-pencil"></i> Edit
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger"
+                            @onclick="@(() => Delete(document))">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public required Part Part { get; set; }
+
+    private async void Add()
+    {
+        await PartDocumentUiService.AddDocument(Part);
+        StateHasChanged();
+    }
+    
+    private async void Edit(PartDocument document)
+    {
+        await PartDocumentUiService.EditDocument(Part, document);
+        StateHasChanged();
+    }
+
+    private void Delete(PartDocument document)
+    {
+        Part.Documents.Remove(document);
+        PartService.UpdatePart(Part);
+        ToastService.ShowSuccess("The document has been deleted");
+        StateHasChanged();
+    }
+}

@@ -2,17 +2,20 @@ using System.Globalization;
 
 namespace partsbin.Helpers;
 
-public static class Extensions
+public static class DecimalExtensions
 {
     public static string FormatCompact(this decimal? d, int minDecimalPlaces = 2)
     {
-        if (d is null) return string.Empty;
+        return d is null 
+            ? string.Empty 
+            : d.Value.FormatCompact(minDecimalPlaces);
+    }
+
+    public static string FormatCompact(this decimal d, int minDecimalPlaces = 2)
+    {
         if (d == 0) return $"0.{new string('0', minDecimalPlaces)}";
 
-        var s = d.ToString();
-
-        if (s is null) return string.Empty;
-        
+        var s = d.ToString(CultureInfo.InvariantCulture);
         var indexOfPeriod = s.IndexOf('.');
 
         if (indexOfPeriod == -1)

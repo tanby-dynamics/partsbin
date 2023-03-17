@@ -44,10 +44,19 @@
                         </a>
                         </p>
                     }
+                    @if (supplier.UnitPrice != 0.0m)
+                    {
+                        <p>
+                            <span>Unit price:</span> 
+                            @supplier.UnitPrice.FormatCompact()
+                        </p>
+                    }
                     @if (supplier.HtmlNotes.HasContent())
                     {
-                        <span>Notes:</span><br/>
-                        @((MarkupString)supplier.HtmlNotes)
+                        <div>
+                            <span>Notes:</span><br/>
+                            @((MarkupString)supplier.HtmlNotes)
+                        </div>
                     }
                 </div>
                 <div class="card-footer">
