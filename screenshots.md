@@ -4,7 +4,7 @@ title: Screenshots
 permalink: /screenshots
 ---
 
-These are some simple screeenshots of version 0.1.
+These are some screeenshots from version 0.1.
 
 ### Adding a part
 ![](/images/adding-part.png)
