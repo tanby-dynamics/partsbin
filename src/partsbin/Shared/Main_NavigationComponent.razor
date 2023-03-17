@@ -1,3 +1,4 @@
+@inject IJSRuntime JsRuntime;
 <nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">partsbin</a>
@@ -29,12 +30,17 @@
                         <Main_SearchComponent/>
                     </li>
                     <li class="nav-item">
-                        <NavLink class="nav-link" href="." Match="NavLinkMatch.All">
+                        <NavLink class="nav-link" 
+                                 href="." 
+                                 Match="NavLinkMatch.All"
+                                 @onclick="@HideOffcanvasNavbar">
                             <span class="oi oi-home" aria-hidden="true"></span> Home
                         </NavLink>
                     </li>
                     <li class="nav-item">
-                        <NavLink class="nav-link" href="/all-parts">
+                        <NavLink class="nav-link" 
+                                 href="/all-parts"
+                                 @onclick="@HideOffcanvasNavbar">
                             <span class="oi oi-box" aria-hidden="true"></span> All parts
                         </NavLink>
                     </li>
@@ -48,39 +54,53 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark">
                             <li>
-                                <NavLink class="nav-link" href="/part-types">
+                                <NavLink class="nav-link" 
+                                         href="/part-types"
+                                         @onclick="@HideOffcanvasNavbar">
                                     Part type
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink class="nav-link" href="/ranges">
+                                <NavLink class="nav-link" 
+                                         href="/ranges"
+                                         @onclick="@HideOffcanvasNavbar">
                                     Range
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink class="nav-link" href="/part-names">
+                                <NavLink class="nav-link" 
+                                         href="/part-names"
+                                         @onclick="@HideOffcanvasNavbar">
                                     Part name
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink class="nav-link" href="/manufacturers">
+                                <NavLink class="nav-link" 
+                                         href="/manufacturers"
+                                         @onclick="@HideOffcanvasNavbar">
                                     Manufacturer
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink class="nav-link" href="/locations">
+                                <NavLink class="nav-link" 
+                                         href="/locations"
+                                         @onclick="@HideOffcanvasNavbar">
                                     Location
                                 </NavLink>
                             </li>
                         </ul>
                     </li>
                     <li>
-                        <NavLink class="nav-link" href="/admin">
+                        <NavLink class="nav-link" 
+                                 href="/admin"
+                                 @onclick="@HideOffcanvasNavbar">
                             <span class="oi oi-cog"></span> Admin
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink class="nav-link" href="/rubbish-bin">
+                        <NavLink class="nav-link"
+                                 href="/rubbish-bin"
+                                 @onclick="@HideOffcanvasNavbar">
                             <span class="oi oi-trash" aria-hidden="true"></span> Rubbish bin
                         </NavLink>
                     </li>
@@ -90,6 +110,12 @@
     </div>
 </nav>
 
-@code {
 
+
+@code {
+    [JSInvokable]
+    public async Task HideOffcanvasNavbar()
+    {
+        await JsRuntime.InvokeVoidAsync("hideOffcanvasNavbar");
+    }
 }
