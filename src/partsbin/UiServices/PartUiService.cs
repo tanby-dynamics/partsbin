@@ -56,8 +56,12 @@ public class PartUiService : IPartUiService
         {
             parameters.Add("Manufacturer", manufacturer);
         }
-        
-        var modal = _modalService.Show<AddEditPartModal>("Add part", parameters);
+
+        var modalOptions = new ModalOptions
+        {
+            DisableBackgroundCancel = true
+        };
+        var modal = _modalService.Show<AddEditPartModal>("Add part", parameters, modalOptions);
         var result = await modal.Result;
 
         if (result.Cancelled || result.Data is null)
