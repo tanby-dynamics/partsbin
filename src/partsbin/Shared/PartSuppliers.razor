@@ -1,0 +1,91 @@
+@using partsbin.Helpers
+@using partsbin.Services
+@inject IPartService PartService; 
+@inject IToastService ToastService;
+@inject ISupplierUiService SupplierUiService;
+
+<div class="row">
+    <div class="col-6">
+        <h4>Suppliers</h4>
+    </div>
+    <div class="col-6 text-end">
+        <button class="btn btn-outline-primary"
+                type="button"
+                @onclick="Add">
+            Add
+        </button>
+    </div>
+</div>
+
+@foreach (var supplier in Part.Suppliers)
+{
+    <div class="row" style="margin-top:10px">
+        <div class="col-12">
+            <div class="card">
+                <h5 class="card-header">
+                    @if (supplier.Url.HasContent())
+                    {
+                        <a href="@supplier.Url" target="_blank">
+                            @supplier.Name
+                        </a>
+                    }
+                    else
+                    {
+                        @supplier.Name
+                    }
+                </h5>
+                <div class="card-body">
+                    @if (supplier.PartUrl.HasContent())
+                    {
+                        <p>
+                        <a href="@supplier.PartUrl"
+                           target="_blank">
+                            Link to part
+                        </a>
+                        </p>
+                    }
+                    @if (supplier.HtmlNotes.HasContent())
+                    {
+                        <span>Notes:</span><br/>
+                        @((MarkupString)supplier.HtmlNotes)
+                    }
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-sm btn-outline-primary"
+                            @onclick="() => Edit(supplier)">
+                        <i class="oi oi-pencil"></i> Edit
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger"
+                            @onclick="@(() => Delete(supplier))">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public required Part Part { get; set; }
+
+    private async void Add()
+    {
+        await SupplierUiService.AddSupplier(Part);
+        StateHasChanged();
+    }
+    
+    private async void Edit(Supplier supplier)
+    {
+        await SupplierUiService.EditSupplier(Part, supplier);
+        StateHasChanged();
+    }
+
+    private void Delete(Supplier supplier)
+    {
+        Part.Suppliers.Remove(supplier);
+        PartService.UpdatePart(Part);
+        ToastService.ShowSuccess("The supplier has been deleted");
+        StateHasChanged();
+    }
+}

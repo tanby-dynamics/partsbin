@@ -1,26 +1,20 @@
 @page "/part/{Id:int}"
 @using partsbin.Services
 @using partsbin.Helpers
-@using partsbin.UiServices
 @inject IPartService PartService;
 @inject IPartUiService PartUiService;
 @inject IToastService ToastService;
 @inject NavigationManager NavigationManager;
 
-@if (Duplicate == 1)
-{
-    <div class="alert alert-warning" role="alert">
-        <h3 class="alert-heading">Duplicate part</h3>
-        <p>
-            You are editing a duplicated part. If you didn't mean to
-            do this, you should delete this part now.
-        </p>
-    </div>
-}
-
 @if (_part is not null)
 {
-    <h3>@_part.Description - @_part.FormattedQuantity</h3>
+    <h3>
+        @_part.Description - @_part.FormattedQuantity
+        @if (Duplicate == 1)
+        {
+            <strong>&nbsp;(duplicate)</strong>
+        }
+    </h3>
 }
 else
 {
@@ -116,7 +110,8 @@ else
                 </div>
             </div>
             <div class="card-footer">
-                <button @onclick="Edit" class="btn btn-sm btn-outline-primary">
+                <button @onclick="Edit" 
+                        class="btn btn-sm btn-outline-primary">
                     <i class="oi oi-pencil"></i> Edit details
                 </button>
             </div>
@@ -132,7 +127,6 @@ else
                         <h4>Coming soon!</h4>
                         <ul>
                             <li>Documents and data sheets</li>
-                            <li>Suppliers</li>
                             <li>
                                 <em>Your idea here!</em>
                                 Contribute at
@@ -142,6 +136,15 @@ else
                                 </a>.
                             </li>
                         </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-text">
+                        <PartSuppliers Part="_part"/>
                     </div>
                 </div>
             </div>
@@ -171,27 +174,6 @@ else
     </div>
 
     <br/>
-
-    <div class="card">
-        <h5 class="card-header">Suppliers</h5>
-        <div class="list-group list-group-flush">
-            <button class="list-group-item list-group-item-action">
-                Jaycar
-            </button>
-            <button class="list-group-item list-group-item-action">
-                Mouser
-            </button>
-            <button class="list-group-item list-group-item-action">
-                eBay
-            </button>
-        </div>
-        <div class="card-footer">
-            <button class="btn btn-sm btn-outline-primary"
-                    @onclick="() => { }">
-                Add new
-            </button>
-        </div>
-    </div>
     -->
 }
 

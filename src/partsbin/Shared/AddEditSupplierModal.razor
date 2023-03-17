@@ -1,0 +1,123 @@
+@using partsbin.Services
+@using partsbin.Helpers
+@inject IPartService PartService
+@inject ISupplierUiService SupplierUiService;
+
+<EditForm Model="@Supplier"
+          OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="form-group">
+        <div style="margin-top:10px">
+            <label for="name">Name</label>
+            <div class="input-group">
+                <InputText id="name"
+                           class="form-control"
+                           placeholder="Supplier name"
+                           @bind-Value="Supplier!.Name"/>
+                <button class="btn btn-outline-secondary"
+                        @onclick:preventDefault
+                        @onclick="@SelectName">
+                    <i class="oi oi-magnifying-glass"></i>
+                </button>
+            </div>
+        </div>
+        <div style="margin-top:10px">
+            <label for="url">Supplier link</label>
+            <InputText id="url"
+                       class="form-control"
+                       placeholder="Supplier link"
+                       @bind-Value="Supplier!.Url"/>
+        </div>
+        <div style="margin-top:10px">
+            <label for="partLink">Part link</label>
+            <InputText id="partLink"
+                       class="form-control"
+                       placeholder="Part link"
+                       @bind-Value="Supplier!.PartUrl"/>
+        </div>
+        <div style="margin-top:10px">
+            <label for="unitPrice">Unit price</label>
+            <InputNumber id="unitPrice"
+                         class="form-control"
+                         placeholder="Unit price"
+                         @bind-Value="Supplier!.UnitPrice"/>
+        </div>
+        <div style="margin-top:10px">
+            <label>Notes</label>
+            <QuillEditor @ref="@_quillEditor" Placeholder="Enter notes here">
+                <ToolbarContent><EditorToolbarContent/></ToolbarContent>
+                <EditorContent/>
+            </QuillEditor>
+        </div>
+        <div style="margin-top:10px">
+            <button type="submit"
+                    class="btn btn-sm btn-outline-primary">
+                @(_isNew ? "Add" : "Update")
+            </button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private bool _isNew;
+
+    [Parameter]
+    public required Part Part { get; set; }
+
+    [Parameter]
+    public Supplier? Supplier { get; set; }
+    [CascadingParameter]
+    BlazoredModalInstance? Modal { get; set; }
+    private QuillEditor? _quillEditor;
+    private bool _contentLoaded;
+
+    protected override void OnInitialized()
+    {
+        _isNew = Supplier is null;
+        Supplier ??= new Supplier();
+        StateHasChanged();
+    }
+
+    private async void HandleValidSubmit()
+    {
+        if (Supplier is null)
+        {
+            throw new NotSupportedException("Supplier is null");
+        }
+        
+        Supplier.Notes = await _quillEditor!.GetContent();
+        Supplier.HtmlNotes = await _quillEditor.GetHtml();
+        
+        if (_isNew)
+        {
+            Part.Suppliers.Add(Supplier);
+        }
+        
+        PartService.UpdatePart(Part);
+        await Modal!.CloseAsync(ModalResult.Ok(Supplier));
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_quillEditor is null) return;
+        if (_contentLoaded) return;
+
+        if (Supplier!.Notes.HasContent())
+        {
+            await _quillEditor.LoadContent(Supplier.Notes);
+        }
+
+        _contentLoaded = true;
+    }
+
+    private async void SelectName()
+    {
+        if (Supplier is null) return;
+        var previous = Supplier.Name;
+        await SupplierUiService.SelectName(Part, Supplier);
+        if (previous == Supplier.Name) return;
+        StateHasChanged();
+    }
+
+}

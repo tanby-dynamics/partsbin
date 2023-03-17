@@ -29,11 +29,13 @@ public class PartUiService : IPartUiService
 {
     private readonly IModalService _modalService;
     private readonly IPartFieldService _partFieldService;
+    private readonly ISelectStringUiService _selectStringUiService;
 
-    public PartUiService(IModalService modalService, IPartFieldService partFieldService)
+    public PartUiService(IModalService modalService, IPartFieldService partFieldService, ISelectStringUiService selectStringUiService)
     {
         _modalService = modalService;
         _partFieldService = partFieldService;
+        _selectStringUiService = selectStringUiService;
     }
     
     public async Task<Part?> AddPart(
@@ -93,7 +95,7 @@ public class PartUiService : IPartUiService
     {
         var partTypes = _partFieldService.GetUniquePartTypes()
             .OrderBy(x => x);
-        var result = await ShowSelectStringModal(
+        var result = await _selectStringUiService.ShowModal(
             part?.PartType ?? string.Empty,
             partTypes,
             "Select part type");
@@ -107,7 +109,7 @@ public class PartUiService : IPartUiService
     {
         var ranges = _partFieldService.GetUniqueRanges()
             .OrderBy(x => x);
-        var result = await ShowSelectStringModal(
+        var result = await _selectStringUiService.ShowModal(
             part?.Range ?? string.Empty, 
             ranges, 
             "Select range");
@@ -121,7 +123,7 @@ public class PartUiService : IPartUiService
     {
         var partNames = _partFieldService.GetUniquePartNames()
             .OrderBy(x => x);
-        var result = await ShowSelectStringModal(
+        var result = await _selectStringUiService.ShowModal(
             part?.PartName ?? string.Empty, 
             partNames, 
             "Select part name");
@@ -135,7 +137,7 @@ public class PartUiService : IPartUiService
     {
         var packageTypes = _partFieldService.GetUniquePackageTypes()
             .OrderBy(x => x);
-        var result = await ShowSelectStringModal(
+        var result = await _selectStringUiService.ShowModal(
             part?.PackageType ?? string.Empty, 
             packageTypes, 
             "Select package type");
@@ -149,7 +151,7 @@ public class PartUiService : IPartUiService
     {
         var valueUnits = _partFieldService.GetUniqueValueUnits()
             .OrderBy(x => x);
-        var result = await ShowSelectStringModal(
+        var result = await _selectStringUiService.ShowModal(
             part?.ValueUnit ?? string.Empty, 
             valueUnits, 
             "Select value unit");
@@ -163,7 +165,7 @@ public class PartUiService : IPartUiService
     {
         var manufacturers = _partFieldService.GetUniqueManufacturers()
             .OrderBy(x => x);
-        var result = await ShowSelectStringModal(
+        var result = await _selectStringUiService.ShowModal(
             part?.Manufacturer ?? string.Empty, 
             manufacturers, 
             "Select manufacturer");
@@ -177,7 +179,7 @@ public class PartUiService : IPartUiService
     {
         var partNumbers = _partFieldService.GetUniquePartNumbers()
             .OrderBy(x => x);
-        var result = await ShowSelectStringModal(
+        var result = await _selectStringUiService.ShowModal(
             part?.PartNumber ?? string.Empty, 
             partNumbers, 
             "Select part number");
@@ -191,7 +193,7 @@ public class PartUiService : IPartUiService
     {
         var locations = _partFieldService.GetUniqueLocations()
             .OrderBy(x => x);
-        var result = await ShowSelectStringModal(
+        var result = await _selectStringUiService.ShowModal(
             part?.Location ?? string.Empty, 
             locations, 
             "Select location");
@@ -201,21 +203,6 @@ public class PartUiService : IPartUiService
         part!.Location = result.Data as string;
     }
 
-    private async Task<ModalResult> ShowSelectStringModal(
-        string selected, 
-        IEnumerable<string> selections,
-        string title = "Select item")
-    {
-        var parameters = new ModalParameters
-        {
-            { "SelectedString", selected },
-            { "Selections", selections },
-        };
-        var options = new ModalOptions { Position = ModalPosition.Middle };
-        var modal = _modalService.Show<SelectStringModal>(title, parameters, options);
-        
-        return await modal.Result;
-    }
 
     public async Task<bool> Confirm(string title, string caption = "Are you sure")
     {

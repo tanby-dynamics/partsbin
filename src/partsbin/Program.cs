@@ -16,7 +16,10 @@ builder.Services
     .AddSingleton<IPartFieldService, PartFieldService>()
     .AddSingleton<ISearchFactory>(new SearchFactory(builder.Environment.IsProduction()))
     .AddScoped<IPartUiService, PartUiService>()
-    .AddScoped<INavService, NavService>();
+    .AddScoped<INavService, NavService>()
+    .AddScoped<ISupplierUiService, SupplierUiService>()
+    .AddScoped<ISelectStringUiService, SelectStringUiService>()
+    .AddScoped<ISupplierService, SupplierService>();
 
 var app = builder.Build();
 
