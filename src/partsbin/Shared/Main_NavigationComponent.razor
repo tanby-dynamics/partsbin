@@ -1,4 +1,5 @@
-@inject IJSRuntime JsRuntime;
+@inject INavService NavService;
+
 <nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">partsbin</a>
@@ -33,14 +34,14 @@
                         <NavLink class="nav-link" 
                                  href="." 
                                  Match="NavLinkMatch.All"
-                                 @onclick="@HideOffcanvasNavbar">
+                                 @onclick="@NavService.HideNavbar">
                             <span class="oi oi-home" aria-hidden="true"></span> Home
                         </NavLink>
                     </li>
                     <li class="nav-item">
                         <NavLink class="nav-link" 
                                  href="/all-parts"
-                                 @onclick="@HideOffcanvasNavbar">
+                                 @onclick="@NavService.HideNavbar">
                             <span class="oi oi-box" aria-hidden="true"></span> All parts
                         </NavLink>
                     </li>
@@ -56,35 +57,35 @@
                             <li>
                                 <NavLink class="nav-link" 
                                          href="/part-types"
-                                         @onclick="@HideOffcanvasNavbar">
+                                         @onclick="@NavService.HideNavbar">
                                     Part type
                                 </NavLink>
                             </li>
                             <li>
                                 <NavLink class="nav-link" 
                                          href="/ranges"
-                                         @onclick="@HideOffcanvasNavbar">
+                                         @onclick="@NavService.HideNavbar">
                                     Range
                                 </NavLink>
                             </li>
                             <li>
                                 <NavLink class="nav-link" 
                                          href="/part-names"
-                                         @onclick="@HideOffcanvasNavbar">
+                                         @onclick="@NavService.HideNavbar">
                                     Part name
                                 </NavLink>
                             </li>
                             <li>
                                 <NavLink class="nav-link" 
                                          href="/manufacturers"
-                                         @onclick="@HideOffcanvasNavbar">
+                                         @onclick="@NavService.HideNavbar">
                                     Manufacturer
                                 </NavLink>
                             </li>
                             <li>
                                 <NavLink class="nav-link" 
                                          href="/locations"
-                                         @onclick="@HideOffcanvasNavbar">
+                                         @onclick="@NavService.HideNavbar">
                                     Location
                                 </NavLink>
                             </li>
@@ -93,14 +94,14 @@
                     <li>
                         <NavLink class="nav-link" 
                                  href="/admin"
-                                 @onclick="@HideOffcanvasNavbar">
+                                 @onclick="@NavService.HideNavbar">
                             <span class="oi oi-cog"></span> Admin
                         </NavLink>
                     </li>
                     <li>
                         <NavLink class="nav-link"
                                  href="/rubbish-bin"
-                                 @onclick="@HideOffcanvasNavbar">
+                                 @onclick="@NavService.HideNavbar">
                             <span class="oi oi-trash" aria-hidden="true"></span> Rubbish bin
                         </NavLink>
                     </li>
@@ -113,9 +114,4 @@
 
 
 @code {
-    [JSInvokable]
-    public async Task HideOffcanvasNavbar()
-    {
-        await JsRuntime.InvokeVoidAsync("hideOffcanvasNavbar");
-    }
 }

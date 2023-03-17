@@ -9,12 +9,14 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddBlazoredModal();
 builder.Services.AddBlazoredToast();
-builder.Services.AddSingleton<IDbFactory>(new DbFactory(builder.Environment.IsProduction()));
-builder.Services.AddSingleton<IPartService, PartService>();
-builder.Services.AddSingleton<IPartSearchService, PartSearchService>();
-builder.Services.AddSingleton<IPartFieldService, PartFieldService>();
-builder.Services.AddSingleton<ISearchFactory>(new SearchFactory(builder.Environment.IsProduction()));
-builder.Services.AddScoped<IPartUiService, PartUiService>();
+builder.Services
+    .AddSingleton<IDbFactory>(new DbFactory(builder.Environment.IsProduction()))
+    .AddSingleton<IPartService, PartService>()
+    .AddSingleton<IPartSearchService, PartSearchService>()
+    .AddSingleton<IPartFieldService, PartFieldService>()
+    .AddSingleton<ISearchFactory>(new SearchFactory(builder.Environment.IsProduction()))
+    .AddScoped<IPartUiService, PartUiService>()
+    .AddScoped<INavService, NavService>();
 
 var app = builder.Build();
 
