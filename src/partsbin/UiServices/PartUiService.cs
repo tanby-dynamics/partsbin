@@ -22,6 +22,7 @@ public interface IPartUiService
     Task SelectManufacturer(Part part);
     Task SelectLocation(Part part);
     Task<bool> Confirm(string title, string caption = "Are you sure?");
+    Task SelectPartNumber(Part part);
 }
 
 public class PartUiService : IPartUiService
@@ -170,6 +171,20 @@ public class PartUiService : IPartUiService
         if (result.Cancelled || result.Data is null) return;
 
         part!.Manufacturer = result.Data as string;
+    }
+
+    public async Task SelectPartNumber(Part part)
+    {
+        var partNumbers = _partFieldService.GetUniquePartNumbers()
+            .OrderBy(x => x);
+        var result = await ShowSelectStringModal(
+            part?.PartNumber ?? string.Empty, 
+            partNumbers, 
+            "Select part number");
+
+        if (result.Cancelled || result.Data is null) return;
+
+        part!.PartNumber = result.Data as string;
     }
 
     public async Task SelectLocation(Part part)

@@ -30,6 +30,8 @@
 @code {
     [Parameter]
     public required Part Part { get; set; }
+    [Parameter]
+    public EventCallback<Part> PartChanged { get; set; }
 
     [Parameter]
     public bool Outline { get; set; } = false;
@@ -68,19 +70,22 @@
         }
         
         StateHasChanged();
+        await PartChanged.InvokeAsync(Part);
     }
 
-    private void IncreaseQuantity()
+    private async void IncreaseQuantity()
     {
         Part.Quantity++;
         PartService.UpdatePart(Part);
         StateHasChanged();
+        await PartChanged.InvokeAsync(Part);
     }
     
-    private void DecreaseQuantity()
+    private async void DecreaseQuantity()
     {
         Part.Quantity--;
         PartService.UpdatePart(Part);
         StateHasChanged();
+        await PartChanged.InvokeAsync(Part);
     }
 }

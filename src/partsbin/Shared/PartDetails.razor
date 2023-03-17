@@ -62,8 +62,10 @@
 @if (Part.PartNumber.HasContent())
 {
     <span>
-        Part number: 
-        <strong>@Part.PartNumber</strong>
+        Part number:
+        <a href="/all-parts/by-part-number/@Part.PartNumber">
+            <strong>@Part.PartNumber</strong>
+        </a>
         <a href="https://www.google.com/search?q=@UrlEncode(Part.PartNumber ?? "")" target="_blank" title="Google this part number">
             <i class="oi oi-magnifying-glass"></i>
         </a>

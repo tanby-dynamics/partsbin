@@ -18,6 +18,8 @@ public interface IPartFieldService
     IEnumerable<string> GetUniqueManufacturers();
     IEnumerable<string> GetUniqueLocations();
     IEnumerable<(string location, int quantity)> GetUniqueLocationsAndCounts();
+    IEnumerable<(string partNumber, int quantity)> GetUniquePartNumbersAndCounts();
+    IEnumerable<string> GetUniquePartNumbers();
 }
 
 public class PartFieldService : IPartFieldService
@@ -174,6 +176,13 @@ public class PartFieldService : IPartFieldService
             .Distinct();
     }
 
+    public IEnumerable<string> GetUniquePartNumbers()
+    {
+        return GetUniquePartNumbersAndCounts()
+            .Select(x => x.partNumber)
+            .Distinct();
+    }
+
     public IEnumerable<(string manufacturer, int quantity)> GetUniqueManufacturersAndCounts()
     {
         using var db = _dbFactory.GetDatabase();
@@ -199,6 +208,26 @@ public class PartFieldService : IPartFieldService
         return GetUniqueLocationsAndCounts()
             .Select(x => x.location)
             .Distinct();
+    }
+
+    public IEnumerable<(string partNumber, int quantity)> GetUniquePartNumbersAndCounts()
+    {
+        using var db = _dbFactory.GetDatabase();
+        
+        var result = db.GetCollection<Part>()
+            .Query()
+            .Where(x => !x.IsDeleted)
+            .Where(x => x.PartNumber != null && x.PartNumber != string.Empty)
+            .Select(x => new { x.PartNumber, x.Quantity})
+            .ToList()
+            .GroupBy(x => x.PartNumber, x=>x.Quantity)
+            .Select(x => new
+            {
+                PartNumber = x.Key,
+                Quantity = x.Sum()
+            });
+
+        return result.Select(x => (x.PartNumber!, x.Quantity));
     }
 
     public IEnumerable<(string location, int quantity)> GetUniqueLocationsAndCounts()

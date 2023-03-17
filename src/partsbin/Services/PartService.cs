@@ -76,6 +76,7 @@ public class PartService : IPartService
             "by-part-name" => parts.Where(x => x.PartName != null && x.PartName.ToLower() == qualifier),
             "by-manufacturer" => parts.Where(x => x.Manufacturer != null && x.Manufacturer.ToLower() == qualifier),
             "by-location" => parts.Where(x => x.Location != null && x.Location.ToLower() == qualifier),
+            "by-part-number" => parts.Where(x => x.PartNumber != null && x.PartNumber.ToLower() == qualifier),
             _ => parts
         };
         

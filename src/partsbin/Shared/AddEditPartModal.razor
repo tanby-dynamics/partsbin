@@ -134,10 +134,17 @@
         </div>
         <div style="margin-top: 10px;">
             <label for="partNumber">Part number</label>
-            <InputText id="partNumber"
-                       class="form-control"
-                       placeholder="Part number (eg. 'XC3802')"
-                       @bind-Value="Part.PartNumber"/>
+            <div class="input-group">
+                <InputText id="partNumber"
+                           class="form-control"
+                           placeholder="Part number (eg. 'XC3802')"
+                           @bind-Value="Part.PartNumber"/>
+                <button class="btn btn-outline-secondary"
+                        @onclick:preventDefault
+                        @onclick="@SelectPartNumber">
+                    <i class="oi oi-magnifying-glass"></i>
+                </button>
+            </div>
         </div>
         @if (_isNew)
         {
@@ -320,6 +327,15 @@
         var previous = Part.Manufacturer;
         await PartUiService.SelectManufacturer(Part);
         if (previous == Part.Manufacturer) return;
+        StateHasChanged();
+    }
+    
+    private async void SelectPartNumber()
+    {
+        if (Part is null) return;
+        var previous = Part.PartNumber;
+        await PartUiService.SelectPartNumber(Part);
+        if (previous == Part.PartNumber) return;
         StateHasChanged();
     }
 

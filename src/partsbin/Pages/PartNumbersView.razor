@@ -1,0 +1,45 @@
+@page "/part-numbers"
+@using partsbin.Services
+@inject IPartFieldService PartFieldService;
+
+<h3>Part numbers</h3>
+
+@if (!_partNumbers.Any())
+{
+    <div class="alert alert-info" role="alert">
+        No part numbers have been added
+    </div>
+}
+else
+{
+    <table class="table border">
+        <thead>
+        <tr>
+            <th>Part numbers</th>
+            <th>Total quantity</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var partNumber in _partNumbers)
+        {
+            <tr>
+                <td>
+                    <a href="/all-parts/by-part-number/@partNumber.partNumber">
+                        @partNumber.partNumber
+                    </a>
+                </td>
+                <td>@partNumber.quantity</td>
+            </tr>
+        }
+        </tbody>
+    </table>    
+}
+
+@code {
+    private IEnumerable<(string partNumber, int quantity)> _partNumbers = new List<(string, int)>();
+
+    protected override void OnInitialized()
+    {
+        _partNumbers = PartFieldService.GetUniquePartNumbersAndCounts();
+    }
+}

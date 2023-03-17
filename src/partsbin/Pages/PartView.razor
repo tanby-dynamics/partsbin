@@ -36,7 +36,8 @@ else
         <h5 class="card-header">
             <div class="row">
                 <div class="col-6">
-                    <PartQuantity Part="_part"/>
+                    <PartQuantity Part="_part"
+                                  PartChanged="@OnPartChanged"/>
                 </div>
                 <div class="col-6 text-end">
                     <div class="dropdown">
@@ -254,5 +255,11 @@ else
         PartService.UpdatePart(_part);
         ToastService.ShowSuccess("The part has been deleted. You can recover it from the rubbish bin.");
         NavigationManager.NavigateTo("/");
+    }
+
+    private void OnPartChanged(Part part)
+    {
+        _part = part;
+        StateHasChanged();
     }
 }
