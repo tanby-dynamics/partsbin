@@ -2,9 +2,9 @@ name: Build image and deploy to Docker Hub
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+#  push:
+#    branches:
+#      - main
 
 jobs:
   # Build and push an image built on both ubuntu-latest (AMD64) and macOS (ARM64)
