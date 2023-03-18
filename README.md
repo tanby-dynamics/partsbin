@@ -17,27 +17,12 @@ The data file location is configurable, I suggest using `docker compose` per the
 Please see the [installation guide](https://partsbin.page/installation-guide) on [partsbin.page](https://partsbin.page).
 
 
-## Release plans
-Note that this is subject to change.
+## Future plans
+Check out the [project board](https://github.com/users/becdetat/projects/3/views/4) to see what I've tentatively pencilled in. Note that there aren't any version numbers—I'll just be doing some work and releasing it as another point release whenever I'm happy with it.
 
-### Release 0.2
-- 'enter' to search
-- Give 'part number' a little link to open a Google search for it
-- "Add to home screen" option in Admin for mobile devices
-- Supplier management for parts
-- List supplier name/site/contact details separately from parts, and allow selecting them when editing a part (for some data normalisation)
-- Order management - what have I ordered from which suppliers
-- Documentation management for parts
-- Perhaps uploading arbitrary files (docs, images, etc)
-- Adding arbitrary links
-
-### Release 0.3
-- Some kind of project management, like 1. create a project 2. add parts to it 3. add docs 4. generate a BOM (spreadsheet with supplier links)
-- ChatGPT prompt generation, like "Given an Arduino Uno and a shift register how do I make the Knight Rider animation?"
-- Look into auth/access management via an additional Docker image
-
-### ???
 Please submit your ideas and suggestions [here](https://github.com/becdetat/partsbin/issues).
+
+And of course, pull requests are always welcome.
 
 
 ## Design choices
@@ -60,6 +45,6 @@ Please submit your ideas and suggestions [here](https://github.com/becdetat/part
 ## Contributing
 You can contribute just by making bug reports or suggestions, or you can put your valuable time into writing new features or fixing bugs. See the [contribution guide](CONTRIB.md) for more information. Read through the [Code of Conduct](code-of-conduct.md) too please.
 
-All contributors (code, bug reports, suggestions) wiil be noted in the [Hall of Fame](hall-of-fame.md) (which will probably be included in the app some time).
+All contributors (code, bug reports, suggestions) wiil be noted in the [Hall of Fame](hall-of-fame.md).
 
 
