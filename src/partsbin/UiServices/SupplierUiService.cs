@@ -17,17 +17,15 @@ public interface ISupplierUiService
 public class SupplierUiService : ISupplierUiService
 {
     private readonly IModalService _modalService;
-    private readonly IPartService _partService;
     private readonly ISupplierService _supplierService;
     private readonly ISelectStringUiService _selectStringUiService;
 
     public SupplierUiService(
         IModalService modalService,
-        IPartService partService,
-        ISupplierService supplierService, ISelectStringUiService selectStringUiService)
+        ISupplierService supplierService, 
+        ISelectStringUiService selectStringUiService)
     {
         _modalService = modalService;
-        _partService = partService;
         _supplierService = supplierService;
         _selectStringUiService = selectStringUiService;
     }

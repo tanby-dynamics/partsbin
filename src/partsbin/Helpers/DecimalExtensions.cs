@@ -44,4 +44,13 @@ public static class DecimalExtensions
         
         return s;
     }
+
+    public static string FormatCurrency(this decimal d, CultureInfo cultureInfo)
+    {
+        var currency = d.ToString("C", cultureInfo);
+        var fullPrecision = d.ToString("G1000");
+
+        return string.Format($"{currency} ({fullPrecision})");
+    }
+    
 }

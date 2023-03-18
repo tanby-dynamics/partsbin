@@ -20,7 +20,10 @@ builder.Services
     .AddScoped<ISupplierUiService, SupplierUiService>()
     .AddScoped<ISelectStringUiService, SelectStringUiService>()
     .AddScoped<ISupplierService, SupplierService>()
-    .AddScoped<IPartDocumentUiService, PartDocumentUiService>();
+    .AddScoped<IPartDocumentUiService, PartDocumentUiService>()
+    .AddSingleton<IRuntimeConfigService, RuntimeConfigService>()
+    .AddSingleton<IRuntimeConfigService, RuntimeConfigService>()
+    .AddScoped<IRuntimeConfigUiService, RuntimeConfigUiService>();
 
 var app = builder.Build();
 

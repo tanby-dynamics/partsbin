@@ -3,6 +3,8 @@
 @inject IPartSearchService PartSearchService
 @inject IToastService ToastService;
 @inject IPartService PartService;
+@inject IRuntimeConfigService RuntimeConfigService;
+@inject IModalService ModalService;
 
 <h3>Administration</h3>
 
@@ -66,6 +68,19 @@
             </div>
         </div>
     </div>
+    <div class="col-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Runtime configuration</h5>
+                <button type="button"
+                        class="btn btn-primary"
+                        @onclick:preventDefault
+                        @onclick="@EditRuntimeConfiguration">
+                    Edit configuration
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 @code {
@@ -82,5 +97,27 @@
         foreach (var part in parts) PartSearchService.IndexPart(part);
         
         ToastService.ShowSuccess($"Completed reindexing {parts.Length} parts");
+    }
+
+    private async Task EditRuntimeConfiguration()
+    {
+        var config = RuntimeConfigService.GetRuntimeConfig();
+        var parameters = new ModalParameters
+        {
+            { "Config", config }
+        };
+        var modalOptions = new ModalOptions
+        {
+            DisableBackgroundCancel = true
+        };
+        var modal = ModalService.Show<EditRuntimeConfigModal>(
+            "Edit configuration",
+            parameters,
+            modalOptions);
+        var result = await modal.Result;
+
+        if (!result.Confirmed) return;
+        
+        ToastService.ShowSuccess("Runtime configuration updated");
     }
 }

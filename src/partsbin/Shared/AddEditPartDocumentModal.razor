@@ -81,7 +81,7 @@
 
         if (Document!.Notes.HasContent())
         {
-            await _quillEditor.LoadContent(Document.Notes);
+            await _quillEditor.LoadContent(Document.Notes!);
         }
 
         _contentLoaded = true;

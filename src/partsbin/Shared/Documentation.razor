@@ -38,7 +38,7 @@
                     @if (document.HtmlNotes.HasContent())
                     {
                         <span>Notes:</span><br/>
-                        @((MarkupString)document.HtmlNotes)
+                        @((MarkupString)document.HtmlNotes!)
                     }
                 </div>
                 <div class="card-footer">

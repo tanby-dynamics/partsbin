@@ -1,8 +1,10 @@
 @using partsbin.Helpers
 @using partsbin.Services
+@using System.Globalization
 @inject IPartService PartService; 
 @inject IToastService ToastService;
 @inject ISupplierUiService SupplierUiService;
+@inject IRuntimeConfigService RuntimeConfigService;
 
 <div class="row">
     <div class="col-6">
@@ -47,8 +49,10 @@
                     @if (supplier.UnitPrice != 0.0m)
                     {
                         <p>
-                            <span>Unit price:</span> 
-                            @supplier.UnitPrice.FormatCompact()
+                            Unit price:
+                            <strong>
+                                @supplier.UnitPrice.FormatCurrency(_cultureInfo)
+                            </strong>
                         </p>
                     }
                     @if (supplier.HtmlNotes.HasContent())
@@ -77,6 +81,13 @@
 @code {
     [Parameter]
     public required Part Part { get; set; }
+    private CultureInfo _cultureInfo = CultureInfo.InvariantCulture;
+
+    protected override void OnInitialized()
+    {
+        var config = RuntimeConfigService.GetRuntimeConfig();
+        _cultureInfo = CultureInfo.GetCultureInfo(config.CultureName);
+    }
 
     private async void Add()
     {

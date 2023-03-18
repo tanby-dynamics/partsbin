@@ -1,0 +1,86 @@
+@using partsbin.Helpers
+<EditForm Model="@this" 
+          OnValidSubmit="HandleValidSubmit"
+          @onkeypress="HandleKeyPress">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="form-group">
+        <div style="margin-top:10px">
+            <InputSelect id="select"
+                         class="form-select form-select-lg"
+                         @bind-Value="@SelectedCombinedString"
+                         size="16"
+                         @ondblclick="HandleValidSubmit">
+                @foreach (var selection in Selections)
+                {
+                    <option>@EntryToString(selection)</option>
+                }
+            </InputSelect>
+        </div>
+        <div style="margin-top:10px">
+            <button type="submit"
+                    class="btn btn-outline-primary">
+                Select
+            </button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public string SelectedString { get; set; } = "";
+
+    [Parameter]
+    public required IEnumerable<TwoColumnEntry> Selections { get; set; } = Array.Empty<TwoColumnEntry>();
+
+    [Parameter]
+    public required KeyColumn KeyColumn { get; set; } = KeyColumn.Col1;
+    
+    [CascadingParameter]
+    BlazoredModalInstance? Modal { get; set; }
+
+    string SelectedCombinedString { get; set; } = string.Empty;
+
+    public string EntryToString(TwoColumnEntry entry)
+        => $"{entry.Col1} ({entry.Col2})";
+
+    protected override void OnInitialized()
+    {
+        var selectedEntry = Selections
+            .SingleOrDefault(x => KeyColumn == KeyColumn.Col1
+                ? x.Col1 == SelectedString
+                : x.Col2 == SelectedString);
+        SelectedCombinedString = EntryToString(selectedEntry);
+
+    }
+
+    private async void HandleValidSubmit()
+    {
+        await Modal!.CloseAsync(ModalResult.Ok(GetSelectedKey()));
+    }
+
+    string GetSelectedKey()
+    {
+        var selectedEntry = Selections
+            .SingleOrDefault(x => EntryToString(x) == SelectedCombinedString);
+        var selectedKey = KeyColumn == KeyColumn.Col1
+            ? selectedEntry.Col1
+            : selectedEntry.Col2;
+
+        return selectedKey;
+    }
+
+    private async void HandleKeyPress(KeyboardEventArgs e)
+    {
+        
+        switch (e.Code)
+        {
+            case "Escape":
+                await Modal!.CloseAsync(ModalResult.Cancel());
+                break;
+            case "Enter" when SelectedString.HasContent():
+                await Modal!.CloseAsync(ModalResult.Ok(GetSelectedKey()));
+                break;
+        }
+    }
+}

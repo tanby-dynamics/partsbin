@@ -1,0 +1,52 @@
+@using partsbin.Services
+@using System.Globalization
+@using partsbin.Helpers
+@inject IRuntimeConfigUiService RuntimeConfigUiService;
+@inject IRuntimeConfigService RuntimeConfigService;
+
+<EditForm Model="@Config"
+          OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="form-group">
+        <div style="margin-top:10px">
+            <label for="name">Culture</label>
+            <div class="input-group">
+                <InputText id="culture"
+                           class="form-control"
+                           placeholder="Culture name"
+                           @bind-Value="Config.CultureName"/>
+                <button class="btn btn-outline-secondary"
+                        @onclick:preventDefault
+                        @onclick="@SelectCulture">
+                    <i class="oi oi-magnifying-glass"></i>
+                </button>
+            </div>
+        </div>
+        <div style="margin-top:10px">
+            <button type="submit"
+                    class="btn btn-sm btn-outline-primary">
+                Update
+            </button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public required RuntimeConfig Config { get; set; }
+    [CascadingParameter]
+    BlazoredModalInstance? Modal { get; set; }
+
+    private async void HandleValidSubmit()
+    {
+        RuntimeConfigService.SetRuntimeConfig(Config);
+        await Modal!.CloseAsync(ModalResult.Ok(Config));
+    }
+
+    private async void SelectCulture()
+    {
+        Config.CultureName = await RuntimeConfigUiService.SelectCulture(Config);
+        StateHasChanged();
+    }
+}

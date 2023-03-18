@@ -13,6 +13,12 @@ public static class ObjectExtensions
             return;
         }
 
+        if (obj is string or int or double or decimal)
+        {
+            Console.WriteLine(obj);
+            return;
+        }
+
         var objType = obj.GetType();
         var properties = objType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
