@@ -33,7 +33,7 @@ jobs:
           context: ./src
           push: true
           tags: |
-            becdetat/partsbin:${{ github.sha }}-{{ matrix.os }}
+            becdetat/partsbin:${{ github.run_number }}-${{ matrix.os }}
             becdetat/partsbin:latest-${{ matrix.os }}
   # Create and push up a combined manifest, so both architectures can be pulled via becdetat/partsbin:latest
   create-combined-manifest:
@@ -57,8 +57,8 @@ jobs:
         name: Push manifest
         run: docker manifest push becdetat/partsbin:latest          
   # Create a tagged GitHub release
-  create-release:
-    needs: create-combined-manifest
+  create-gh-release:
+    needs: build-and-push
     runs-on: ubuntu-latest
     steps:
       - 
