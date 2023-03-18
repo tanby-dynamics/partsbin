@@ -4,10 +4,16 @@ title: Screenshots
 permalink: /screenshots
 ---
 
-These are some screeenshots from version 0.1.
-
 ### Adding a part
 ![](/images/adding-part.png)
+
+### Add documentation
+![](/images/add-documentation.png)
+![](/images//documentation.png)
+
+### Add supplier
+![](/images/add-supplier.png)
+![](/images/suppliers.png)
 
 ### View the part
 ![](/images/view-part.png)
@@ -18,6 +24,7 @@ These are some screeenshots from version 0.1.
 ### Search results
 ![](/images/search-results.png)
 
-
+### Select culture
+![](/images/select-culture.png)
 
 
