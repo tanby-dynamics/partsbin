@@ -32,7 +32,9 @@ jobs:
         with:  
           context: ./src
           push: true
-          tags: becdetat/partsbin:latest-${{ matrix.os }}
+          tags: |
+            becdetat/partsbin:${{ github.sha }}-{{ matrix.os }}
+            becdetat/partsbin:latest-${{ matrix.os }}
   # Create and push up a combined manifest, so both architectures can be pulled via becdetat/partsbin:latest
   create-combined-manifest:
     needs: build-and-push
@@ -54,3 +56,30 @@ jobs:
       -
         name: Push manifest
         run: docker manifest push becdetat/partsbin:latest          
+  # Create a tagged GitHub release
+  create-release:
+    needs: create-combined-manifest
+    runs-on: ubuntu-latest
+    steps:
+      - 
+        name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ format('release-{0}', github.run_number) }}
+          release_name: Release ${{ github.run_number }}
+          body: Automated release created by GitHub Actions
+          draft: false
+          prerelease: false
+      -
+        name: Upload asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./src
+          asset_name: release-${{ github.run_number }}.zip
+          asset_content_type: application/zip
