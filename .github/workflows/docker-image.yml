@@ -33,7 +33,7 @@ jobs:
           context: ./src
           push: true
           tags: |
-            becdetat/partsbin:${{ github.run_number }}-${{ matrix.os }}
+            becdetat/partsbin:${{ matrix.os }}-${{ github.run_number }}
             becdetat/partsbin:latest-${{ matrix.os }}
   # Create and push up a combined manifest, so both architectures can be pulled via becdetat/partsbin:latest
   create-combined-manifest:
