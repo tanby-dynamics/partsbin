@@ -41,7 +41,7 @@ public class RuntimeConfigUiService : IRuntimeConfigUiService
             }),
             title: "Select culture",
             keyColumn: KeyColumn.Col2);
-        result.Dump();
+
         return result.Cancelled ? config.CultureName : (string)result.Data!;
     }
 }
