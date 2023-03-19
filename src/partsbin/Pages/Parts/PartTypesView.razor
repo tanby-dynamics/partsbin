@@ -38,8 +38,8 @@ else
 @code {
     private IEnumerable<(string partType, int quantity)> _partTypes = new List<(string, int)>();
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
-        _partTypes = PartFieldService.GetUniquePartTypesAndCounts();
+        _partTypes = await PartFieldService.GetUniquePartTypesAndCounts();
     }
 }

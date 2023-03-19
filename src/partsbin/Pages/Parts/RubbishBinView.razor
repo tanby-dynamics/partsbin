@@ -71,14 +71,14 @@ else
 @code {
     private List<Part> _parts = new();
 
-    protected override void OnParametersSet()
+    protected override async void OnParametersSet()
     {
-        RefreshData();
+        await RefreshData();
     }
 
-    private void RefreshData()
+    private async Task RefreshData()
     {
-        _parts = PartService.GetDeletedParts()
+        _parts = (await PartService.GetDeletedParts())
             .OrderBy(x => x.PartType)
             .ThenBy(x => x.Range)
             .ThenBy(x => x.PartName)
@@ -88,18 +88,18 @@ else
         StateHasChanged();
     }
 
-    private void RestorePart(Part part)
+    private async Task RestorePart(Part part)
     {
         part.IsDeleted = false;
-        PartService.UpdatePart(part);
+        await PartService.UpdatePart(part);
         _parts.Remove(part);
         ToastService.ShowSuccess("The part has been restored");
         StateHasChanged();
     }
 
-    private void EmptyRubbishBin()
+    private async Task EmptyRubbishBin()
     {
-        PartService.EmptyRubbishBin();
+        await PartService.EmptyRubbishBin();
         _parts.Clear();
         ToastService.ShowSuccess("The rubbish bin has been emptied");
         StateHasChanged();

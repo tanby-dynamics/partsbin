@@ -38,8 +38,8 @@ else
 @code {
     private IEnumerable<(string range, int quantity)> _ranges = new List<(string, int)>();
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
-        _ranges = PartFieldService.GetUniqueRangesAndCounts();
+        _ranges = await PartFieldService.GetUniqueRangesAndCounts();
     }
 }

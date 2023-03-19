@@ -90,9 +90,9 @@
     public required Part Part { get; set; }
     private CultureInfo _cultureInfo = CultureInfo.InvariantCulture;
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
-        var config = RuntimeConfigService.GetRuntimeConfig();
+        var config = await RuntimeConfigService.GetRuntimeConfig();
         _cultureInfo = CultureInfo.GetCultureInfo(config.CultureName);
     }
 
@@ -108,10 +108,10 @@
         StateHasChanged();
     }
 
-    private void Delete(Supplier supplier)
+    private async void Delete(Supplier supplier)
     {
         Part.Suppliers.Remove(supplier);
-        PartService.UpdatePart(Part);
+        await PartService.UpdatePart(Part);
         ToastService.ShowSuccess("The supplier has been deleted");
         StateHasChanged();
     }

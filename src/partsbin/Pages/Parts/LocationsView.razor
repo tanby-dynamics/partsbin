@@ -38,8 +38,8 @@ else
 @code {
     private IEnumerable<(string location, int quantity)> _locations = new List<(string, int)>();
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
-        _locations = PartFieldService.GetUniqueLocationsAndCounts();
+        _locations = await PartFieldService.GetUniqueLocationsAndCounts();
     }
 }

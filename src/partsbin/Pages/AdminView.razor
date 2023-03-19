@@ -90,12 +90,12 @@
 
 @code {
 
-    private void TriggerReindex()
+    private async Task TriggerReindex()
     {
         ToastService.ShowInfo("Clearing search index");
         PartSearchService.ClearIndex();
         
-        var parts = PartService.GetAllParts()
+        var parts = (await PartService.GetAllParts())
             .ToArray();
 
         ToastService.ShowInfo($"Reindexing {parts.Length} parts");
@@ -106,7 +106,7 @@
 
     private async Task EditRuntimeConfiguration()
     {
-        var config = RuntimeConfigService.GetRuntimeConfig();
+        var config = await RuntimeConfigService.GetRuntimeConfig();
         var parameters = new ModalParameters
         {
             { "Config", config }

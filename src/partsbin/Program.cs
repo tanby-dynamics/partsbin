@@ -22,7 +22,8 @@ builder.Services
     .AddScoped<IPartDocumentUiService, PartDocumentUiService>()
     .AddSingleton<IRuntimeConfigService, RuntimeConfigService>()
     .AddSingleton<IRuntimeConfigService, RuntimeConfigService>()
-    .AddScoped<IRuntimeConfigUiService, RuntimeConfigUiService>();
+    .AddScoped<IRuntimeConfigUiService, RuntimeConfigUiService>()
+    .AddSingleton<IImageService, ImageService>();
 
 var app = builder.Build();
 

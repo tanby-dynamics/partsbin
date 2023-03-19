@@ -1,11 +1,12 @@
 using LiteDB;
+using LiteDB.Async;
 using partsbin.Models;
 
 namespace partsbin.Services;
 
 public interface IDbFactory
 {
-    LiteDatabase GetDatabase();
+    Task<LiteDatabaseAsync> GetDatabase();
 }
 
 public class DbFactory : IDbFactory
@@ -20,18 +21,18 @@ public class DbFactory : IDbFactory
         ? "/data/partsbin.db"
         : "./partsbin-dev.db";
 
-    public LiteDatabase GetDatabase()
+    public async Task<LiteDatabaseAsync> GetDatabase()
     {
-        var db = new LiteDatabase(DbPath);
-
+        var db = new LiteDatabaseAsync(DbPath);
+        
         // set up some indices
         var partCollection = db.GetCollection<Part>();
-        partCollection.EnsureIndex(x => x.Location);    
-        partCollection.EnsureIndex(x => x.Manufacturer);    
-        partCollection.EnsureIndex(x => x.PartName);    
-        partCollection.EnsureIndex(x => x.PartType);    
-        partCollection.EnsureIndex(x => x.Range);    
-        partCollection.EnsureIndex(x => x.PartNumber);    
+        await partCollection.EnsureIndexAsync(x => x.Location);    
+        await partCollection.EnsureIndexAsync(x => x.Manufacturer);    
+        await partCollection.EnsureIndexAsync(x => x.PartName);    
+        await partCollection.EnsureIndexAsync(x => x.PartType);    
+        await partCollection.EnsureIndexAsync(x => x.Range);    
+        await partCollection.EnsureIndexAsync(x => x.PartNumber);    
 
         return db;
     }

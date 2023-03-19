@@ -67,8 +67,7 @@ public class SupplierUiService : ISupplierUiService
 
     public async Task SelectName(Part part, Supplier supplier)
     {
-        var supplierNamesAndLinks = _supplierService
-            .GetNamesAndUrls()
+        var supplierNamesAndLinks = (await _supplierService.GetNamesAndUrls())
             .Select(x => $"{x.name} - {x.url}")
             .OrderBy(x => x);
         var result = await _selectStringUiService.ShowModal(

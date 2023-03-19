@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Reflection;
+using Microsoft.AspNetCore.Components.Infrastructure;
 
 namespace partsbin.Helpers;
 
@@ -7,25 +9,43 @@ public static class ObjectExtensions
 {
     public static void Dump(this object? obj)
     {
-        if (obj is null) 
+        switch (obj)
         {
-            Console.WriteLine("null");
-            return;
+            case null:
+                Console.WriteLine("null");
+                return;
+            case string or int or double or decimal:
+                Console.WriteLine(obj);
+                return;
         }
 
-        if (obj is string or int or double or decimal)
+        Console.Write("{0}:", obj.GetType().Name);
+
+        if (obj is IEnumerable)
         {
-            Console.WriteLine(obj);
+            Console.WriteLine(" - IEnumerable:");
+            foreach (var item in (IEnumerable)obj)
+            {
+                if (item is null) Console.WriteLine("  null");
+                else DumpProperties(item);
+            }
+
             return;
         }
+        
+        Console.WriteLine();
+        DumpProperties(obj);
+    }
 
-        var objType = obj.GetType();
-        var properties = objType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-
-        Console.WriteLine("{0}:", objType.Name);
+    private static void DumpProperties(object item)
+    {
+        var properties = item
+            .GetType()
+            .GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        
         foreach (var property in properties)
         {
-            Console.WriteLine("  {0}: {1}", property.Name, property.GetValue(obj));
+            Console.WriteLine($"  {property.Name}: {property.GetValue(item)}");
         }
     }
 }

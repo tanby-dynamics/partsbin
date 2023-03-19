@@ -93,7 +93,7 @@ public class PartUiService : IPartUiService
 
     public async Task SelectPartType(Part part)
     {
-        var partTypes = _partFieldService.GetUniquePartTypes()
+        var partTypes = (await _partFieldService.GetUniquePartTypes())
             .OrderBy(x => x);
         var result = await _selectStringUiService.ShowModal(
             part?.PartType ?? string.Empty,
@@ -107,7 +107,7 @@ public class PartUiService : IPartUiService
 
     public async Task SelectRange(Part part)
     {
-        var ranges = _partFieldService.GetUniqueRanges()
+        var ranges = (await _partFieldService.GetUniqueRanges())
             .OrderBy(x => x);
         var result = await _selectStringUiService.ShowModal(
             part?.Range ?? string.Empty, 
@@ -121,7 +121,7 @@ public class PartUiService : IPartUiService
 
     public async Task SelectPartName(Part part)
     {
-        var partNames = _partFieldService.GetUniquePartNames()
+        var partNames = (await _partFieldService.GetUniquePartNames())
             .OrderBy(x => x);
         var result = await _selectStringUiService.ShowModal(
             part?.PartName ?? string.Empty, 
@@ -135,7 +135,7 @@ public class PartUiService : IPartUiService
 
     public async Task SelectPackageType(Part part)
     {
-        var packageTypes = _partFieldService.GetUniquePackageTypes()
+        var packageTypes = (await _partFieldService.GetUniquePackageTypes())
             .OrderBy(x => x);
         var result = await _selectStringUiService.ShowModal(
             part?.PackageType ?? string.Empty, 
@@ -149,7 +149,7 @@ public class PartUiService : IPartUiService
 
     public async Task SelectValueUnit(Part part)
     {
-        var valueUnits = _partFieldService.GetUniqueValueUnits()
+        var valueUnits = (await _partFieldService.GetUniqueValueUnits())
             .OrderBy(x => x);
         var result = await _selectStringUiService.ShowModal(
             part?.ValueUnit ?? string.Empty, 
@@ -163,7 +163,7 @@ public class PartUiService : IPartUiService
 
     public async Task SelectManufacturer(Part part)
     {
-        var manufacturers = _partFieldService.GetUniqueManufacturers()
+        var manufacturers = (await _partFieldService.GetUniqueManufacturers())
             .OrderBy(x => x);
         var result = await _selectStringUiService.ShowModal(
             part?.Manufacturer ?? string.Empty, 
@@ -177,7 +177,7 @@ public class PartUiService : IPartUiService
 
     public async Task SelectPartNumber(Part part)
     {
-        var partNumbers = _partFieldService.GetUniquePartNumbers()
+        var partNumbers = (await _partFieldService.GetUniquePartNumbers())
             .OrderBy(x => x);
         var result = await _selectStringUiService.ShowModal(
             part?.PartNumber ?? string.Empty, 
@@ -191,7 +191,7 @@ public class PartUiService : IPartUiService
 
     public async Task SelectLocation(Part part)
     {
-        var locations = _partFieldService.GetUniqueLocations()
+        var locations = (await _partFieldService.GetUniqueLocations())
             .OrderBy(x => x);
         var result = await _selectStringUiService.ShowModal(
             part?.Location ?? string.Empty, 

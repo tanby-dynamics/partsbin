@@ -5,8 +5,8 @@ namespace partsbin.Services;
 
 public interface IRuntimeConfigService
 {
-    RuntimeConfig GetRuntimeConfig();
-    void SetRuntimeConfig(RuntimeConfig config);
+    Task<RuntimeConfig> GetRuntimeConfig();
+    Task SetRuntimeConfig(RuntimeConfig config);
 }
 
 public class RuntimeConfigService : IRuntimeConfigService
@@ -18,12 +18,12 @@ public class RuntimeConfigService : IRuntimeConfigService
         _dbFactory = dbFactory;
     }
 
-    public RuntimeConfig GetRuntimeConfig()
+    public async Task<RuntimeConfig> GetRuntimeConfig()
     {
-        using var db = _dbFactory.GetDatabase();
-        var config = db.GetCollection<RuntimeConfig>()
+        using var db = await _dbFactory.GetDatabase();
+        var config = await db.GetCollection<RuntimeConfig>()
             .Query()
-            .SingleOrDefault();
+            .SingleOrDefaultAsync();
 
         if (config is not null) return config;
         
@@ -32,17 +32,17 @@ public class RuntimeConfigService : IRuntimeConfigService
             CultureName = CultureInfo.CurrentCulture.Name
         };
         
-        SetRuntimeConfig(newConfig);
+        await SetRuntimeConfig(newConfig);
 
         return newConfig;
     }
 
-    public void SetRuntimeConfig(RuntimeConfig config)
+    public async Task SetRuntimeConfig(RuntimeConfig config)
     {
-        var db = _dbFactory.GetDatabase();
+        var db = await _dbFactory.GetDatabase();
         var collection = db.GetCollection<RuntimeConfig>();
 
-        collection.DeleteAll();
-        collection.Insert(config);
+        await collection.DeleteAllAsync();
+        await collection.InsertAsync(config);
     }
 }

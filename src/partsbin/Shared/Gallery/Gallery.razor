@@ -1,15 +1,102 @@
+@using partsbin.Services
+@using partsbin.Helpers
+@using System.Net.Mime
+@inject IImageService ImageService;
+
 <div class="card">
     <div class="card-header">
         <h4>Gallery</h4>
     </div>
     <div class="card-body">
         <div class="card-text">
-            <GalleryUploader Path="Path"/>
+            <form>
+                <InputFile OnChange="@UploadImages" 
+                           multiple
+                           accept="image/*"/>
+                <button type="submit" class="btn btn-primary">Upload</button>                
+            </form>
+
+            @if (_gallery is null)
+            {
+                <p>Loading...</p>
+            }
+            else
+            {
+                <ul>
+                    @foreach (var item in _gallery)
+                    {
+                        <li>
+                            <img src="@item.base64Url"
+                                 alt="@item.image.Filename"/>
+                            <br/>
+                            <button class="btn btn-sml btn-outline-danger"
+                                    @onclick="@(async () => await DeleteImage(item.image))">
+                                Delete
+                            </button>
+                        </li>
+                    }
+                </ul>
+            }
         </div>
     </div>
 </div>
 
 @code {
     [Parameter]
-    public required string Path { get; set; }
+    public required Part Part { get; set; }
+    private IEnumerable<(Image image, string base64Url)>? _gallery = null;
+
+    protected override async void OnInitialized()
+    {
+        await RefreshGallery();
+    }
+
+    private async Task UploadImage(IBrowserFile file)
+    {
+        await ImageService.Upload(file, part: Part);
+    }
+
+    private async void UploadImages(InputFileChangeEventArgs arg)
+    {
+        _gallery = null;
+        var files = arg.GetMultipleFiles(arg.FileCount);
+
+        foreach (var file in files) await UploadImage(file);
+
+        await RefreshGallery();
+    }
+
+    async Task RefreshGallery()
+    {
+        _gallery = await GetGallery();
+        StateHasChanged();
+    }
+
+    async Task<IEnumerable<(Image image, string base64Url)>> GetGallery()
+    {
+        var images = await ImageService.GetAllImagesForPart(Part);
+        var result = new List<(Image image, string base64Url)>();
+
+        foreach (var image in images)
+        {
+            var base64Url = await ImageService.GetBase64Url(image);
+
+            result.Add((image, base64Url));
+        }
+
+        return result.OrderBy(x => x.image.Id);
+    }
+
+    async Task DeleteImage(Image image)
+    {
+        await ImageService.Delete(image);
+        await RefreshGallery();
+    }
+
+    async Task<string> GetBase64Url(Image image)
+    {
+        var url = await ImageService.GetBase64Url(image);
+
+        return url;
+    }
 }

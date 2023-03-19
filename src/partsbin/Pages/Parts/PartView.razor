@@ -126,7 +126,7 @@ else
             <PartSuppliers Part="_part"/>
         </div>
         <div class="col-6">
-            <Gallery Path="@($"$/PartGallery/{_part.Id}")"/>
+            <Gallery Part="_part"/>
         </div>
     </div>
 }
@@ -141,21 +141,21 @@ else
     [SupplyParameterFromQuery(Name = "d")]
     public int? Duplicate { get; set; } = 0;
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
-        RefreshData();
+        await RefreshData();
     }
 
-    private void RefreshData()
+    private async Task RefreshData()
     {
-        _part = PartService.GetPart(Id);
+        _part = await PartService.GetPart(Id);
         StateHasChanged();
     }
 
     private async void Edit()
     {
         await PartUiService.EditPart(_part!);
-        RefreshData();
+        await RefreshData();
         ToastService.ShowSuccess("The part details have been updated");
     }
 
@@ -185,10 +185,10 @@ else
         ToastService.ShowSuccess("The part has been duplicated, you are working on the duplicate part now");
     }
 
-    private void DeletePart()
+    private async Task DeletePart()
     {
         _part!.IsDeleted = true;
-        PartService.UpdatePart(_part);
+        await PartService.UpdatePart(_part);
         ToastService.ShowSuccess("The part has been deleted. You can recover it from the rubbish bin.");
         NavigationManager.NavigateTo("/");
     }

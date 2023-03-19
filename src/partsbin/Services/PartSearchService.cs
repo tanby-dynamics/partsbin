@@ -11,7 +11,6 @@ public interface IPartSearchService
     void IndexPart(Part part);
     void RemovePart(Part part);
     void ClearIndex();
-
 }
 
 public class PartSearchService : IPartSearchService

@@ -230,7 +230,7 @@
             {
                 if (
                     Part.PartNumber.HasContent()
-                    && PartService.CheckForDuplicatePartNumber(Part.PartNumber!)
+                    && (await PartService.CheckForDuplicatePartNumber(Part.PartNumber!))
                 )
                 {
                     var continueAdding = await PartUiService.Confirm(
@@ -240,14 +240,14 @@
                     if (!continueAdding) return;
                 }
                 
-                Part = PartService.AddPart(Part!);
+                Part = await PartService.AddPart(Part!);
                 NavigationManager.NavigateTo($"/part/{Part.Id}");
             }
             else
             {
                 if (
                     Part.PartNumber.HasContent()
-                    && PartService.CheckForDuplicatePartNumber(Part.PartNumber!, Part.Id)
+                    && (await PartService.CheckForDuplicatePartNumber(Part.PartNumber!, Part.Id))
                     )
                 {
                     var continueAdding = await PartUiService.Confirm(
@@ -257,7 +257,7 @@
                     if (!continueAdding) return;
                 }
 
-                PartService.UpdatePart(Part!);
+                await PartService.UpdatePart(Part!);
             }
 
             await Modal!.CloseAsync(ModalResult.Ok(Part));

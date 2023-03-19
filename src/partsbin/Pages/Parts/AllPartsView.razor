@@ -75,16 +75,16 @@
     [Parameter]
     public string? Qualifier { get; set; }
 
-    protected override void OnParametersSet()
+    protected override async void OnParametersSet()
     {
-        RefreshData();
+        await RefreshData();
     }
 
-    private void RefreshData()
+    private async Task RefreshData()
     {
         var qualifier = Qualifier?.ToLower();
 
-        _parts = PartService.GetAllParts(ByType, qualifier)
+        _parts = (await PartService.GetAllParts(ByType, qualifier))
             .OrderBy(x => x.PartType)
             .ThenBy(x => x.Range)
             .ThenBy(x => x.PartName)

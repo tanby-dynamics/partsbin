@@ -5,21 +5,21 @@ namespace partsbin.Services;
 
 public interface IPartFieldService
 {
-    IEnumerable<PartTypeAndRangesResult> GetPartTypesAndRanges();
-    IEnumerable<string> GetUniquePartTypes();
-    IEnumerable<(string partType, int quantity)> GetUniquePartTypesAndCounts();
-    IEnumerable<string> GetUniqueRanges();
-    IEnumerable<(string range, int quantity)> GetUniqueRangesAndCounts();
-    IEnumerable<string> GetUniquePackageTypes();
-    IEnumerable<string> GetUniquePartNames();
-    IEnumerable<(string partName, int quantity)> GetUniquePartNamesAndCounts();
-    IEnumerable<string> GetUniqueValueUnits();
-    IEnumerable<(string manufacturer, int quantity)> GetUniqueManufacturersAndCounts();
-    IEnumerable<string> GetUniqueManufacturers();
-    IEnumerable<string> GetUniqueLocations();
-    IEnumerable<(string location, int quantity)> GetUniqueLocationsAndCounts();
-    IEnumerable<(string partNumber, int quantity)> GetUniquePartNumbersAndCounts();
-    IEnumerable<string> GetUniquePartNumbers();
+    Task<IEnumerable<PartTypeAndRangesResult>> GetPartTypesAndRanges();
+    Task<IEnumerable<string>> GetUniquePartTypes();
+    Task<IEnumerable<(string partType, int quantity)>> GetUniquePartTypesAndCounts();
+    Task<IEnumerable<string>> GetUniqueRanges();
+    Task<IEnumerable<(string range, int quantity)>> GetUniqueRangesAndCounts();
+    Task<IEnumerable<string>> GetUniquePackageTypes();
+    Task<IEnumerable<string>> GetUniquePartNames();
+    Task<IEnumerable<(string partName, int quantity)>> GetUniquePartNamesAndCounts();
+    Task<IEnumerable<string>> GetUniqueValueUnits();
+    Task<IEnumerable<(string manufacturer, int quantity)>> GetUniqueManufacturersAndCounts();
+    Task<IEnumerable<string>> GetUniqueManufacturers();
+    Task<IEnumerable<string>> GetUniqueLocations();
+    Task<IEnumerable<(string location, int quantity)>> GetUniqueLocationsAndCounts();
+    Task<IEnumerable<(string partNumber, int quantity)>> GetUniquePartNumbersAndCounts();
+    Task<IEnumerable<string>> GetUniquePartNumbers();
 }
 
 public class PartFieldService : IPartFieldService
@@ -30,12 +30,12 @@ public class PartFieldService : IPartFieldService
     {
         _dbFactory = dbFactory;
     }
-    
-    public IEnumerable<PartTypeAndRangesResult> GetPartTypesAndRanges()
-    {
-        using var db = _dbFactory.GetDatabase();
 
-        var result = db.GetCollection<Part>()
+    public async Task<IEnumerable<PartTypeAndRangesResult>> GetPartTypesAndRanges()
+    {
+        using var db = await _dbFactory.GetDatabase();
+
+        var parts = await db.GetCollection<Part>()
             .Query()
             .Where(x => !x.IsDeleted)
             .Select(x => new
@@ -43,7 +43,8 @@ public class PartFieldService : IPartFieldService
                 x.PartType,
                 x.Range
             })
-            .ToList()
+            .ToListAsync();
+        var result = parts
             .GroupBy(x => x)
             .Select(x => new PartTypeAndRangesResult
             {
@@ -55,198 +56,202 @@ public class PartFieldService : IPartFieldService
         return result;
     }
 
-    public IEnumerable<string> GetUniquePartTypes()
+    public async Task<IEnumerable<string>> GetUniquePartTypes()
     {
-        return GetUniquePartTypesAndCounts()
+        return (await GetUniquePartTypesAndCounts())
             .Select(x => x.partType)
             .Distinct();
     }
-    
-    public IEnumerable<(string partType, int quantity)> GetUniquePartTypesAndCounts()
+
+    public async Task<IEnumerable<(string partType, int quantity)>> GetUniquePartTypesAndCounts()
     {
-        using var db = _dbFactory.GetDatabase();
-        
-        var result = db.GetCollection<Part>()
+        using var db = await _dbFactory.GetDatabase();
+
+        var parts = await db.GetCollection<Part>()
             .Query()
             .Where(x => !x.IsDeleted)
             .Where(x => x.PartType != null && x.PartType != string.Empty)
             .Select(x => new { x.PartType, x.Quantity })
-            .ToList()
+            .ToListAsync();
+     
+        return parts
             .GroupBy(x => x.PartType, x => x.Quantity)
             .Select(x => new
             {
-                PartType = x.Key, 
+                PartType = x.Key,
                 Quantity = x.Sum(),
-            });
-
-        return result
+            })
             .Select(x => (x.PartType!, x.Quantity));
     }
 
-    public IEnumerable<string> GetUniqueRanges()
+    public async Task<IEnumerable<string>> GetUniqueRanges()
     {
-        return GetUniqueRangesAndCounts()
+        return (await GetUniqueRangesAndCounts())
             .Select(x => x.range)
             .Distinct();
     }
 
-    public IEnumerable<(string range, int quantity)> GetUniqueRangesAndCounts()
+    public async Task<IEnumerable<(string range, int quantity)>> GetUniqueRangesAndCounts()
     {
-        using var db = _dbFactory.GetDatabase();
-        
-        var result = db.GetCollection<Part>()
+        using var db = await _dbFactory.GetDatabase();
+
+        var ranges = await db.GetCollection<Part>()
             .Query()
             .Where(x => !x.IsDeleted)
             .Where(x => x.Range != null && x.Range != string.Empty)
-            .Select(x => new { x.Range, x.Quantity})
-            .ToList()
-            .GroupBy(x => x.Range, x => x.Quantity)
-            .Select(x =>  new
-            {
-                Range =x.Key,
-                Quantity = x.Sum()
-            });
+            .Select(x => new { x.Range, x.Quantity })
+            .ToListAsync();
 
-        return result.Select(x => (x.Range!, x.Quantity));
+        return ranges.GroupBy(x => x.Range, x => x.Quantity)
+            .Select(x => new
+            {
+                Range = x.Key,
+                Quantity = x.Sum()
+            })
+            .Select(x => (x.Range!, x.Quantity));
     }
 
-    public IEnumerable<string> GetUniquePartNames()
+    public async Task<IEnumerable<string>> GetUniquePartNames()
     {
-        return GetUniquePartNamesAndCounts()
+        return (await GetUniquePartNamesAndCounts())
             .Select(x => x.partName)
             .Distinct();
     }
 
-    public IEnumerable<(string partName, int quantity)> GetUniquePartNamesAndCounts()
+    public async Task<IEnumerable<(string partName, int quantity)>> GetUniquePartNamesAndCounts()
     {
-        using var db = _dbFactory.GetDatabase();
-        
-        var result = db.GetCollection<Part>()
+        using var db = await _dbFactory.GetDatabase();
+
+        var partNames = await db.GetCollection<Part>()
             .Query()
             .Where(x => !x.IsDeleted)
             .Where(x => x.PartName != null && x.PartName != string.Empty)
-            .Select(x => new { x.PartName, x.Quantity})
-            .ToList()
-            .GroupBy(x => x.PartName, x=>x.Quantity)
+            .Select(x => new { x.PartName, x.Quantity })
+            .ToListAsync();
+
+        return partNames
+            .GroupBy(x => x.PartName, x => x.Quantity)
             .Select(x => new
             {
                 PartType = x.Key,
                 Quantity = x.Sum()
-            });
-
-        return result.Select(x => (x.PartType!, x.Quantity));
+            })
+            .Select(x => (x.PartType!, x.Quantity));
     }
 
-    public IEnumerable<string> GetUniquePackageTypes()
+    public async Task<IEnumerable<string>> GetUniquePackageTypes()
     {
-        using var db = _dbFactory.GetDatabase();
-        
-        var result = db.GetCollection<Part>()
+        using var db = await _dbFactory.GetDatabase();
+
+        var packageTypes = await db.GetCollection<Part>()
             .Query()
             .Where(x => !x.IsDeleted)
             .Where(x => x.PackageType != null && x.PackageType != string.Empty)
             .Select(x => x.PackageType)
-            .ToList()
+            .ToListAsync();
+
+        return packageTypes
             .Select(x => x!)
             .Distinct();
-
-        return result;
     }
-    
-    public IEnumerable<string> GetUniqueValueUnits()
+
+    public async Task<IEnumerable<string>> GetUniqueValueUnits()
     {
-        using var db = _dbFactory.GetDatabase();
-        
-        var result = db.GetCollection<Part>()
+        using var db = await _dbFactory.GetDatabase();
+
+        var valueUnits = await db.GetCollection<Part>()
             .Query()
             .Where(x => !x.IsDeleted)
             .Where(x => x.ValueUnit != null && x.ValueUnit != string.Empty)
             .Select(x => x.ValueUnit)
-            .ToList()
+            .ToListAsync();
+
+        return valueUnits
             .Select(x => x!)
             .Distinct();
-
-        return result;
     }
-    
-    public IEnumerable<string> GetUniqueManufacturers()
+
+    public async Task<IEnumerable<string>> GetUniqueManufacturers()
     {
-        return GetUniqueManufacturersAndCounts()
+        return (await GetUniqueManufacturersAndCounts())
             .Select(x => x.manufacturer)
             .Distinct();
     }
 
-    public IEnumerable<string> GetUniquePartNumbers()
+    public async Task<IEnumerable<string>> GetUniquePartNumbers()
     {
-        return GetUniquePartNumbersAndCounts()
+        return (await GetUniquePartNumbersAndCounts())
             .Select(x => x.partNumber)
             .Distinct();
     }
 
-    public IEnumerable<(string manufacturer, int quantity)> GetUniqueManufacturersAndCounts()
+    public async Task<IEnumerable<(string manufacturer, int quantity)>> GetUniqueManufacturersAndCounts()
     {
-        using var db = _dbFactory.GetDatabase();
+        using var db = await _dbFactory.GetDatabase();
 
-        var result = db.GetCollection<Part>()
+        var manufacturers = await db.GetCollection<Part>()
             .Query()
             .Where(x => !x.IsDeleted)
             .Where(x => x.Manufacturer != null && x.Manufacturer != string.Empty)
             .Select(x => new { x.Manufacturer, x.Quantity })
-            .ToList()
+            .ToListAsync();
+
+        return manufacturers
             .GroupBy(x => x.Manufacturer, x => x.Quantity)
             .Select(x => new
             {
                 Manufacturer = x.Key,
                 Quantity = x.Sum()
-            });
-        
-        return result.Select(x => (x.Manufacturer!, x.Quantity));
+            })
+            .Select(x => (x.Manufacturer!, x.Quantity));
     }
 
-    public IEnumerable<string> GetUniqueLocations()
+    public async Task<IEnumerable<string>> GetUniqueLocations()
     {
-        return GetUniqueLocationsAndCounts()
+        return (await GetUniqueLocationsAndCounts())
             .Select(x => x.location)
             .Distinct();
     }
 
-    public IEnumerable<(string partNumber, int quantity)> GetUniquePartNumbersAndCounts()
+    public async Task<IEnumerable<(string partNumber, int quantity)>> GetUniquePartNumbersAndCounts()
     {
-        using var db = _dbFactory.GetDatabase();
-        
-        var result = db.GetCollection<Part>()
+        using var db = await _dbFactory.GetDatabase();
+
+        var partNumbers = await db.GetCollection<Part>()
             .Query()
             .Where(x => !x.IsDeleted)
             .Where(x => x.PartNumber != null && x.PartNumber != string.Empty)
-            .Select(x => new { x.PartNumber, x.Quantity})
-            .ToList()
-            .GroupBy(x => x.PartNumber, x=>x.Quantity)
+            .Select(x => new { x.PartNumber, x.Quantity })
+            .ToListAsync();
+
+        return partNumbers
+            .GroupBy(x => x.PartNumber, x => x.Quantity)
             .Select(x => new
             {
                 PartNumber = x.Key,
                 Quantity = x.Sum()
-            });
-
-        return result.Select(x => (x.PartNumber!, x.Quantity));
+            })
+            .Select(x => (x.PartNumber!, x.Quantity));
     }
 
-    public IEnumerable<(string location, int quantity)> GetUniqueLocationsAndCounts()
+    public async Task<IEnumerable<(string location, int quantity)>> GetUniqueLocationsAndCounts()
     {
-        using var db = _dbFactory.GetDatabase();
-        
-        var result = db.GetCollection<Part>()
+        using var db = await _dbFactory.GetDatabase();
+
+        var locations = await db.GetCollection<Part>()
             .Query()
             .Where(x => !x.IsDeleted)
             .Where(x => x.Location != null && x.Location != string.Empty)
-            .Select(x => new { x.Location, x.Quantity})
-            .ToList()
-            .GroupBy(x => x.Location, x=>x.Quantity)
+            .Select(x => new { x.Location, x.Quantity })
+            .ToListAsync();
+
+        return locations
+            .GroupBy(x => x.Location, x => x.Quantity)
             .Select(x => new
             {
                 Location = x.Key,
                 Quantity = x.Sum()
-            });
-
-        return result.Select(x => (x.Location!, x.Quantity));
+            })
+            .Select(x => (x.Location!, x.Quantity));
     }
 }

@@ -7,15 +7,15 @@ namespace partsbin.Services;
 
 public interface IPartService
 {
-    Part AddPart(Part part);
-    void UpdatePart(Part part);
-    Part GetPart(int id);
-    IEnumerable<Part> GetAllParts(string? byType = null, string? qualifier = null);
-    IEnumerable<Part> GetDeletedParts();
-    void EmptyRubbishBin();
-    Part Duplicate(Part source);
-    IEnumerable<Part> GetPartsWithIds(IEnumerable<int> ids);
-    bool CheckForDuplicatePartNumber(string partNumber, int? excludePartId = null);
+    Task<Part> AddPart(Part part);
+    Task UpdatePart(Part part);
+    Task<Part> GetPart(int id);
+    Task<IEnumerable<Part>> GetAllParts(string? byType = null, string? qualifier = null);
+    Task<IEnumerable<Part>> GetDeletedParts();
+    Task EmptyRubbishBin();
+    Task<Part> Duplicate(Part source);
+    Task<IEnumerable<Part>> GetPartsWithIds(IEnumerable<int> ids);
+    Task<bool> CheckForDuplicatePartNumber(string partNumber, int? excludePartId = null);
 }
 
 public class PartService : IPartService
@@ -29,44 +29,44 @@ public class PartService : IPartService
         _partSearchService = partSearchService;
     }
     
-    public Part AddPart(Part part)
+    public async Task<Part> AddPart(Part part)
     {
-        using var db = _dbFactory.GetDatabase();
+        using var db = await _dbFactory.GetDatabase();
 
-        db.GetCollection<Part>().Insert(part);
+        await db.GetCollection<Part>().InsertAsync(part);
         _partSearchService.IndexPart(part);
 
         return part;
     }
 
-    public void UpdatePart(Part part)
+    public async Task UpdatePart(Part part)
     {
-        using var db = _dbFactory.GetDatabase();
         _partSearchService.RemovePart(part);
         _partSearchService.IndexPart(part);
 
-        db.GetCollection<Part>().Update(part);
+        using var db = await _dbFactory.GetDatabase();
+        await db.GetCollection<Part>().UpdateAsync(part);
     }
 
-    public Part GetPart(int id)
+    public async Task<Part> GetPart(int id)
     {
-        using var db = _dbFactory.GetDatabase();
+        using var db = await _dbFactory.GetDatabase();
 
-        return db.GetCollection<Part>().FindById(id);
+        return await db.GetCollection<Part>().FindByIdAsync(id);
     }
 
-    public IEnumerable<Part> GetAllParts(string? byType = null, string? qualifier = null)
+    public async Task<IEnumerable<Part>> GetAllParts(string? byType = null, string? qualifier = null)
     {
-        using var db = _dbFactory.GetDatabase();
+        using var db = await _dbFactory.GetDatabase();
 
         if (byType is not null && string.IsNullOrEmpty(qualifier))
         {
             return Array.Empty<Part>();
         }
         
-        var parts = db.GetCollection<Part>()
-            .FindAll()
-            .Where(x => !x.IsDeleted);
+        var parts = await db.GetCollection<Part>().Query()
+            .Where(x => !x.IsDeleted)
+            .ToListAsync();
 
         // Apply the optional 'byType/qualifier' filter
         var filteredParts = (byType ?? string.Empty) switch
@@ -83,39 +83,38 @@ public class PartService : IPartService
         return filteredParts.ToList();
     }
 
-    public IEnumerable<Part> GetDeletedParts()
+    public async Task<IEnumerable<Part>> GetDeletedParts()
     {
-        using var db = _dbFactory.GetDatabase();
+        using var db = await _dbFactory.GetDatabase();
 
-        return db.GetCollection<Part>()
-            .Find(x => x.IsDeleted)
-            .ToList();
+        return await db.GetCollection<Part>().Query()
+            .Where(x => x.IsDeleted)
+            .ToListAsync();
     }
 
-    public void EmptyRubbishBin()
+    public async Task EmptyRubbishBin()
     {
-        using var db = _dbFactory.GetDatabase();
+        using var db = await _dbFactory.GetDatabase();
 
         // Drop from search index
-        var deletedParts = db.GetCollection<Part>().Query()
+        var deletedParts = await db.GetCollection<Part>().Query()
             .Where(x => x.IsDeleted)
-            .ToArray();
+            .ToArrayAsync();
         foreach (var part in deletedParts) _partSearchService.RemovePart(part);
         
         // Delete from database
-        db.GetCollection<Part>()
-            .DeleteMany(x => x.IsDeleted);
+        await db.GetCollection<Part>().DeleteManyAsync(x => x.IsDeleted);
     }
 
-    public Part Duplicate(Part source) => AddPart(source.DeepClone());
+    public async Task<Part> Duplicate(Part source) => await AddPart(source.DeepClone());
 
-    public IEnumerable<Part> GetPartsWithIds(IEnumerable<int> ids)
+    public async Task<IEnumerable<Part>> GetPartsWithIds(IEnumerable<int> ids)
     {
-        using var db = _dbFactory.GetDatabase();
+        using var db = await _dbFactory.GetDatabase();
         var partsCollection = db.GetCollection<Part>();
-        var parts = partsCollection.Query()
+        var parts = await partsCollection.Query()
             .Where(x => ids.Contains(x.Id))
-            .ToList();
+            .ToListAsync();
 
         return parts;
     }
@@ -127,14 +126,14 @@ public class PartService : IPartService
     /// <param name="partNumber"></param>
     /// <param name="excludePartId">If provided, excludes the identified part (for updates)</param>
     /// <returns>True if the provided part number is already used in one or more existing parts</returns>
-    public bool CheckForDuplicatePartNumber(string partNumber, int? excludePartId = null)
+    public async Task<bool> CheckForDuplicatePartNumber(string partNumber, int? excludePartId = null)
     {
-        using var db = _dbFactory.GetDatabase();
+        using var db = await _dbFactory.GetDatabase();
         var partsCollection = db.GetCollection<Part>();
-        var matchingPart = partsCollection.Query()
+        var matchingPart = await partsCollection.Query()
             .Where (x => excludePartId == null || x.Id != excludePartId)
             .Where(x => x.PartNumber == partNumber)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
 
         return matchingPart is not null;
     }

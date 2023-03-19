@@ -5,7 +5,7 @@ namespace partsbin.Services;
 
 public interface ISupplierService
 {
-    IEnumerable<(string name, string url)> GetNamesAndUrls();
+    Task<IEnumerable<(string name, string url)>> GetNamesAndUrls();
 }
 
 
@@ -36,15 +36,16 @@ public class SupplierService : ISupplierService
             return HashCode.Combine(obj.Name, obj.Url);
         }
     }
-    
-    public IEnumerable<(string name, string url)> GetNamesAndUrls()
+
+    public async Task<IEnumerable<(string name, string url)>> GetNamesAndUrls()
     {
-        using var db = _dbFactory.GetDatabase();
+        using var db = await _dbFactory.GetDatabase();
 
         // Big ol query here, beware!
-        return db.GetCollection<Part>()
+        var parts = await db.GetCollection<Part>()
             .Query()
-            .ToList()
+            .ToListAsync();
+        return parts
             .SelectMany(x => x.Suppliers)
             .Select(x => new NameAndUrl
             {

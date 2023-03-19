@@ -30,21 +30,21 @@ else
 
     private List<Part>? _parts;
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
-        RefreshData();
+        await RefreshData();
     }
 
-    protected override void OnParametersSet()
+    protected override async void OnParametersSet()
     {
-        RefreshData();
+        await RefreshData();
     }
 
-    private void RefreshData()
+    private async Task RefreshData()
     {
         var partIds = PartSearchService.Search(SearchPhrase);
         
-        _parts = PartService.GetPartsWithIds(partIds)
+        _parts = (await PartService.GetPartsWithIds(partIds))
             .OrderBy(x => x.PartType)
             .ThenBy(x => x.Range)
             .ThenBy(x => x.PartName)
