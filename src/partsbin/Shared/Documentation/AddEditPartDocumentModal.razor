@@ -22,7 +22,7 @@
                        @bind-Value="Document!.Url"/>
         </div>
         <div style="margin-top:10px">
-            <label>Notes</label>
+            <label>Notes <small>(CMD-K or Control-K to insert link)</small></label>
             <QuillEditor @ref="@_quillEditor" Placeholder="Enter notes here">
                 <ToolbarContent><EditorToolbarContent/></ToolbarContent>
                 <EditorContent/>
