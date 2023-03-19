@@ -1,0 +1,15 @@
+<div class="card">
+    <div class="card-header">
+        <h4>Gallery</h4>
+    </div>
+    <div class="card-body">
+        <div class="card-text">
+            <GalleryUploader Path="Path"/>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public required string Path { get; set; }
+}

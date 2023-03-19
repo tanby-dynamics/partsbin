@@ -121,22 +121,12 @@ else
     <br/>
     <div class="row">
         <div class="col-6">
-            <div class="card">
-                <div class="card-body">
-                    <div class="card-text">
-                        <Documentation Part="_part"/>
-                    </div>
-                </div>
-            </div>
+            <Documentation Part="_part"/>
+            <br/>
+            <PartSuppliers Part="_part"/>
         </div>
         <div class="col-6">
-            <div class="card">
-                <div class="card-body">
-                    <div class="card-text">
-                        <PartSuppliers Part="_part"/>
-                    </div>
-                </div>
-            </div>
+            <Gallery Path="@($"$/PartGallery/{_part.Id}")"/>
         </div>
     </div>
 }
