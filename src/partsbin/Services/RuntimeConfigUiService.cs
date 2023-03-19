@@ -1,12 +1,8 @@
 using System.Globalization;
-using Blazored.Modal;
 using Blazored.Modal.Services;
-using partsbin.Helpers;
 using partsbin.Models;
-using partsbin.Services;
-using partsbin.Shared;
 
-namespace partsbin.UiServices;
+namespace partsbin.Services;
 
 public interface IRuntimeConfigUiService
 {

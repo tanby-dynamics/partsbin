@@ -2,7 +2,7 @@ using Blazored.Modal;
 using Blazored.Modal.Services;
 using partsbin.Shared;
 
-namespace partsbin.UiServices;
+namespace partsbin.Services;
 
 public interface ISelectStringUiService
 {

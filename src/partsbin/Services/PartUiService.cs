@@ -1,10 +1,10 @@
 using Blazored.Modal;
 using Blazored.Modal.Services;
 using partsbin.Models;
-using partsbin.Services;
 using partsbin.Shared;
+using partsbin.Shared.Parts;
 
-namespace partsbin.UiServices;
+namespace partsbin.Services;
 
 public interface IPartUiService
 {

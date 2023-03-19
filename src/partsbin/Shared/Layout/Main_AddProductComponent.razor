@@ -1,3 +1,4 @@
+@using partsbin.Services
 @inject NavigationManager NavigationManager;
 @inject IPartUiService PartUiService; 
 
@@ -17,5 +18,4 @@
             NavigationManager.NavigateTo($"/part/{part.Id}");
         }
     }
-
 }

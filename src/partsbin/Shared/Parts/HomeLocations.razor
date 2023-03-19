@@ -1,10 +1,9 @@
 @using partsbin.Services
-@using partsbin.UiServices
 @inject IPartFieldService PartFieldService;
 @inject IPartUiService PartUiService;
 @inject NavigationManager NavigationManager;
 
-<h4>Manufacturers</h4>
+<h4>Locations</h4>
 
 @if (_data is null)
 {
@@ -13,7 +12,7 @@
 else if (!_data.Any())
 {
     <div class="alert alert-info" role="alert">
-        No parts with a manufacturer specified have been added
+        No parts with a location specified have been added
     </div>
 }
 else
@@ -21,7 +20,7 @@ else
     <table class="table border">
         <thead>
         <tr>
-            <th>Manufacturer</th>
+            <th>Location</th>
             <th>Quantity</th>
             <th></th>
         </tr>
@@ -31,8 +30,8 @@ else
         {
             <tr>
                 <td>
-                    <a href="/all-parts/by-manufacturer/@item.manufacturer">
-                        @item.manufacturer
+                    <a href="/all-parts/by-location/@item.location">
+                        @item.location
                     </a>
                 </td>
                 <td>@item.quantity</td>
@@ -41,13 +40,13 @@ else
                         <button class="btn btn-sm btn-outline-primary form-control"
                                 type="button"
                                 onclick:preventDefault
-                                onclick="@(() => AddPart(item.manufacturer))"
-                                title="@($"Add a part manufactured by {item.manufacturer}")">
+                                onclick="@(() => AddPart(item.location))"
+                                title="@($"Add a part stored in the {item.location} location")">
                             <i class="oi oi-plus"></i>
                         </button>
-                        <a class="btn btn-sm btn-outline-secondary form-control"
-                           href="/all-parts/by-manufacturer/@item.manufacturer"
-                           title="@($"View all parts manufactured by {item.manufacturer}")">
+                        <a class="btn btm-sm btn-outline-secondary form-control"
+                           href="/all-parts/by-location/@item.location"
+                           title="@($"View all parts located at {item.location}")">
                             <i class="oi oi-eye" aria-hidden="true"></i>
                         </a>
                     </div>
@@ -67,17 +66,17 @@ else
     private void RefreshData()
     {
         _data = PartFieldService
-            .GetUniqueManufacturersAndCounts()
-            .OrderBy(x => x.manufacturer)
+            .GetUniqueLocationsAndCounts()
+            .OrderBy(x => x.location)
             .ToList();
         StateHasChanged();
     }
 
-    private List<(string manufacturer, int quantity)>? _data;
+    private List<(string location, int quantity)>? _data;
 
-    private async void AddPart(string manufacturer)
+    private async void AddPart(string location)
     {
-        var part = await PartUiService.AddPart(manufacturer: manufacturer);
+        var part = await PartUiService.AddPart(location: location);
 
         if (part is not null)
         {

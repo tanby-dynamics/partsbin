@@ -1,6 +1,6 @@
 using Microsoft.JSInterop;
 
-namespace partsbin.UiServices;
+namespace partsbin.Services;
 
 public interface INavService
 {

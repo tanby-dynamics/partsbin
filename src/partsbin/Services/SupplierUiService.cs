@@ -1,11 +1,9 @@
 using Blazored.Modal;
 using Blazored.Modal.Services;
 using partsbin.Models;
-using partsbin.Services;
-using partsbin.Shared;
-using HostingEnvironmentExtensions = Microsoft.AspNetCore.Hosting.HostingEnvironmentExtensions;
+using partsbin.Shared.Supplier;
 
-namespace partsbin.UiServices;
+namespace partsbin.Services;
 
 public interface ISupplierUiService
 {

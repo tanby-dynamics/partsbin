@@ -1,7 +1,6 @@
 ﻿using Blazored.Modal;
 using Blazored.Toast;
 using partsbin.Services;
-using partsbin.UiServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
