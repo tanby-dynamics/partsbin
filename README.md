@@ -48,3 +48,5 @@ You can contribute just by making bug reports or suggestions, or you can put you
 All contributors (code, bug reports, suggestions) wiil be noted in the [Hall of Fame](hall-of-fame.md).
 
 
+## Licenses
+The 555 timer icon is adapted from https://www.flickr.com/photos/41898857@N04/50226298472, which is licensed under Creative Commons Attribution 2.0 Generic (CC BY 2.0). No modifications have been made apart from cropping and converting to icon side.
