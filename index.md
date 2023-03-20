@@ -50,5 +50,7 @@ Follow development at <https://github.com/becdetat/partsbin>.
 
 partsbin is a project by [Rebecca Scott](https://becdetat.com), allegedly a human who codes and plays with Arduinos, and pays for hundreds of dollars of components at ebay and aliexpress by working as an IT consultant at [SixPivot](https://sixpivot.com.au).
 
+Follow <a rel="me" href="https://tech.lgbt/@partsbin">@partsbin@tech.lgbt</a> on Mastodon for updates.
+
 Thanks to my good friend ChatGPT for helping out with the above copy.
 
