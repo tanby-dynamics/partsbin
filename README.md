@@ -49,4 +49,4 @@ All contributors (code, bug reports, suggestions) wiil be noted in the [Hall of 
 
 
 ## Licenses
-The 555 timer icon is adapted from https://www.flickr.com/photos/41898857@N04/50226298472, which is licensed under Creative Commons Attribution 2.0 Generic (CC BY 2.0). No modifications have been made apart from cropping and converting to icon side.
+The 555 timer icon is adapted from https://www.flickr.com/photos/41898857@N04/50226298472, which is licensed under Creative Commons Attribution 2.0 Generic (CC BY 2.0). No modifications have been made apart from cropping and converting to an icon.
