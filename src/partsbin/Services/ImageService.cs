@@ -17,6 +17,7 @@ public interface IImageService
     /// <returns>The content of the image as a Base64 encoded URL</returns>
     Task<string> GetBase64Url(Image image);
     Task<IEnumerable<Image>> GetAllImagesForPart(Part part);
+    Task UpdateImage(Image image);
 }
 
 public class ImageService : IImageService
@@ -34,7 +35,7 @@ public class ImageService : IImageService
         var images = db.GetCollection<Image>();
         var image = new Image
         {
-            Filename = file.Name,
+            FileName = file.Name,
             ContentType = file.ContentType,
             PartId = part?.Id
         };
@@ -47,7 +48,7 @@ public class ImageService : IImageService
         stream.Seek(0, SeekOrigin.Begin);
         
         // Upload the file into storage
-        var fileInfo = await db.FileStorage.UploadAsync(image.Id.ToString(), image.Filename, stream);
+        var fileInfo = await db.FileStorage.UploadAsync(image.Id.ToString(), image.FileName, stream);
 
         // Set the FileId for the image
         image.FileId = fileInfo.Id;
@@ -89,5 +90,11 @@ public class ImageService : IImageService
             .ToListAsync();
         
         return images;
+    }
+
+    public async Task UpdateImage(Image image)
+    {
+        using var db = await _dbFactory.GetDatabase();
+        await db.GetCollection<Image>().UpdateAsync(image);
     }
 }

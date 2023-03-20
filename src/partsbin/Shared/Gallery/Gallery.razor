@@ -30,17 +30,23 @@
                         @foreach (var item in _gallery)
                         {
                             <div class="col-6" style="margin-bottom:10px">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text">@item.image.FileName</span>
+                                </div>
                                 <img src="@item.base64Url"
                                      class="img-fluid rounded"
-                                     alt="@item.image.Filename"
+                                     alt="@item.image.FileName"
                                      style="margin-bottom: 10px;cursor:pointer"
                                      onclick="@(async () => await PopupImage(item))"/>
                                 <br/>
-                                <div class="input-group input-group-sm">
-                                    <span class="input-group-text">@item.image.Filename</span>
+                                <div class="input-group input-grou-sm">
                                     <button class="btn btn-outline-secondary"
                                             @onclick="@(async () => await PopupImage(item))">
                                         <i class="oi oi-fullscreen-enter"></i>
+                                    </button>
+                                    <button class="btn btn-outline-secondary"
+                                            @onclick="@(async () => await EditNotes(item.image))">
+                                        <i class="oi oi-pencil"></i> Notes
                                     </button>
                                     <button class="btn btn-outline-secondary"
                                             @onclick="@(() => DownloadImage(item))">
@@ -139,7 +145,7 @@
             Size = ModalSize.Large
         };
         var modal = ModalService.Show<GalleryPopupModal>(
-            item.image.Filename,
+            item.image.FileName,
             parameters,
             options);
         await modal.Result;
@@ -147,6 +153,23 @@
  
     private async Task DownloadImage((Image image, string base64Url) item)
     {
-        await FileService.DownloadFile(item.image.Filename, item.base64Url);
+        await FileService.DownloadFile(item.image.FileName, item.base64Url);
+    }
+
+    private async Task EditNotes(Image image)
+    {
+        var parameters = new ModalParameters
+        {
+            { "Image", image }
+        };
+        var options = new ModalOptions
+        {
+            Position = ModalPosition.Middle
+        };
+        var modal = ModalService.Show<GalleryNotesEditorModal>(
+            $"Edit notes for {image.FileName}",
+            parameters,
+            options);
+        await modal.Result;
     }
 }

@@ -1,0 +1,64 @@
+@using partsbin.Helpers
+@using partsbin.Services
+@inject IImageService ImageService;
+
+<EditForm Model="@Image" OnValidSubmit="HandleValidSubmit">
+    <div class="form-group">
+        <div style="margin-top:10px">
+            <label>Notes <small>(CMD-K or Control-K to insert link)</small></label>
+            <QuillEditor @ref="@_quillEditor" Placeholder="Enter notes here">
+                <ToolbarContent><EditorToolbarContent/></ToolbarContent>
+                <EditorContent/>
+            </QuillEditor>
+        </div>
+        <div style="margin-top:10px">
+            <button type="submit"
+                    class="btn btn-sm btn-outline-primary">
+                Save
+            </button>
+            <button @onclick="CancelEditNotes"
+                    class="btn btn-sm btn-outline-primary">
+                Cancel
+            </button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public required Image Image { get; set; }
+    private QuillEditor? _quillEditor;
+    [CascadingParameter] BlazoredModalInstance? Modal { get; set; }
+    private bool _contentLoaded;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_quillEditor is null) return;
+        if (_contentLoaded) return;
+
+        if (Image.Notes.HasContent())
+        {
+            await _quillEditor.LoadContent(Image.Notes);
+        }
+
+        _contentLoaded = true;
+    }
+
+    private async void HandleValidSubmit()
+    {
+        if (Image is null) throw new NotSupportedException("Image is null");
+        
+        Image.Notes = await _quillEditor!.GetContent();
+        Image.HtmlNotes = await _quillEditor.GetHtml();
+
+        await ImageService.UpdateImage(Image);
+        await Modal!.CloseAsync(ModalResult.Ok());
+    }
+
+    private async void CancelEditNotes()
+    {
+        await Modal!.CloseAsync(ModalResult.Cancel());
+    }
+}
+
+

@@ -1,15 +1,37 @@
-<h3>GalleryPopup modal</h3>
+@inject IModalService ModalService;
 
 <img src="@Base64Url"
-     alt="@Image.Filename"
+     alt="@Image.FileName"
      class="img-fluid"/>
-<p>
-    TODO caption
-</p>
+
+<div>
+    @((MarkupString)Image.HtmlNotes)
+</div>
+<button class="btn btn-outline-primary btn-sm"
+        @onclick="@EditNotes">
+    <i class="oi oi-pencil"></i> Edit
+</button>
 
 @code {
     [Parameter]
     public required string Base64Url { get; set; }
     [Parameter]
     public required Image Image { get; set; }
+
+    private async Task EditNotes()
+    {
+        var parameters = new ModalParameters
+        {
+            { "Image", Image }
+        };
+        var options = new ModalOptions
+        {
+            Position = ModalPosition.Middle
+        };
+        var modal = ModalService.Show<GalleryNotesEditorModal>(
+            $"Edit notes for {Image.FileName}",
+            parameters,
+            options);
+        await modal.Result;
+    }
 }
