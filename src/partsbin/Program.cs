@@ -6,8 +6,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddSwaggerGen();
 builder.Services.AddBlazoredModal();
 builder.Services.AddBlazoredToast();
+builder.Services.AddControllers();
 builder.Services
     .AddSingleton<IDbFactory>(new DbFactory(builder.Environment.IsProduction()))
     .AddSingleton<IPartService, PartService>()
@@ -42,6 +44,9 @@ app.UseStaticFiles();
 app.UseRouting();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+app.UseSwagger();
+app.UseSwaggerUI();
+app.MapControllers();
 
 app.Run();
 

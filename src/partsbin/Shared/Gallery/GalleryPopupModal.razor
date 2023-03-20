@@ -1,7 +1,7 @@
 @using partsbin.Helpers
 @inject IModalService ModalService;
 
-<img src="@Base64Url"
+<img src="/api/file/@Image.FileId"
      alt="@Image.FileName"
      class="img-fluid"/>
 
@@ -22,8 +22,6 @@
 </button>
 
 @code {
-    [Parameter]
-    public required string Base64Url { get; set; }
     [Parameter]
     public required Image Image { get; set; }
 

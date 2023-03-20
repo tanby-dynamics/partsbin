@@ -31,33 +31,33 @@
             {
                 <div class="container">
                     <div class="row">
-                        @foreach (var item in _gallery)
+                        @foreach (var image in _gallery)
                         {
                             <div class="col-6" style="margin-bottom:10px">
                                 <div class="input-group input-group-sm" style="margin-bottom:10px">
-                                    <span class="input-group-text">@item.image.FileName</span>
+                                    <span class="input-group-text">@image.FileName</span>
                                 </div>
-                                <img src="@item.base64Url"
+                                <img src="/api/file/@image.FileId"
                                      class="img-fluid rounded"
-                                     alt="@item.image.FileName"
+                                     alt="@image.FileName"
                                      style="margin-bottom: 10px;cursor:pointer"
-                                     onclick="@(async () => await PopupImage(item))"/>
+                                     onclick="@(async () => await PopupImage(image))"/>
                                 <br/>
                                 <div class="input-group input-grou-sm">
                                     <button class="btn btn-outline-secondary"
-                                            @onclick="@(async () => await PopupImage(item))">
+                                            @onclick="@(async () => await PopupImage(image))">
                                         <i class="oi oi-fullscreen-enter"></i>
                                     </button>
                                     <button class="btn btn-outline-secondary"
-                                            @onclick="@(async () => await EditNotes(item.image))">
+                                            @onclick="@(async () => await EditNotes(image))">
                                         <i class="oi oi-pencil"></i> Notes
                                     </button>
                                     <button class="btn btn-outline-secondary"
-                                            @onclick="@(() => DownloadImage(item))">
+                                            @onclick="@(() => DownloadImage(image))">
                                         <i class="oi oi-cloud-download"></i> Download
                                     </button>
                                     <button class="btn btn-outline-secondary"
-                                            @onclick="@(async () => await DeleteImage(item.image))">
+                                            @onclick="@(async () => await DeleteImage(image))">
                                         <i class="oi oi-trash"></i> Delete
                                     </button>
                                 </div>
@@ -74,7 +74,7 @@
 @code {
     [Parameter]
     public required Part Part { get; set; }
-    private IEnumerable<(Image image, string base64Url)>? _gallery = null;
+    private IEnumerable<Image>? _gallery = null;
 
     protected override async void OnInitialized()
     {
@@ -102,19 +102,12 @@
         StateHasChanged();
     }
 
-    async Task<IEnumerable<(Image image, string base64Url)>> GetGallery()
+    async Task<IEnumerable<Image>> GetGallery()
     {
-        var images = await ImageService.GetAllImagesForPart(Part);
-        var result = new List<(Image image, string base64Url)>();
+        var images = (await ImageService.GetAllImagesForPart(Part))
+            .OrderBy(x => x.Id);
 
-        foreach (var image in images)
-        {
-            var base64Url = await ImageService.GetBase64Url(image);
-
-            result.Add((image, base64Url));
-        }
-
-        return result.OrderBy(x => x.image.Id);
+        return images.ToList();
     }
 
     async Task DeleteImage(Image image)
@@ -129,19 +122,11 @@
         await RefreshGallery();
     }
 
-    async Task<string> GetBase64Url(Image image)
-    {
-        var url = await ImageService.GetBase64Url(image);
-
-        return url;
-    }
-
-    async Task PopupImage((Image image, string base64Url) item)
+    async Task PopupImage(Image image)
     {
         var parameters = new ModalParameters
         {
-            { "Image", item.image },
-            { "Base64Url", item.base64Url }
+            { "Image", image }
         };
         var options = new ModalOptions
         {
@@ -149,15 +134,16 @@
             Size = ModalSize.Large
         };
         var modal = ModalService.Show<GalleryPopupModal>(
-            item.image.FileName,
+            image.FileName,
             parameters,
             options);
         await modal.Result;
     }
  
-    private async Task DownloadImage((Image image, string base64Url) item)
+    private async Task DownloadImage(Image image)
     {
-        await FileService.DownloadFile(item.image.FileName, item.base64Url);
+        var base64Url = await ImageService.GetBase64Url(image);
+        await FileService.DownloadFile(image.FileName, base64Url);
     }
 
     private async Task EditNotes(Image image)

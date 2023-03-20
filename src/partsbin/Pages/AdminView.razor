@@ -77,12 +77,18 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Runtime configuration</h5>
-                <button type="button"
-                        class="btn btn-primary"
-                        @onclick:preventDefault
-                        @onclick="@EditRuntimeConfiguration">
-                    Edit configuration
-                </button>
+                <p>
+                    
+                    <button type="button"
+                            class="btn btn-primary"
+                            @onclick:preventDefault
+                            @onclick="@EditRuntimeConfiguration">
+                        Edit configuration
+                    </button>
+                </p>
+                <p>
+                    <a href="/swagger/index.html">Swagger</a>
+                </p>
             </div>
         </div>
     </div>
