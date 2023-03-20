@@ -15,6 +15,9 @@ permalink: /screenshots
 ![](/images/add-supplier.png)
 ![](/images/suppliers.png)
 
+## Part gallery
+![](/images/part-gallery.png)
+
 ### View the part
 ![](/images/view-part.png)
 
