@@ -13,7 +13,7 @@ layout: page
                 {{ post.title | escape }}
             </a><br/>
         {%- endfor -%}   
-    </ul>
+    </p>
 </aside>
 
 Attention all hobbyist hardware hackers and engineers! Are you tired of sifting through piles of disorganised electronic components and struggling to keep track of what you have? Look no further!
