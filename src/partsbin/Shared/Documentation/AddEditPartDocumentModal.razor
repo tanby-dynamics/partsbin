@@ -70,7 +70,7 @@
             Part.Documents.Add(Document);
         }
         
-        PartService.UpdatePart(Part);
+        await PartService.UpdatePart(Part);
         await Modal!.CloseAsync(ModalResult.Ok(Document));
     }
 

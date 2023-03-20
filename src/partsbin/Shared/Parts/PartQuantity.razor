@@ -4,7 +4,7 @@
 @inject IToastService ToastService;
 @inject IPartService PartService;
 
-<span>
+<span class="keep-together">
     <button class="btn btn-light btn-sm"
            @onclick="DecreaseQuantity"
            @onclick:preventDefault
@@ -75,7 +75,7 @@
     private async void IncreaseQuantity()
     {
         Part.Quantity++;
-        PartService.UpdatePart(Part);
+        await PartService.UpdatePart(Part);
         StateHasChanged();
         await PartChanged.InvokeAsync(Part);
     }
@@ -83,7 +83,7 @@
     private async void DecreaseQuantity()
     {
         Part.Quantity--;
-        PartService.UpdatePart(Part);
+        await PartService.UpdatePart(Part);
         StateHasChanged();
         await PartChanged.InvokeAsync(Part);
     }

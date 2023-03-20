@@ -40,7 +40,7 @@
 
     private async void HandleValidSubmit()
     {
-        RuntimeConfigService.SetRuntimeConfig(Config);
+        await RuntimeConfigService.SetRuntimeConfig(Config);
         await Modal!.CloseAsync(ModalResult.Ok(Config));
     }
 

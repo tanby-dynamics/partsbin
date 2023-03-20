@@ -33,7 +33,7 @@
     {
         try
         {
-            PartService.UpdatePart(Part!);
+            await PartService.UpdatePart(Part!);
             await Modal!.CloseAsync((ModalResult.Ok(Part)));
         }
         catch (InvalidOperationException ex)

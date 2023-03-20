@@ -5,6 +5,7 @@
 @inject IPartUiService PartUiService;
 @inject IToastService ToastService;
 @inject NavigationManager NavigationManager;
+@inject IConfirmUiService ConfirmUiService;
 
 @if (_part is not null)
 {
@@ -187,8 +188,12 @@ else
 
     private async Task DeletePart()
     {
+        var result = await ConfirmUiService.Confirm("Delete part", "Are you sure you want to delete this part?");
+        if (result == ConfirmResult.Cancelled) return;
+            
         _part!.IsDeleted = true;
         await PartService.UpdatePart(_part);
+        
         ToastService.ShowSuccess("The part has been deleted. You can recover it from the rubbish bin.");
         NavigationManager.NavigateTo("/");
     }

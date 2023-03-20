@@ -94,7 +94,7 @@
             Part.Suppliers.Add(Supplier);
         }
         
-        PartService.UpdatePart(Part);
+        await PartService.UpdatePart(Part);
         await Modal!.CloseAsync(ModalResult.Ok(Supplier));
     }
 

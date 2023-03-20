@@ -5,6 +5,7 @@
 @inject IPartService PartService;
 @inject NavigationManager NavigationManager;
 @inject IPartUiService PartUiService;
+@inject IConfirmUiService ConfirmUiService;
 
 <EditForm Model="@Part" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator/>
@@ -233,11 +234,11 @@
                     && (await PartService.CheckForDuplicatePartNumber(Part.PartNumber!))
                 )
                 {
-                    var continueAdding = await PartUiService.Confirm(
+                    var confirmResult = await ConfirmUiService.Confirm(
                         "The part number is not unique",
                         "There is another part with the same part number. Do you want to continue adding this part?");
 
-                    if (!continueAdding) return;
+                    if (confirmResult == ConfirmResult.Cancelled) return;
                 }
                 
                 Part = await PartService.AddPart(Part!);
@@ -250,11 +251,11 @@
                     && (await PartService.CheckForDuplicatePartNumber(Part.PartNumber!, Part.Id))
                     )
                 {
-                    var continueAdding = await PartUiService.Confirm(
+                    var confirmResult = await ConfirmUiService.Confirm(
                         "The part number is not unique",
                         "There is another part with the same part number. Do you want to continue adding this part?");
 
-                    if (!continueAdding) return;
+                    if (confirmResult == ConfirmResult.Cancelled) return;
                 }
 
                 await PartService.UpdatePart(Part!);

@@ -14,16 +14,18 @@ builder.Services
     .AddSingleton<IPartSearchService, PartSearchService>()
     .AddSingleton<IPartFieldService, PartFieldService>()
     .AddSingleton<ISearchFactory>(new SearchFactory(builder.Environment.IsProduction()))
+    .AddSingleton<IRuntimeConfigService, RuntimeConfigService>()
+    .AddSingleton<IRuntimeConfigService, RuntimeConfigService>()
+    .AddSingleton<IImageService, ImageService>()
+    .AddScoped<IFileService, FileService>()
     .AddScoped<IPartUiService, PartUiService>()
     .AddScoped<INavService, NavService>()
     .AddScoped<ISupplierUiService, SupplierUiService>()
     .AddScoped<ISelectStringUiService, SelectStringUiService>()
     .AddScoped<ISupplierService, SupplierService>()
     .AddScoped<IPartDocumentUiService, PartDocumentUiService>()
-    .AddSingleton<IRuntimeConfigService, RuntimeConfigService>()
-    .AddSingleton<IRuntimeConfigService, RuntimeConfigService>()
     .AddScoped<IRuntimeConfigUiService, RuntimeConfigUiService>()
-    .AddSingleton<IImageService, ImageService>();
+    .AddScoped<IConfirmUiService, ConfirmUiService>();
 
 var app = builder.Build();
 

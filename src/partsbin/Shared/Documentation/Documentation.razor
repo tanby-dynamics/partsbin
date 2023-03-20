@@ -3,6 +3,7 @@
 @inject IPartService PartService; 
 @inject IToastService ToastService;
 @inject IPartDocumentUiService PartDocumentUiService;
+@inject IConfirmUiService ConfirmUiService;
 
 <div class="card">
     <div class="card-header">
@@ -79,10 +80,15 @@
         StateHasChanged();
     }
 
-    private void Delete(PartDocument document)
+    private async void Delete(PartDocument document)
     {
+        var confirmResult = await ConfirmUiService.Confirm(
+            "Deleting supplier",
+            "Are you sure you want to delete this supplier? It will only be deleted for this part. This action cannot be undone.");
+        if (confirmResult == ConfirmResult.Cancelled) return;
+        
         Part.Documents.Remove(document);
-        PartService.UpdatePart(Part);
+        await PartService.UpdatePart(Part);
         ToastService.ShowSuccess("The document has been deleted");
         StateHasChanged();
     }

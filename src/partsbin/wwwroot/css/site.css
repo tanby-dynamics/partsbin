@@ -72,3 +72,15 @@ a, .btn-link {
 .page .navbar li.nav-item.dropdown ul.dropdown-menu li a.nav-link {
     margin-left: 1rem;
 } 
+
+/* Keep buttons together, eg
+<span class="keep-together">
+    <button>btn1</button>
+    <button>btn2</button>
+    <button>btn3</button>
+</span>
+ */
+.keep-together {
+    display: flex;
+    flex-wrap: nowrap;
+}

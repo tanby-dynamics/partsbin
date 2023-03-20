@@ -59,7 +59,7 @@
         Part!.Notes = await _quillEditor!.GetContent();
         Part.HtmlNotes = await _quillEditor.GetHtml();
         
-        PartService.UpdatePart(Part);
+        await PartService.UpdatePart(Part);
         await OnEditComplete.InvokeAsync();
     }
 

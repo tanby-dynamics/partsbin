@@ -1,0 +1,15 @@
+<h3>GalleryPopup modal</h3>
+
+<img src="@Base64Url"
+     alt="@Image.Filename"
+     class="img-fluid"/>
+<p>
+    TODO caption
+</p>
+
+@code {
+    [Parameter]
+    public required string Base64Url { get; set; }
+    [Parameter]
+    public required Image Image { get; set; }
+}

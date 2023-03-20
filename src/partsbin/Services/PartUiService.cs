@@ -21,7 +21,6 @@ public interface IPartUiService
     Task SelectValueUnit(Part part);
     Task SelectManufacturer(Part part);
     Task SelectLocation(Part part);
-    Task<bool> Confirm(string title, string caption = "Are you sure?");
     Task SelectPartNumber(Part part);
 }
 
@@ -30,12 +29,18 @@ public class PartUiService : IPartUiService
     private readonly IModalService _modalService;
     private readonly IPartFieldService _partFieldService;
     private readonly ISelectStringUiService _selectStringUiService;
+    private readonly IConfirmUiService _confirmUiService;
 
-    public PartUiService(IModalService modalService, IPartFieldService partFieldService, ISelectStringUiService selectStringUiService)
+    public PartUiService(
+        IModalService modalService, 
+        IPartFieldService partFieldService, 
+        ISelectStringUiService selectStringUiService,
+        IConfirmUiService confirmUiService)
     {
         _modalService = modalService;
         _partFieldService = partFieldService;
         _selectStringUiService = selectStringUiService;
+        _confirmUiService = confirmUiService;
     }
     
     public async Task<Part?> AddPart(
@@ -201,25 +206,5 @@ public class PartUiService : IPartUiService
         if (result.Cancelled || result.Data is null) return;
 
         part!.Location = result.Data as string;
-    }
-
-
-    public async Task<bool> Confirm(string title, string caption = "Are you sure")
-    {
-        var parameters = new ModalParameters
-        {
-            { "Caption", caption }
-        };
-        var options = new ModalOptions
-        {
-            Position = ModalPosition.Middle
-        };
-        var modal = _modalService.Show<ConfirmationModal>(
-            title,
-            parameters,
-            options);
-        var result = await modal.Result;
-
-        return result.Confirmed;
     }
 }

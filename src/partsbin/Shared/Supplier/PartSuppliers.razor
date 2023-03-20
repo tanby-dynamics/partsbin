@@ -5,6 +5,7 @@
 @inject IToastService ToastService;
 @inject ISupplierUiService SupplierUiService;
 @inject IRuntimeConfigService RuntimeConfigService;
+@inject IConfirmUiService ConfirmUiService;
 
 <div class="card">
     <div class="card-header">
@@ -110,6 +111,11 @@
 
     private async void Delete(Supplier supplier)
     {
+        var confirmResult = await ConfirmUiService.Confirm(
+            "Deleting supplier",
+            "Are you sure you want to delete this supplier? It will only be removed for this part. This action cannot be undone.");
+        if (confirmResult == ConfirmResult.Cancelled) return;
+        
         Part.Suppliers.Remove(supplier);
         await PartService.UpdatePart(Part);
         ToastService.ShowSuccess("The supplier has been deleted");
