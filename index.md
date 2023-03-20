@@ -6,14 +6,12 @@ layout: page
 
 <aside class="well pull-right" style="width: 15rem">
     <h5>Releases</h5>
-    <ul class="post-list">
+    <p>
         {%- for post in site.posts -%}
-        <li>
             <span class="post-meta">{{ post.date | date: date_format }}</span>
             <a href="{{ post.url | relative_url }}">
                 {{ post.title | escape }}
-            </a>
-        </li>
+            </a><br/>
         {%- endfor -%}   
     </ul>
 </aside>
