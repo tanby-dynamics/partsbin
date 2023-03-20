@@ -1,3 +1,4 @@
+@using partsbin.Helpers
 @inject IModalService ModalService;
 
 <img src="@Base64Url"
@@ -5,11 +6,19 @@
      class="img-fluid"/>
 
 <div>
-    @((MarkupString)Image.HtmlNotes)
+    <h4>Notes</h4>
+    @if (Image.HtmlNotes.HasContent())
+    {
+        @((MarkupString)Image.HtmlNotes)
+    }
+    else
+    {
+        <p>No notes have been recorded</p>
+    }
 </div>
 <button class="btn btn-outline-primary btn-sm"
         @onclick="@EditNotes">
-    <i class="oi oi-pencil"></i> Edit
+    <i class="oi oi-pencil"></i> Edit notes
 </button>
 
 @code {

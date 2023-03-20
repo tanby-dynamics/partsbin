@@ -12,13 +12,17 @@
     </div>
     <div class="card-body">
         <div class="card-text">
-            <form>
-                TODO replace with drag/drop/click interface
-                <InputFile OnChange="@UploadImages"
+            <div class="input-group">
+                <label class="input-group-text" for="uploadImagesFile">Upload multiple images</label>
+                <InputFile type="file" 
+                           OnChange="@UploadImages"
+                           class="form-control" 
+                           id="uploadImagesFile"
                            multiple
                            accept="image/*"/>
-            </form>
-
+            </div>
+            <br/>
+            
             @if (_gallery is null)
             {
                 <p>Loading...</p>
@@ -30,7 +34,7 @@
                         @foreach (var item in _gallery)
                         {
                             <div class="col-6" style="margin-bottom:10px">
-                                <div class="input-group input-group-sm">
+                                <div class="input-group input-group-sm" style="margin-bottom:10px">
                                     <span class="input-group-text">@item.image.FileName</span>
                                 </div>
                                 <img src="@item.base64Url"
