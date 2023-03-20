@@ -36,18 +36,21 @@
                                      style="margin-bottom: 10px;cursor:pointer"
                                      onclick="@(async () => await PopupImage(item))"/>
                                 <br/>
-                                <button class="btn btn-sml btn-primary"
-                                        @onclick="@(async () => await PopupImage(item))">
-                                    <i class="oi oi-fullscreen-enter"></i>
-                                </button>
-                                <button class="btn btn-sml btn-secondary"
-                                        @onclick="@(() => DownloadImage(item))">
-                                    <i class="oi oi-cloud-download"></i>
-                                </button>
-                                <button class="btn btn-sml btn-danger"
-                                        @onclick="@(async () => await DeleteImage(item.image))">
-                                    <i class="oi oi-trash"></i>
-                                </button>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text">@item.image.Filename</span>
+                                    <button class="btn btn-outline-secondary"
+                                            @onclick="@(async () => await PopupImage(item))">
+                                        <i class="oi oi-fullscreen-enter"></i>
+                                    </button>
+                                    <button class="btn btn-outline-secondary"
+                                            @onclick="@(() => DownloadImage(item))">
+                                        <i class="oi oi-cloud-download"></i> Download
+                                    </button>
+                                    <button class="btn btn-outline-secondary"
+                                            @onclick="@(async () => await DeleteImage(item.image))">
+                                        <i class="oi oi-trash"></i> Delete
+                                    </button>
+                                </div>
                                 <br/>
                             </div>
                         }
