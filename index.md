@@ -35,7 +35,6 @@ docker run -v ~/partsbin/data:/data -p 8080:80 -d becdetat/partsbin:latest</pre>
     <p>You should now be able to access partsbin at <code>http://localhost:8080</code>, and the data should be stored at <code>~/partsbin/data</code>.</p>
 </aside>
 
-
 Get it from [Docker](https://hub.docker.com/repository/docker/becdetat/partsbin), but the recommended method is to copy [docker-compose.yaml](https://github.com/becdetat/partsbin/blob/main/docker-compose.yaml) to somewhere safe, edit it to suit your setup, and run `docker compose up -d` to make the magic happen.
 
 See the [installation guide](/installation-guide) for detailed installation and upgrade instructions.
