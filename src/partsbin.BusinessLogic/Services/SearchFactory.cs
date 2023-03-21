@@ -3,7 +3,7 @@ using Lucene.Net.Index;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
 
-namespace partsbin.Logic.Services;
+namespace partsbin.BusinessLogic.Services;
 
 public interface ISearchFactory
 {

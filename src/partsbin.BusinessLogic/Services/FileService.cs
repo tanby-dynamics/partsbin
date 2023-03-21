@@ -1,6 +1,6 @@
 using Microsoft.JSInterop;
 
-namespace partsbin.Logic.Services;
+namespace partsbin.BusinessLogic.Services;
 
 public interface IFileService
 {

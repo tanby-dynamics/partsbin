@@ -1,7 +1,7 @@
 using System.Text;
-using partsbin.Services.Models;
+using partsbin.BusinessLogic.Models;
 
-namespace partsbin.Logic.Helpers;
+namespace partsbin.BusinessLogic.Helpers;
 
 public static class PartExtensions
 {

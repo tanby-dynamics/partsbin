@@ -1,8 +1,7 @@
 using System.Globalization;
-using partsbin.Services.Models;
-using partsbin.Services.Services;
+using partsbin.BusinessLogic.Models;
 
-namespace partsbin.Logic.Services;
+namespace partsbin.BusinessLogic.Services;
 
 public interface IRuntimeConfigService
 {

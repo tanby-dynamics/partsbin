@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace partsbin.Logic.Helpers;
+namespace partsbin.BusinessLogic.Helpers;
 
 public static class DecimalExtensions
 {

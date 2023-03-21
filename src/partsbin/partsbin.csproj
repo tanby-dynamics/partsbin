@@ -27,6 +27,6 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\partsbin.Logic\partsbin.Logic.csproj" />
+    <ProjectReference Include="..\partsbin.BusinessLogic\partsbin.BusinessLogic.csproj" />
   </ItemGroup>
 </Project>

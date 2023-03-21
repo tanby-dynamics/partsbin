@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Components.Forms;
-using partsbin.Logic.Helpers;
-using partsbin.Services.Models;
-using partsbin.Services.Services;
+using partsbin.BusinessLogic.Helpers;
+using partsbin.BusinessLogic.Models;
 
-namespace partsbin.Logic.Services;
+namespace partsbin.BusinessLogic.Services;
 
 public interface IImageService
 {

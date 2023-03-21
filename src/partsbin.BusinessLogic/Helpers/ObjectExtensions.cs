@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Reflection;
 
-namespace partsbin.Logic.Helpers;
+namespace partsbin.BusinessLogic.Helpers;
 
 public static class ObjectExtensions
 {

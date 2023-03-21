@@ -1,4 +1,4 @@
-﻿namespace partsbin.Services.Models
+﻿namespace partsbin.BusinessLogic.Models
 {
     /// <summary>
     /// Note that nothing is required except for the quantity, which is fine at

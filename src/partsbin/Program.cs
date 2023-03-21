@@ -1,8 +1,7 @@
 ﻿using Blazored.Modal;
 using Blazored.Toast;
-using partsbin.Logic.Services;
+using partsbin.BusinessLogic.Services;
 using partsbin.Services;
-using partsbin.Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

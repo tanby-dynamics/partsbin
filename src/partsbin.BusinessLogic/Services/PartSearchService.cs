@@ -1,10 +1,10 @@
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
-using partsbin.Services.Models;
-using partsbin.Logic.Helpers;
+using partsbin.BusinessLogic.Helpers;
+using partsbin.BusinessLogic.Models;
 
-namespace partsbin.Logic.Services;
+namespace partsbin.BusinessLogic.Services;
 
 public interface IPartSearchService
 {

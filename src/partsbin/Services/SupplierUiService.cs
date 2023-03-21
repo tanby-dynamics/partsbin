@@ -1,7 +1,7 @@
 using Blazored.Modal;
 using Blazored.Modal.Services;
-using partsbin.Logic.Services;
-using partsbin.Services.Models;
+using partsbin.BusinessLogic.Models;
+using partsbin.BusinessLogic.Services;
 using partsbin.Shared.Supplier;
 
 namespace partsbin.Services;

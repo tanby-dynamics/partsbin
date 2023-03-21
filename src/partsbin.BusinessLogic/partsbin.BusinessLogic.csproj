@@ -4,8 +4,7 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <AssemblyName>partsbin.Logic</AssemblyName>
-        <RootNamespace>partsbin.Logic</RootNamespace>
+        <PackageId>partsbin.BusinessLogic</PackageId>
     </PropertyGroup>
 
     <ItemGroup>

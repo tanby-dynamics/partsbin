@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace partsbin.Logic.Helpers;
+namespace partsbin.BusinessLogic.Helpers;
 
 public static class StringExtensions
 {

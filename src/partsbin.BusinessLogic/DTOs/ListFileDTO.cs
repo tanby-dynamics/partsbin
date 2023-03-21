@@ -1,6 +1,6 @@
-namespace partsbin.Services.DTOs;
+namespace partsbin.BusinessLogic.DTOs;
 
-public class ListFileDto
+public class ListFileDTO
 {
     public required string Id { get; set; }
     public required string FileName { get; set; }
