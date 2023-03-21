@@ -4,6 +4,7 @@
 @inject IPartService PartService;
 @inject IPartUiService PartUiService;
 @inject IToastService ToastService;
+@inject IConfirmUiService ConfirmUiService;
 
 <table class="table border">
     <thead>
@@ -197,20 +198,34 @@
         StateHasChanged();
     }
 
-    private void DeletePart(Part part)
+    private async void DeletePart(Part part)
     {
-        part.IsDeleted = true;
+        var confirmResult = await ConfirmUiService.Confirm("Delete part", "Are you sure you want to delete this part?");
 
-        PartService.UpdatePart(part);
+        if (confirmResult == ConfirmResult.Cancelled) return;
+            
+        part.IsDeleted = true;
+        await PartService.UpdatePart(part);
         Parts.Remove(part);
 
-        ToastService.ShowSuccess("The part has been deleted. You can recover it from the rubbish bin.");
+        ToastService.ShowSuccess(
+            message: "The part has been deleted. You can recover it from the rubbish bin.",
+            settings: settings =>
+            {
+               settings.OnClick = () => NavigationManager.NavigateTo("/rubbish-bin");
+            });
         StateHasChanged();
     }
 
-    private void DuplicatePart(Part part)
+    private async void DuplicatePart(Part part)
     {
-        var duplicatePart = PartService.Duplicate(part!);
+        var confirmResult = await ConfirmUiService.Confirm(
+            "Duplicate part",
+            "Are you sure you want to duplicate this part?");
+        if (confirmResult == ConfirmResult.Cancelled) return;
+        
+        var duplicatePart = await PartService.Duplicate(part);
+        
         NavigationManager.NavigateTo($"/part/{duplicatePart.Id}?d=1");
         ToastService.ShowSuccess("The part has been duplicated, you are working on the duplicate part now");
     }

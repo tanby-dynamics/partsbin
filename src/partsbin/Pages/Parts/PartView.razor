@@ -179,9 +179,14 @@ else
         StateHasChanged();
     }
 
-    private void DuplicatePart()
+    private async void DuplicatePart()
     {
-        var duplicatePart = PartService.Duplicate(_part!);
+        var confirmResult = await ConfirmUiService.Confirm(
+            "Duplicating part",
+            "Are you sure you want to duplicate this part?");
+        if (confirmResult == ConfirmResult.Cancelled) return;
+        
+        var duplicatePart = await PartService.Duplicate(_part!);
         NavigationManager.NavigateTo($"/part/{duplicatePart.Id}?d=1");
         ToastService.ShowSuccess("The part has been duplicated, you are working on the duplicate part now");
     }
@@ -194,7 +199,9 @@ else
         _part!.IsDeleted = true;
         await PartService.UpdatePart(_part);
         
-        ToastService.ShowSuccess("The part has been deleted. You can recover it from the rubbish bin.");
+        ToastService.ShowSuccess(
+            "The part has been deleted. You can recover it from the rubbish bin.",
+            settings => settings.OnClick = () => NavigationManager.NavigateTo("/rubbish-bin"));
         NavigationManager.NavigateTo("/");
     }
 
