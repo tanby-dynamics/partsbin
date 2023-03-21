@@ -1,4 +1,4 @@
-namespace partsbin.Models;
+namespace partsbin.Services.Models;
 
 public class RuntimeConfig
 {

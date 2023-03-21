@@ -2,16 +2,16 @@ using Microsoft.JSInterop;
 
 namespace partsbin.Services;
 
-public interface INavService
+public interface INavUiService
 {
     Task HideNavbar();
 }
 
-public class NavService : INavService
+public class NavUiService : INavUiService
 {
     private readonly IJSRuntime _jsRuntime;
 
-    public NavService(IJSRuntime jsRuntime)
+    public NavUiService(IJSRuntime jsRuntime)
     {
         _jsRuntime = jsRuntime;
     }

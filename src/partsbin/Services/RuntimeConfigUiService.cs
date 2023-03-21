@@ -1,6 +1,6 @@
 using System.Globalization;
 using Blazored.Modal.Services;
-using partsbin.Models;
+using partsbin.Services.Models;
 
 namespace partsbin.Services;
 

@@ -1,5 +1,8 @@
 @page "/search/{searchPhrase}"
 @using partsbin.Services
+@using partsbin.Services.Models
+@using partsbin.Logic.Services
+@using partsbin.Logic.Helpers
 @inject IPartSearchService PartSearchService;
 @inject IPartService PartService;
 
@@ -49,7 +52,7 @@ else
             .ThenBy(x => x.Range)
             .ThenBy(x => x.PartName)
             .ThenBy(x => x.PartNumber)
-            .ThenBy(x => x.FormattedValue)
+            .ThenBy(x => x.GetFormattedValue())
             .ToList();
 
         StateHasChanged();

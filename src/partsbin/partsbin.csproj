@@ -26,4 +26,7 @@
     <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\partsbin.Logic\partsbin.Logic.csproj" />
+  </ItemGroup>
 </Project>

@@ -1,6 +1,9 @@
 @page "/all-parts/{byType?}/{qualifier?}"
 @using partsbin.Helpers
+@using partsbin.Logic.Helpers
+@using partsbin.Logic.Services
 @using partsbin.Services
+@using partsbin.Services.Models
 @inject NavigationManager NavigationManager;
 @inject IPartService PartService;
 
@@ -89,7 +92,7 @@
             .ThenBy(x => x.Range)
             .ThenBy(x => x.PartName)
             .ThenBy(x => x.PartNumber)
-            .ThenBy(x => x.FormattedValue)
+            .ThenBy(x => x.GetFormattedValue())
             .ToList();
 
         StateHasChanged();

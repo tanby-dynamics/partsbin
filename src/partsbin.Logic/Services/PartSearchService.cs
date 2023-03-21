@@ -1,9 +1,10 @@
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
-using partsbin.Models;
+using partsbin.Services.Models;
+using partsbin.Logic.Helpers;
 
-namespace partsbin.Services;
+namespace partsbin.Logic.Services;
 
 public interface IPartSearchService
 {
@@ -34,7 +35,7 @@ public class PartSearchService : IPartSearchService
         // TODO documents
         // TODO suppliers
         yield return ("PackageType", x => x.PackageType ?? string.Empty);
-        yield return ("FormattedValue", x => x.FormattedValue);
+        yield return ("FormattedValue", x => x.GetFormattedValue());
         yield return ("PartName", x => x.PartName ?? string.Empty);
         yield return ("PartNumber", x => x.PartNumber ?? string.Empty);
     }

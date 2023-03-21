@@ -1,5 +1,8 @@
 @using partsbin.Helpers
+@using partsbin.Logic.Helpers
+@using partsbin.Logic.Services
 @using partsbin.Services
+@using partsbin.Services.Models
 @inject NavigationManager NavigationManager;
 @inject IPartService PartService;
 @inject IPartUiService PartUiService;
@@ -75,10 +78,10 @@
                 }
             </td>
             <td>
-                @if (part.FormattedValue.HasContent())
+                @if (part.GetFormattedValue().HasContent())
                 {
                     <a href="/part/@part.Id">
-                        @part.FormattedValue
+                        @part.GetFormattedValue()
                     </a>
                 }
                 else

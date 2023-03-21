@@ -1,11 +1,11 @@
-using partsbin.Models;
-using partsbin.Services.Results;
+using partsbin.Services.Models;
+using partsbin.Services.Services;
 
-namespace partsbin.Services;
+namespace partsbin.Logic.Services;
 
 public interface IPartFieldService
 {
-    Task<IEnumerable<PartTypeAndRangesResult>> GetPartTypesAndRanges();
+    Task<IEnumerable<(string? partType, string? range, int count)>> GetPartTypesAndRanges();
     Task<IEnumerable<string>> GetUniquePartTypes();
     Task<IEnumerable<(string partType, int quantity)>> GetUniquePartTypesAndCounts();
     Task<IEnumerable<string>> GetUniqueRanges();
@@ -31,7 +31,8 @@ public class PartFieldService : IPartFieldService
         _dbFactory = dbFactory;
     }
 
-    public async Task<IEnumerable<PartTypeAndRangesResult>> GetPartTypesAndRanges()
+    
+    public async Task<IEnumerable<(string? partType, string? range, int count)>> GetPartTypesAndRanges()
     {
         using var db = await _dbFactory.GetDatabase();
 
@@ -46,12 +47,11 @@ public class PartFieldService : IPartFieldService
             .ToListAsync();
         var result = parts
             .GroupBy(x => x)
-            .Select(x => new PartTypeAndRangesResult
-            {
-                PartType = x.Key.PartType,
-                Range = x.Key.Range,
-                Count = x.Count()
-            });
+            .Select(x => (
+                partType: x.Key.PartType,
+                range: x.Key.Range,
+                count: x.Count()
+            ));
 
         return result;
     }

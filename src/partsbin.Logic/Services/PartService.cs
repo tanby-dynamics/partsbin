@@ -1,9 +1,8 @@
-using System.Collections;
-using System.Xml.Linq;
-using LiteDB;
-using partsbin.Models;
+using partsbin.Logic.Helpers;
+using partsbin.Services.Models;
+using partsbin.Services.Services;
 
-namespace partsbin.Services;
+namespace partsbin.Logic.Services;
 
 public interface IPartService
 {

@@ -1,6 +1,6 @@
 @using partsbin.Services
 @inject NavigationManager NavigationManager;
-@inject INavService NavService;
+@inject INavUiService NavUiService;
 
 <form class="d-flex" role="search">
     <div class="input-group">
@@ -24,7 +24,7 @@
 
     private async void PerformSearch()
     {
-        await NavService.HideNavbar();
+        await NavUiService.HideNavbar();
         NavigationManager.NavigateTo($"/search/{_searchPhrase}");
     }
 }

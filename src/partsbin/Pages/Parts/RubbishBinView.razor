@@ -1,6 +1,7 @@
 @page "/rubbish-bin"
-@using partsbin.Helpers
-@using partsbin.Services
+@using partsbin.Logic.Helpers
+@using partsbin.Logic.Services
+@using partsbin.Services.Models
 @inject IPartService PartService
 @inject IToastService ToastService;
 
@@ -49,11 +50,11 @@ else
                 <td>@part.Range.PresentationFormat()</td>
                 <td>@part.PartName.PresentationFormat()</td>
                 <td>@part.PackageType.PresentationFormat()</td>
-                <td>@part.FormattedValue</td>
+                <td>@part.GetFormattedValue()</td>
                 <td>@part.PartNumber.PresentationFormat()</td>
                 <td>@part.Location.PresentationFormat()</td>
                 <td>@part.PartType.PresentationFormat()</td>
-                <td>@part.FormattedQuantity</td>
+                <td>@part.GetFormattedQuantity()</td>
                 <td>
                     <button class="btn btn-outline-success"
                             @onclick="@(() => RestorePart(part))"

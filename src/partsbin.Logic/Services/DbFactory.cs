@@ -1,8 +1,7 @@
-using LiteDB;
 using LiteDB.Async;
-using partsbin.Models;
+using partsbin.Services.Models;
 
-namespace partsbin.Services;
+namespace partsbin.Services.Services;
 
 public interface IDbFactory
 {

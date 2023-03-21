@@ -1,6 +1,6 @@
 @using System.Reflection
 @using partsbin.Services
-@inject INavService NavService;
+@inject INavUiService NavUiService;
 
 <nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
@@ -36,14 +36,14 @@
                         <NavLink class="nav-link" 
                                  href="." 
                                  Match="NavLinkMatch.All"
-                                 @onclick="@NavService.HideNavbar">
+                                 @onclick="@NavUiService.HideNavbar">
                             <span class="oi oi-home" aria-hidden="true"></span> Home
                         </NavLink>
                     </li>
                     <li class="nav-item">
                         <NavLink class="nav-link" 
                                  href="/all-parts"
-                                 @onclick="@NavService.HideNavbar">
+                                 @onclick="@NavUiService.HideNavbar">
                             <span class="oi oi-box" aria-hidden="true"></span> All parts
                         </NavLink>
                     </li>
@@ -59,42 +59,42 @@
                             <li>
                                 <NavLink class="nav-link" 
                                          href="/part-types"
-                                         @onclick="@NavService.HideNavbar">
+                                         @onclick="@NavUiService.HideNavbar">
                                     Part type
                                 </NavLink>
                             </li>
                             <li>
                                 <NavLink class="nav-link" 
                                          href="/ranges"
-                                         @onclick="@NavService.HideNavbar">
+                                         @onclick="@NavUiService.HideNavbar">
                                     Range
                                 </NavLink>
                             </li>
                             <li>
                                 <NavLink class="nav-link" 
                                          href="/part-names"
-                                         @onclick="@NavService.HideNavbar">
+                                         @onclick="@NavUiService.HideNavbar">
                                     Part name
                                 </NavLink>
                             </li>
                             <li>
                                 <NavLink class="nav-link" 
                                          href="/manufacturers"
-                                         @onclick="@NavService.HideNavbar">
+                                         @onclick="@NavUiService.HideNavbar">
                                     Manufacturer
                                 </NavLink>
                             </li>
                             <li>
                                 <NavLink class="nav-link" 
                                          href="/part-numbers"
-                                         @onclick="@NavService.HideNavbar">
+                                         @onclick="@NavUiService.HideNavbar">
                                     Part number
                                 </NavLink>
                             </li>
                             <li>
                                 <NavLink class="nav-link" 
                                          href="/locations"
-                                         @onclick="@NavService.HideNavbar">
+                                         @onclick="@NavUiService.HideNavbar">
                                     Location
                                 </NavLink>
                             </li>
@@ -103,14 +103,14 @@
                     <li>
                         <NavLink class="nav-link" 
                                  href="/admin"
-                                 @onclick="@NavService.HideNavbar">
+                                 @onclick="@NavUiService.HideNavbar">
                             <span class="oi oi-cog"></span> Admin
                         </NavLink>
                     </li>
                     <li>
                         <NavLink class="nav-link"
                                  href="/rubbish-bin"
-                                 @onclick="@NavService.HideNavbar">
+                                 @onclick="@NavUiService.HideNavbar">
                             <span class="oi oi-trash" aria-hidden="true"></span> Rubbish bin
                         </NavLink>
                     </li>

@@ -1,10 +1,9 @@
-using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Index;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
 
-namespace partsbin.Services;
+namespace partsbin.Logic.Services;
 
 public interface ISearchFactory
 {

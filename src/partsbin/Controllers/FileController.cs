@@ -1,9 +1,9 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using partsbin.Controllers.Dtos;
 using partsbin.Helpers;
-using partsbin.Models;
 using partsbin.Services;
+using partsbin.Services.DTOs;
+using partsbin.Services.Services;
 
 namespace partsbin.Controllers;
 
@@ -42,13 +42,13 @@ public class FileController : Controller
     }
 
     [HttpGet("list")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ListResultDto>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ListFileDto>))]
     public async Task<IActionResult> List()
     {
         using var db = await _dbFactory.GetDatabase();
         var files = await db.FileStorage.FindAllAsync();
         var response = files
-            .Select(f => new ListResultDto
+            .Select(f => new ListFileDto
             {
                 Id = f.Id,
                 FileName = f.Filename,

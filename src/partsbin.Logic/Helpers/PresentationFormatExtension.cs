@@ -1,4 +1,4 @@
-namespace partsbin.Helpers;
+namespace partsbin.Logic.Helpers;
 
 public static class PresentationFormatExtension
 {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Reflection.Metadata;
-using System.Text;
-using partsbin.Helpers;
-
-namespace partsbin.Models
+﻿namespace partsbin.Services.Models
 {
     /// <summary>
     /// Note that nothing is required except for the quantity, which is fine at
@@ -79,7 +74,6 @@ namespace partsbin.Models
         /// eg "Qualcomm"
         /// </summary>
         public string? Manufacturer { get; set; }
-
         public string Notes { get; set; } = string.Empty;
         public string HtmlNotes { get; set; } = string.Empty;
 
@@ -92,55 +86,5 @@ namespace partsbin.Models
         /// Suppliers for the part
         /// </summary>
         public List<Supplier> Suppliers { get; set; } = new List<Supplier>();
-
-        public string Description
-        {
-            get
-            {
-                var sb = new StringBuilder();
-                
-                if (PartType.HasContent()) sb.Append(PartType + " - ");
-                if (Range.HasContent()) sb.Append(Range + " - ");
-                if (PartName.HasContent()) sb.Append(PartName + " - ");
-                if (Value is not null) sb.Append(FormattedValue + " - ");
-                if (PartNumber.HasContent()) sb.Append(PartNumber + " - ");
-
-                if (sb.Length == 0) return "---";
-                
-                sb.Remove(sb.Length - 3, 3);
-                
-                return sb.ToString();
-            }
-        }
-
-        public string FormattedQuantity => $"{Quantity} {(Quantity != 1 ? "units" : "unit")}";
-        public string FormattedValue => Value is null
-            ? "---" 
-            : $"{Value.FormatCompact(0)}{ValueUnit}";
-
-        /// <summary>
-        /// Clones every property of this part, except for the ID
-        /// </summary>
-        /// <returns>A deep clone of this part</returns>
-        public Part DeepClone()
-        {
-            return new Part
-            {
-                PartType = PartType,
-                Range = Range,
-                Location = Location,
-                Manufacturer = Manufacturer,
-                HtmlNotes = HtmlNotes,
-                Documents = Documents.ToList(),
-                Suppliers = Suppliers.ToList(),
-                Notes = Notes,
-                PackageType = PackageType,
-                Value = Value,
-                ValueUnit = ValueUnit,
-                PartName = PartName,
-                PartNumber = PartNumber,
-                Quantity = Quantity
-            };
-        }
     }
 }

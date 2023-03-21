@@ -1,7 +1,7 @@
-using System.Text.Encodings.Web;
-using partsbin.Models;
+using partsbin.Services.Models;
+using partsbin.Services.Services;
 
-namespace partsbin.Services;
+namespace partsbin.Logic.Services;
 
 public interface ISupplierService
 {

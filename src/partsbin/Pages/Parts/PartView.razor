@@ -1,6 +1,8 @@
 @page "/part/{Id:int}"
 @using partsbin.Services
-@using partsbin.Helpers
+@using partsbin.Logic.Helpers
+@using partsbin.Logic.Services
+@using partsbin.Services.Models
 @inject IPartService PartService;
 @inject IPartUiService PartUiService;
 @inject IToastService ToastService;
@@ -10,7 +12,7 @@
 @if (_part is not null)
 {
     <h3>
-        @_part.Description - @_part.FormattedQuantity
+        @_part.GetDescription() - @_part.GetFormattedQuantity()
         @if (Duplicate == 1)
         {
             <strong>&nbsp;(duplicate)</strong>

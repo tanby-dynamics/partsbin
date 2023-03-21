@@ -4,7 +4,7 @@ using Microsoft.JSInterop;
 namespace partsbin.Helpers;
 
 /// <summary>
-/// https://www.puresourcecode.com/dotnet/blazor/create-a-blazor-component-for-quill/
+/// Source: https://www.puresourcecode.com/dotnet/blazor/create-a-blazor-component-for-quill/
 /// </summary>
 public static class QuillHelper
 {

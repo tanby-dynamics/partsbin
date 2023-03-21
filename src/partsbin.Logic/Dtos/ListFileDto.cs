@@ -1,6 +1,6 @@
-namespace partsbin.Controllers.Dtos;
+namespace partsbin.Services.DTOs;
 
-public class ListResultDto
+public class ListFileDto
 {
     public required string Id { get; set; }
     public required string FileName { get; set; }

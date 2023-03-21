@@ -1,6 +1,8 @@
 ﻿using Blazored.Modal;
 using Blazored.Toast;
+using partsbin.Logic.Services;
 using partsbin.Services;
+using partsbin.Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +23,7 @@ builder.Services
     .AddSingleton<IImageService, ImageService>()
     .AddScoped<IFileService, FileService>()
     .AddScoped<IPartUiService, PartUiService>()
-    .AddScoped<INavService, NavService>()
+    .AddScoped<INavUiService, NavUiService>()
     .AddScoped<ISupplierUiService, SupplierUiService>()
     .AddScoped<ISelectStringUiService, SelectStringUiService>()
     .AddScoped<ISupplierService, SupplierService>()

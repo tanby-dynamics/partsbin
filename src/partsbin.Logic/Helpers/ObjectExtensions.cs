@@ -1,9 +1,7 @@
-using System;
 using System.Collections;
 using System.Reflection;
-using Microsoft.AspNetCore.Components.Infrastructure;
 
-namespace partsbin.Helpers;
+namespace partsbin.Logic.Helpers;
 
 public static class ObjectExtensions
 {
