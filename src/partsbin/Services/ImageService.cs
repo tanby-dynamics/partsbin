@@ -18,6 +18,7 @@ public interface IImageService
     Task<string> GetBase64Url(Image image);
     Task<IEnumerable<Image>> GetAllImagesForPart(Part part);
     Task UpdateImage(Image image);
+    Task DuplicateImageIntoPart(Image sourceImage, Part part);
 }
 
 public class ImageService : IImageService
@@ -97,4 +98,35 @@ public class ImageService : IImageService
         using var db = await _dbFactory.GetDatabase();
         await db.GetCollection<Image>().UpdateAsync(image);
     }
+
+    public async Task DuplicateImageIntoPart(Image sourceImage, Part part)
+    {
+        using var db = await _dbFactory.GetDatabase();
+        
+        // Create duplicate image
+        var images = db.GetCollection<Image>();
+        var duplicateImage = new Image
+        {
+            PartId = part.Id,
+            FileName = sourceImage.FileName,
+            ContentType = sourceImage.ContentType,
+            Notes = sourceImage.Notes,
+            HtmlNotes = sourceImage.HtmlNotes
+        };
+        await images.InsertAsync(duplicateImage);
+        
+        // Copy file data into a new file
+        var stream = new MemoryStream();
+        await db.FileStorage.DownloadAsync(sourceImage.FileId, stream);
+        stream.Seek(0, SeekOrigin.Begin);
+        var fileInfo = await db.FileStorage.UploadAsync(
+            sourceImage.Id.ToString(), 
+            sourceImage.FileName, 
+            stream);
+        
+        // Update duplicate with new file's ID
+        duplicateImage.FileId = fileInfo.Id;
+        await images.UpdateAsync(duplicateImage);
+    }
+
 }

@@ -22,11 +22,13 @@ public class PartService : IPartService
 {
     private readonly IDbFactory _dbFactory;
     private readonly IPartSearchService _partSearchService;
+    private readonly IImageService _imageService;
 
-    public PartService(IDbFactory dbFactory, IPartSearchService partSearchService)
+    public PartService(IDbFactory dbFactory, IPartSearchService partSearchService, IImageService imageService)
     {
         _dbFactory = dbFactory;
         _partSearchService = partSearchService;
+        _imageService = imageService;
     }
     
     public async Task<Part> AddPart(Part part)
@@ -106,7 +108,18 @@ public class PartService : IPartService
         await db.GetCollection<Part>().DeleteManyAsync(x => x.IsDeleted);
     }
 
-    public async Task<Part> Duplicate(Part source) => await AddPart(source.DeepClone());
+    public async Task<Part> Duplicate(Part source)
+    {
+        var duplicatePart = await AddPart(source.DeepClone());
+
+        var sourceImages = await _imageService.GetAllImagesForPart(source);
+        foreach (var image in sourceImages)
+        {
+            await _imageService.DuplicateImageIntoPart(image, duplicatePart);
+        }
+
+        return duplicatePart;
+    }
 
     public async Task<IEnumerable<Part>> GetPartsWithIds(IEnumerable<int> ids)
     {
