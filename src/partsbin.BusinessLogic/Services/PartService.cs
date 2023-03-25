@@ -1,5 +1,6 @@
 using partsbin.BusinessLogic.Helpers;
 using partsbin.BusinessLogic.Models;
+using File = partsbin.BusinessLogic.Models.File;
 
 namespace partsbin.BusinessLogic.Services;
 
@@ -96,14 +97,22 @@ public class PartService : IPartService
     {
         using var db = await _dbFactory.GetDatabase();
 
-        // Drop from search index
         var deletedParts = await db.GetCollection<Part>().Query()
             .Where(x => x.IsDeleted)
             .ToArrayAsync();
-        foreach (var part in deletedParts) _partSearchService.RemovePart(part);
         
-        // Delete from database
-        await db.GetCollection<Part>().DeleteManyAsync(x => x.IsDeleted);
+        foreach (var part in deletedParts)
+        {
+            // Drop from search index
+            _partSearchService.RemovePart(part);
+
+            // Delete Images and Files
+            await db.GetCollection<Image>().DeleteManyAsync(x => x.PartId == part.Id);
+            await db.GetCollection<File>().DeleteManyAsync(x => x.PartId == part.Id);
+            
+            // Delete the part (Suppliers and Documentation are part of the Part)
+            await db.GetCollection<Part>().DeleteAsync(part.Id);
+        }
     }
 
     public async Task<Part> Duplicate(Part source)
