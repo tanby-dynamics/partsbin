@@ -54,10 +54,10 @@
                 }
             </td>
             <td>
-                @if (part.Range.HasContent())
+                @if (part.PartName.HasContent())
                 {
                     <a href="/part/@part.Id">
-                        @part.Range
+                        @part.PartName
                     </a>
                 }
                 else
