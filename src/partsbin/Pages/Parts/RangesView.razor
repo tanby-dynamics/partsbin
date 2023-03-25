@@ -42,5 +42,6 @@ else
     protected override async void OnInitialized()
     {
         _ranges = await PartFieldService.GetUniqueRangesAndCounts();
+        StateHasChanged();
     }
 }

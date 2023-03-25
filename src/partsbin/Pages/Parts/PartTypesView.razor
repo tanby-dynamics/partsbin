@@ -42,5 +42,6 @@ else
     protected override async void OnInitialized()
     {
         _partTypes = await PartFieldService.GetUniquePartTypesAndCounts();
+        StateHasChanged();
     }
 }

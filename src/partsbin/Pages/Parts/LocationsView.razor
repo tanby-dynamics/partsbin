@@ -8,7 +8,7 @@
 @if (!_locations.Any())
 {
     <div class="alert alert-info" role="alert">
-        No Locations have been added
+        No locations have been added
     </div>
 }
 else
@@ -42,5 +42,6 @@ else
     protected override async void OnInitialized()
     {
         _locations = await PartFieldService.GetUniqueLocationsAndCounts();
+        StateHasChanged();
     }
 }
