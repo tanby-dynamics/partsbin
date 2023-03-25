@@ -14,7 +14,7 @@ public interface IPartService
     Task EmptyRubbishBin();
     Task<Part> Duplicate(Part source);
     Task<IEnumerable<Part>> GetPartsWithIds(IEnumerable<int> ids);
-    Task<bool> CheckForDuplicatePartNumber(string partNumber, int? excludePartId = null);
+    Task<bool> IsThisDuplicatePartNumber(string partNumber, int? excludePartId = null);
 }
 
 public class PartService : IPartService
@@ -22,12 +22,18 @@ public class PartService : IPartService
     private readonly IDbFactory _dbFactory;
     private readonly IPartSearchService _partSearchService;
     private readonly IImageService _imageService;
+    private readonly IFileService _fileService;
 
-    public PartService(IDbFactory dbFactory, IPartSearchService partSearchService, IImageService imageService)
+    public PartService(
+        IDbFactory dbFactory, 
+        IPartSearchService partSearchService, 
+        IImageService imageService,
+        IFileService fileService)
     {
         _dbFactory = dbFactory;
         _partSearchService = partSearchService;
         _imageService = imageService;
+        _fileService = fileService;
     }
     
     public async Task<Part> AddPart(Part part)
@@ -125,6 +131,12 @@ public class PartService : IPartService
             await _imageService.DuplicateImageIntoPart(image, duplicatePart);
         }
 
+        var sourceFiles = await _fileService.GetAllFilesForPart(source);
+        foreach (var file in sourceFiles)
+        {
+            await _fileService.DuplicateFileIntoPart(file, duplicatePart);
+        }
+
         return duplicatePart;
     }
 
@@ -146,7 +158,7 @@ public class PartService : IPartService
     /// <param name="partNumber"></param>
     /// <param name="excludePartId">If provided, excludes the identified part (for updates)</param>
     /// <returns>True if the provided part number is already used in one or more existing parts</returns>
-    public async Task<bool> CheckForDuplicatePartNumber(string partNumber, int? excludePartId = null)
+    public async Task<bool> IsThisDuplicatePartNumber(string partNumber, int? excludePartId = null)
     {
         using var db = await _dbFactory.GetDatabase();
         var partsCollection = db.GetCollection<Part>();

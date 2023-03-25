@@ -15,7 +15,9 @@
 
         if (part is not null)
         {
-            NavigationManager.NavigateTo($"/part/{part.Id}");
+            NavigationManager.NavigateTo(
+                $"/part/{part.Id}",
+                forceLoad: true);
         }
     }
 }

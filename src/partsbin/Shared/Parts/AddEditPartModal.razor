@@ -234,7 +234,7 @@
             {
                 if (
                     Part.PartNumber.HasContent()
-                    && (await PartService.CheckForDuplicatePartNumber(Part.PartNumber!))
+                    && (await PartService.IsThisDuplicatePartNumber(Part.PartNumber!))
                 )
                 {
                     var confirmResult = await ConfirmUiService.Confirm(
@@ -251,7 +251,7 @@
             {
                 if (
                     Part.PartNumber.HasContent()
-                    && (await PartService.CheckForDuplicatePartNumber(Part.PartNumber!, Part.Id))
+                    && (await PartService.IsThisDuplicatePartNumber(Part.PartNumber!, Part.Id))
                     )
                 {
                     var confirmResult = await ConfirmUiService.Confirm(

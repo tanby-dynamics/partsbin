@@ -13,7 +13,6 @@ builder.Services.AddBlazoredToast();
 builder.Services.AddControllers();
 builder.Services
     .AddSingleton<IDbFactory>(new DbFactory(builder.Environment.IsProduction()))
-    .AddSingleton<IPartService, PartService>()
     .AddSingleton<IPartSearchService, PartSearchService>()
     .AddSingleton<IPartFieldService, PartFieldService>()
     .AddSingleton<ISearchFactory>(new SearchFactory(builder.Environment.IsProduction()))
@@ -21,6 +20,7 @@ builder.Services
     .AddSingleton<IRuntimeConfigService, RuntimeConfigService>()
     .AddSingleton<IImageService, ImageService>()
     .AddScoped<IFileService, FileService>()
+    .AddScoped<IPartService, PartService>()
     .AddScoped<IPartUiService, PartUiService>()
     .AddScoped<INavUiService, NavUiService>()
     .AddScoped<ISupplierUiService, SupplierUiService>()
