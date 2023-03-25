@@ -3,6 +3,7 @@
 @using System.Net.Mime
 @using partsbin.BusinessLogic.Models
 @using partsbin.BusinessLogic.Services
+@using partsbin.Shared.Notes
 @inject IImageService ImageService;
 @inject IModalService ModalService
 @inject IConfirmUiService ConfirmUiService;
@@ -152,13 +153,13 @@
     {
         var parameters = new ModalParameters
         {
-            { "Image", image }
+            { "HasNotes", image }
         };
         var options = new ModalOptions
         {
             Position = ModalPosition.Middle
         };
-        var modal = ModalService.Show<GalleryNotesEditorModal>(
+        var modal = ModalService.Show<NotesEditorModal>(
             $"Edit notes for {image.FileName}",
             parameters,
             options);

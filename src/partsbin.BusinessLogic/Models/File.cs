@@ -1,6 +1,6 @@
 namespace partsbin.BusinessLogic.Models;
 
-public class Image : IHasNotes
+public class File : IHasNotes
 {
     public int Id { get; set; }
     public int? PartId { get; set; } = null;

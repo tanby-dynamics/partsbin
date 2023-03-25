@@ -1,6 +1,7 @@
 @using partsbin.Helpers
 @using partsbin.BusinessLogic.Helpers
 @using partsbin.BusinessLogic.Models
+@using partsbin.Shared.Notes
 @inject IModalService ModalService;
 
 <img src="/api/file/@Image.FileId"
@@ -31,13 +32,13 @@
     {
         var parameters = new ModalParameters
         {
-            { "Image", Image }
+            { "HasNotes", Image }
         };
         var options = new ModalOptions
         {
             Position = ModalPosition.Middle
         };
-        var modal = ModalService.Show<GalleryNotesEditorModal>(
+        var modal = ModalService.Show<NotesEditorModal>(
             $"Edit notes for {Image.FileName}",
             parameters,
             options);

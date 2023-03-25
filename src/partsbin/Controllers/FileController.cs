@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using partsbin.BusinessLogic.DTOs;
 using partsbin.BusinessLogic.Services;
@@ -34,6 +35,16 @@ public class FileController : Controller
 
         await stream.CopyToAsync(memoryStream);
         memoryStream.Seek(0, SeekOrigin.Begin);
+
+        var contentDisposition = new ContentDisposition
+        {
+            CreationDate = default,
+            DispositionType = DispositionTypeNames.Attachment,
+            FileName = file.Filename,
+            Inline = false,
+            Size = file.Length
+        };
+        Response.Headers.Add("Content-Disposition", contentDisposition.ToString());
 
         return File(
             fileStream: memoryStream, 

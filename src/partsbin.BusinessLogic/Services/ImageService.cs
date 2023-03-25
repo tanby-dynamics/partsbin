@@ -127,5 +127,4 @@ public class ImageService : IImageService
         duplicateImage.FileId = fileInfo.Id;
         await images.UpdateAsync(duplicateImage);
     }
-
 }

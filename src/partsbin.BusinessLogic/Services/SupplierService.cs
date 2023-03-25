@@ -7,7 +7,6 @@ public interface ISupplierService
     Task<IEnumerable<(string name, string url)>> GetNamesAndUrls();
 }
 
-
 public class SupplierService : ISupplierService
 {
     private readonly IDbFactory _dbFactory;

@@ -1,0 +1,112 @@
+@using partsbin.Services
+@using partsbin.BusinessLogic.Models
+@using partsbin.BusinessLogic.Services
+@using partsbin.Shared.Notes
+@inject IFileService FileService;
+@inject IModalService ModalService
+@inject IConfirmUiService ConfirmUiService;
+@inject IJSRuntime JSRuntime
+@inject IToastService ToastService;
+
+<div class="card">
+    <div class="card-header">
+        <h4>Files</h4>
+    </div>
+    <div class="card-body">
+        <div class="card-text">
+            <div class="input-group">
+                <label class="input-group-text" for="uploadFiles">Upload multiple files</label>
+                <InputFile type="file" 
+                           OnChange="@UploadFiles"
+                           class="form-control" 
+                           id="uploadFiles"
+                           multiple/>
+            </div>
+            <br/>
+            
+            @if (_files is null)
+            {
+                <p>Loading files...</p>
+            }
+            else
+            {
+                @foreach (var file in _files)
+                {
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text flex-grow-1">
+                            <a href="/api/file/@file.FileId"
+                               target="_blank">
+                                @file.FileName
+                            </a>
+                        </span>
+                        <a href="/api/file/@file.FileId"
+                           target="_blank"
+                           class="btn btn-outline-secondary">
+                            <i class="oi oi-cloud-download"></i>
+                        </a>
+                        <button class="btn btn-outline-secondary"
+                                @onclick="@(async () => await DeleteFile(file))">
+                            <i class="oi oi-trash"></i>
+                        </button>
+                    </div>
+                    <br/>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public required Part Part { get; set; }
+    private IEnumerable<File>? _files = null;
+
+    protected override async void OnInitialized()
+    {
+        await RefreshFiles();
+    }
+
+    private async Task UploadFile(IBrowserFile file)
+    {
+        await FileService.Upload(file, part: Part);
+    }
+
+    private async void UploadFiles(InputFileChangeEventArgs arg)
+    {
+        ToastService.ShowInfo($"Uploading {arg.FileCount} files");
+        _files = null;
+        var files = arg.GetMultipleFiles(arg.FileCount);
+
+        foreach (var file in files) await UploadFile(file);
+
+        await RefreshFiles();
+        await JSRuntime.InvokeVoidAsync("Blazor.resetInputFile", "uploadFiles");
+        ToastService.ShowSuccess($"Successfully uploaded {arg.FileCount} files");
+    }
+
+    async Task RefreshFiles()
+    {
+        _files = await GetFiles();
+        StateHasChanged();
+    }
+
+    async Task<IEnumerable<File>> GetFiles()
+    {
+        var files = (await FileService.GetAllFilesForPart(Part))
+            .OrderBy(x => x.Id);
+
+        return files.ToList();
+    }
+
+    async Task DeleteFile(File file)
+    {
+        var confirmResult = await ConfirmUiService.Confirm(
+            "Delete file", 
+            "Are you sure you want to delete this file? This action cannot be reversed.");
+
+        if (confirmResult == ConfirmResult.Cancelled) return;
+        
+        await FileService.Delete(file);
+        await RefreshFiles();
+    }
+}

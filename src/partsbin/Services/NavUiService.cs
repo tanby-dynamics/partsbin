@@ -19,6 +19,6 @@ public class NavUiService : INavUiService
     [JSInvokable]
     public async Task HideNavbar()
     {
-        await _jsRuntime.InvokeVoidAsync("hideNavbar");
+        await _jsRuntime.InvokeVoidAsync("Blazor.hideNavbar");
     }
 }
