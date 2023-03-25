@@ -30,4 +30,10 @@ permalink: /screenshots
 ### Select culture
 ![](/images/select-culture.png)
 
+### Photo gallery
+![](/images/part-gallery.png)
+![](/images/part-gallery-zoomed.png)
+
+## Files
+~[](/images/files.png)
 
