@@ -245,7 +245,8 @@
                 }
                 
                 Part = await PartService.AddPart(Part!);
-                NavigationManager.NavigateTo($"/part/{Part.Id}");
+                NavigationManager.NavigateTo($"/part/{Part.Id}",
+                    forceLoad: true);
             }
             else
             {

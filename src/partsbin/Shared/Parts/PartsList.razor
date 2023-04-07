@@ -229,7 +229,9 @@
         
         var duplicatePart = await PartService.Duplicate(part);
         
-        NavigationManager.NavigateTo($"/part/{duplicatePart.Id}?d=1");
+        NavigationManager.NavigateTo(
+            $"/part/{duplicatePart.Id}?d=1",
+            forceLoad: true);
         ToastService.ShowSuccess("The part has been duplicated, you are working on the duplicate part now");
     }
 

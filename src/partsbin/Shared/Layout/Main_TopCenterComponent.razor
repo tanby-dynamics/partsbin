@@ -1,0 +1,56 @@
+@using partsbin.Services
+@inject NavigationManager NavigationManager;
+@inject INavUiService NavUiService;
+@inject IPartUiService PartUiService; 
+
+<span class="input-group">
+    <button class="btn btn-success"
+            @onclick="@AddPart">
+        <span class="oi oi-plus" aria-hidden="true"></span>
+        Add a part
+    </button>
+    <InputText type="search"
+                class="form-control"
+                placeholder="Search"
+                aria-label="Search"
+                @bind-Value="_searchPhrase"
+                @onkeyup="@SearchOnKeyUp"/>
+    <button class="btn btn-outline-success"
+            type="submit"
+            title="Search"
+            @onclick:preventDefault
+            @onclick="@PerformSearch">
+        <i class="oi oi-magnifying-glass"></i>
+    </button>
+</span>
+
+@code {
+    private string _searchPhrase = string.Empty;
+
+    private async Task PerformSearch()
+    {
+        await NavUiService.HideNavbar();
+        NavigationManager.NavigateTo($"/search/{_searchPhrase}",
+            forceLoad: true);
+    }
+
+    private async Task AddPart()
+    {
+        var part = await PartUiService.AddPart();
+
+        if (part is not null)
+        {
+            NavigationManager.NavigateTo(
+                $"/part/{part.Id}",
+                forceLoad: true);
+        }
+    }
+
+    async Task SearchOnKeyUp(KeyboardEventArgs e) 
+    {
+        if (e.Code == "Enter")
+        {
+            await PerformSearch();  
+        }
+    }
+}
