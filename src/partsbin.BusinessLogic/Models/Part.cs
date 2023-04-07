@@ -65,6 +65,11 @@
         public int Quantity { get; set; }
 
         /// <summary>
+        /// True if the quantity is approximate
+        /// </summary>
+        public bool QuantityIsApproximate { get; set; }
+
+        /// <summary>
         /// The physical location of these parts in the workshop
         /// eg "Shelf 4 Rack 2 Tray 6"
         /// </summary>

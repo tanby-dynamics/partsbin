@@ -183,10 +183,21 @@
         {
             <div style="margin-top: 10px;">
                 <label for="quantity">Quantity</label>
-                <InputNumber id="quantity"
-                             class="form-control"
-                             placeholder="Quantity"
-                             @bind-Value="Part!.Quantity"/>
+                <span class="input-group">
+                    <InputNumber id="quantity"
+                                class="form-control"
+                                placeholder="Quantity"
+                                @bind-Value="Part!.Quantity"/>
+                    <span class="input-group-text">
+                        <label>
+                            <input class="form-check-input mt-0"
+                                   type="checkbox" 
+                                   @bind-value="Part!.QuantityIsApproximate"
+                                   aria-label="Quantity is approximate">
+                            Approximate
+                        </label>
+                    </span>
+                </span>
             </div>
         }
         <div>
