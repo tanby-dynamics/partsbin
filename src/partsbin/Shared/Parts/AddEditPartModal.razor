@@ -68,6 +68,36 @@
                         @onclick="@SelectPackageType">
                     <i class="oi oi-magnifying-glass"></i>
                 </button>
+                <button class="btn btn-outline-secondary dropdown-toggle"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    <i class="oi oi-arrow-circle-left"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    @foreach (var section in _defaultPackageTypes)
+                    {
+                        foreach (var packageType in section)
+                        {
+                            if (packageType == GroupEndToken)
+                            {
+                                <li>
+                                    <hr class="dropdown-divider"/>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <button class="btn dropdown-item"
+                                            @onclick:preventDefault
+                                            @onclick="@(() => ReplacePackageType(packageType))">
+                                        @packageType
+                                    </button>
+                                </li>
+                            }
+                        }
+                    }
+                </ul>
             </div>
         </div>
         <div style="margin-top: 10px;">
@@ -208,6 +238,12 @@
         new[] { "Hz", "kHz", "MHz", "GHz" },
     };
 
+    private readonly string[][] _defaultPackageTypes =
+    {
+        new[] { "THT", "DIP", "SMD", GroupEndToken },
+        new[] { "SOP (Small Outline Package)", "SOIC", "SO", "QFP (Quad Flat Package)", "QFN/LCC (Quad Flat Non-leaded Package)", "BGA (Ball Grid Array Package)", "CSP" }
+    };
+
     protected override void OnInitialized()
     {
         _isNew = Part is null;
@@ -306,6 +342,13 @@
         var previous = Part.PackageType;
         await PartUiService.SelectPackageType(Part);
         if (previous == Part.PackageType) return;
+        StateHasChanged();
+    }
+
+    private void ReplacePackageType(string packageType)
+    {
+        if (Part is null) return;
+        Part.PackageType = packageType;
         StateHasChanged();
     }
 
