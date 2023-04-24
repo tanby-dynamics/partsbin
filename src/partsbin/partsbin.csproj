@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Version></Version>
     <Authors>Rebecca Scott &lt;me@becdetat.com&gt;</Authors>
-    <AssemblyVersion>0.6</AssemblyVersion>
+    <AssemblyVersion>0.7</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
