@@ -15,6 +15,7 @@ public interface IPartService
     Task<Part> Duplicate(Part source);
     Task<IEnumerable<Part>> GetPartsWithIds(IEnumerable<int> ids);
     Task<bool> IsThisDuplicatePartNumber(string partNumber, int? excludePartId = null);
+    Task<int> UpdateLocations(string originalLocation, string newLocation);
 }
 
 public class PartService : IPartService
@@ -168,5 +169,22 @@ public class PartService : IPartService
             .FirstOrDefaultAsync();
 
         return matchingPart is not null;
+    }
+
+    public async Task<int> UpdateLocations(string originalLocation, string newLocation)
+    {
+        using var db = await _dbFactory.GetDatabase();
+        
+        var parts = await db.GetCollection<Part>().Query()
+            .Where(x => x.Location == originalLocation)
+            .ToArrayAsync();
+        
+        foreach (var part in parts) 
+        {
+            part.Location = newLocation;
+            await UpdatePart(part);
+        }
+
+        return parts.Count();
     }
 }

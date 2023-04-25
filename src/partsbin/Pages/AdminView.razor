@@ -31,6 +31,21 @@
                 </button>
             </div>
         </div>
+        <br/>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Bulk rename location</h5>
+                <p class="card-text">
+                    This lets you rename the location for all parts in that location
+                    at once.
+                </p>
+                <button class="btn btn-warning"
+                        @onclick:preventDefault
+                        @onclick="@BulkRenameLocation">
+                    Bulk rename location
+                </button>
+            </div>
+        </div>
     </div>
     <div class="col-4">
         <div class="card">
@@ -131,5 +146,20 @@
         if (!result.Confirmed) return;
         
         ToastService.ShowSuccess("Runtime configuration updated");
+    }
+
+    private async Task BulkRenameLocation()
+    {
+        var modalOptions = new ModalOptions { DisableBackgroundCancel = true };
+        var modal = ModalService.Show<BulkRenameLocationModal>(
+            "Bulk rename location",
+            modalOptions);
+        var result = await modal.Result;
+
+        if (!result.Confirmed) return;
+
+        var count = (int?)result.Data;
+
+        ToastService.ShowSuccess($"Location was updated in {count ?? -1} parts");
     }
 }

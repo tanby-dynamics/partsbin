@@ -1,0 +1,105 @@
+@using partsbin.BusinessLogic.Helpers
+@using partsbin.BusinessLogic.Services
+@using partsbin.Services
+@inject IToastService ToastService;
+@inject IPartService PartService;
+@inject IConfirmUiService ConfirmUiService;
+@inject ILocationUiService LocationUiService;
+
+<EditForm Model="@this" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="form-group">
+        <div style="margin-top:10px">
+            <label for="originalLocation">Original location</label>
+            <div class="input-group">
+                <InputText id="originalLocation"
+                           class="form-control"
+                           placeholder="Original location"
+                           @bind-Value="OriginalLocation"/>
+                <button class="btn btn-outline-secondary"
+                        @onclick:preventDefault
+                        @onclick="@SelectOriginalLocation">
+                    <i class="oi oi-magnifying-glass"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div style="margin-top:10px">
+            <label for="newLocation">New location</label>
+            <div class="input-group">
+                <InputText id="newLocation"
+                           class="form-control"
+                           placeholder="New location"
+                           @bind-Value="NewLocation"/>
+                <button class="btn btn-outline-secondary"
+                        @onclick:preventDefault
+                        @onclick="@SelectNewLocation">
+                    <i class="oi oi-magnifying-glass"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div style="margin-top: 10px;">
+        <button type="submit" class="btn btn-outline-primary">
+            Rename location
+        </button>
+    </div>
+</EditForm>
+
+@code {
+    public string OriginalLocation { get; set; } = string.Empty;
+    public string NewLocation { get; set; } = string.Empty;
+    [CascadingParameter]
+    BlazoredModalInstance? Modal { get; set; }
+
+    private async void HandleValidSubmit()
+    {
+        if (!OriginalLocation.HasContent())
+        {
+            var confirmResult = await ConfirmUiService.Confirm(
+                "The original location is empty",
+                "The original location hasn't been provided. Do you want to continue?"
+            );
+
+            if (confirmResult == ConfirmResult.Cancelled) return;
+        }
+
+        if (!NewLocation.HasContent())
+        {
+            var confirmResult = await ConfirmUiService.Confirm(
+                "The new location is empty",
+                "The new location hasn't been provided. Do you want to continue?"
+            );
+
+            if (confirmResult == ConfirmResult.Cancelled) return;
+        }
+
+        try 
+        {
+            var partCount = await PartService.UpdateLocations(
+                OriginalLocation, 
+                NewLocation);
+
+                await Modal!.CloseAsync(ModalResult.Ok(partCount));
+        }
+        catch (InvalidOperationException ex)
+        {
+            ToastService.ShowError(ex.Message);
+            return;
+        }
+    }
+
+    private async void SelectOriginalLocation()
+    {
+        OriginalLocation = await LocationUiService.SelectLocation(OriginalLocation);
+        StateHasChanged();
+    }
+
+    private async void SelectNewLocation()
+    {
+        NewLocation = await LocationUiService.SelectLocation(NewLocation);
+        StateHasChanged();
+    }
+}

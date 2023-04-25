@@ -22,6 +22,7 @@ builder.Services
     .AddScoped<IFileService, FileService>()
     .AddScoped<IPartService, PartService>()
     .AddScoped<IPartUiService, PartUiService>()
+    .AddScoped<ILocationUiService, LocationUiService>()
     .AddScoped<INavUiService, NavUiService>()
     .AddScoped<ISupplierUiService, SupplierUiService>()
     .AddScoped<ISelectStringUiService, SelectStringUiService>()
