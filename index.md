@@ -16,6 +16,8 @@ layout: page
     </p>
 </aside>
 
+**If you are upgrading from version 0.7 or below, you will need to [reindex your parts and equipment manually](/posts/2023-04-30-release-0.8)**
+
 Attention all hobbyist hardware hackers and engineers! Are you tired of sifting through piles of disorganised electronic components and struggling to keep track of what you have? Look no further!
 
 This simple to use application, complete with intuitive search features and a simple flat taxonomy model, is designed specifically with you in mind. Say goodbye to the chaos and hello to a streamlined system for keeping track of your parts inventory, making your next electrical experiment smoother than ever.
