@@ -31,7 +31,14 @@ public class DbFactory : IDbFactory
         await partCollection.EnsureIndexAsync(x => x.PartName);    
         await partCollection.EnsureIndexAsync(x => x.PartType);    
         await partCollection.EnsureIndexAsync(x => x.Range);    
-        await partCollection.EnsureIndexAsync(x => x.PartNumber);    
+        await partCollection.EnsureIndexAsync(x => x.PartNumber);  
+
+        var equipmentCollection = db.GetCollection<Equipment>();
+        await equipmentCollection.EnsureIndexAsync(x => x.EquipmentName);  
+        await equipmentCollection.EnsureIndexAsync(x => x.EquipmentType);  
+        await equipmentCollection.EnsureIndexAsync(x => x.Manufacturer);  
+        await equipmentCollection.EnsureIndexAsync(x => x.ModelNumber);  
+        await equipmentCollection.EnsureIndexAsync(x => x.Location);
 
         return db;
     }

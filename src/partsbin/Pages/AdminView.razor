@@ -1,9 +1,12 @@
 @page "/admin"
 @using partsbin.Services
 @using partsbin.BusinessLogic.Services
+@using partsbin.BusinessLogic.Models
 @inject IPartSearchService PartSearchService
+@inject IEquipmentSearchService EquipmentSearchService
 @inject IToastService ToastService;
 @inject IPartService PartService;
+@inject IEquipmentService EquipmentService;
 @inject IRuntimeConfigService RuntimeConfigService;
 @inject IModalService ModalService;
 
@@ -15,26 +18,27 @@
             <div class="card-body">
                 <h5 class="card-title">Reindex search</h5>
                 <p class="card-text">
-                    This will reindex all of the parts in the application 
-                    for the search function. It may take some time if the 
-                    parts collection is large. Your parts won't be affected.
+                    This will reindex all of the parts and equipment in the application 
+                    for the search functions. It may take some time if the 
+                    parts or equiment collections are large. Your parts and equipment
+                    won't be affected.
                 </p>
                 <p>
-                    You may need to do this if parts have been added or
+                    You may need to do this if parts or equipment have been added or
                     updated and the usual indexing was broken for some
                     reason, such as from a buggy release (sorry!).
                 </p>
                 <button class="btn btn-warning"
                         @onclick:preventDefault
                         @onclick="@TriggerReindex">
-                    Start reindexing parts
+                    Start reindexing parts and equipment
                 </button>
             </div>
         </div>
         <br/>
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Bulk rename location</h5>
+                <h5 class="card-title">Bulk rename parts location</h5>
                 <p class="card-text">
                     This lets you rename the location for all parts in that location
                     at once.
@@ -42,6 +46,21 @@
                 <button class="btn btn-warning"
                         @onclick:preventDefault
                         @onclick="@BulkRenameLocation">
+                    Bulk rename location
+                </button>
+            </div>
+        </div>
+        <br/>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Bulk rename equipment location</h5>
+                <p class="card-text">
+                    This lets you rename the location for all equipment in that location
+                    at once.
+                </p>
+                <button class="btn btn-warning"
+                        @onclick:preventDefault
+                        @onclick="@BulkRenameEquipmentLocation">
                     Bulk rename location
                 </button>
             </div>
@@ -114,16 +133,20 @@
 
     private async Task TriggerReindex()
     {
-        ToastService.ShowInfo("Clearing search index");
+        ToastService.ShowInfo("Clearing parts and equipment search index");
         PartSearchService.ClearIndex();
+        EquipmentSearchService.ClearIndex();
         
         var parts = (await PartService.GetAllParts())
             .ToArray();
+        var equipment = (await EquipmentService.GetAllEquipment())
+            .ToArray();
 
-        ToastService.ShowInfo($"Reindexing {parts.Length} parts");
+        ToastService.ShowInfo($"Reindexing {parts.Length} parts and {equipment.Length} equipment");
         foreach (var part in parts) PartSearchService.IndexPart(part);
+        foreach (var e in equipment) EquipmentSearchService.IndexEquipment(e);
         
-        ToastService.ShowSuccess($"Completed reindexing {parts.Length} parts");
+        ToastService.ShowSuccess($"Completed reindexing {parts.Length} parts and {equipment.Length} equipment");
     }
 
     private async Task EditRuntimeConfiguration()
@@ -151,8 +174,13 @@
     private async Task BulkRenameLocation()
     {
         var modalOptions = new ModalOptions { DisableBackgroundCancel = true };
+        var modalParameters = new ModalParameters
+        { 
+            { "ItemType", RootCollectionItemType.Part }
+        };
         var modal = ModalService.Show<BulkRenameLocationModal>(
             "Bulk rename location",
+            modalParameters,
             modalOptions);
         var result = await modal.Result;
 
@@ -161,5 +189,25 @@
         var count = (int?)result.Data;
 
         ToastService.ShowSuccess($"Location was updated in {count ?? -1} parts");
+    }
+
+    private async Task BulkRenameEquipmentLocation()
+    {
+        var modalOptions = new ModalOptions { DisableBackgroundCancel = true };
+        var modalParameters = new ModalParameters
+        { 
+            { "ItemType", RootCollectionItemType.Equipment }
+        };
+        var modal = ModalService.Show<BulkRenameLocationModal>(
+            "Bulk rename location",
+            modalParameters,
+            modalOptions);
+        var result = await modal.Result;
+
+        if (!result.Confirmed) return;
+
+        var count = (int?)result.Data;
+
+        ToastService.ShowSuccess($"Location was updated in {count ?? -1} pieces of equipment");
     }
 }

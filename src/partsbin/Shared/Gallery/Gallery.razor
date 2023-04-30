@@ -76,7 +76,9 @@
 
 @code {
     [Parameter]
-    public required Part Part { get; set; }
+    public Part? Part { get; set; }
+    [Parameter]
+    public Equipment? Equipment { get; set; }
     private IEnumerable<Image>? _gallery = null;
 
     protected override async void OnInitialized()
@@ -86,7 +88,8 @@
 
     private async Task UploadImage(IBrowserFile file)
     {
-        await ImageService.Upload(file, part: Part);
+        if (Part is not null) await ImageService.Upload(file, Part);
+        if (Equipment is not null) await ImageService.Upload(file, Equipment);
     }
 
     private async void UploadImages(InputFileChangeEventArgs arg)
@@ -107,10 +110,14 @@
 
     async Task<IEnumerable<Image>> GetGallery()
     {
-        var images = (await ImageService.GetAllImagesForPart(Part))
-            .OrderBy(x => x.Id);
+        IEnumerable<Image> images = Enumerable.Empty<Image>();
+        
+        if (Part is not null) images = await ImageService.GetAllImages(Part);
+        if (Equipment is not null) images = await ImageService.GetAllImages(Equipment);
 
-        return images.ToList();
+        return images
+            .OrderBy(x => x.Id)
+            .ToList();
     }
 
     async Task DeleteImage(Image image)

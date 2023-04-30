@@ -3,7 +3,8 @@
 @using partsbin.BusinessLogic.Helpers
 @using partsbin.BusinessLogic.Models
 @using partsbin.BusinessLogic.Services
-@inject IPartService PartService
+@inject IPartService PartService;
+@inject IEquipmentService EquipmentService;
 @inject ISupplierUiService SupplierUiService;
 
 <EditForm Model="@Supplier"
@@ -33,7 +34,7 @@
                        @bind-Value="Supplier!.Url"/>
         </div>
         <div style="margin-top:10px">
-            <label for="partLink">Part link</label>
+            <label for="partLink">Item link</label>
             <InputText id="partLink"
                        class="form-control"
                        placeholder="Part link"
@@ -64,10 +65,10 @@
 
 @code {
     private bool _isNew;
-
     [Parameter]
-    public required Part Part { get; set; }
-
+    public Part? Part { get; set; }
+    [Parameter]
+    public Equipment? Equipment { get; set; }
     [Parameter]
     public Supplier? Supplier { get; set; }
     [CascadingParameter]
@@ -94,10 +95,13 @@
         
         if (_isNew)
         {
-            Part.Suppliers.Add(Supplier);
+            Part?.Suppliers.Add(Supplier);
+            Equipment?.Suppliers.Add(Supplier);
         }
         
-        await PartService.UpdatePart(Part);
+        if (Part is not null) await PartService.UpdatePart(Part);
+        if (Equipment is not null) await EquipmentService.UpdateEquipment(Equipment);
+
         await Modal!.CloseAsync(ModalResult.Ok(Supplier));
     }
 
@@ -118,7 +122,9 @@
     {
         if (Supplier is null) return;
         var previous = Supplier.Name;
-        await SupplierUiService.SelectName(Part, Supplier);
+        
+        await SupplierUiService.SelectName(Supplier);
+        
         if (previous == Supplier.Name) return;
         StateHasChanged();
     }

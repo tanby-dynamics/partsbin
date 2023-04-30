@@ -5,36 +5,33 @@
 @using partsbin.BusinessLogic.Services
 @using partsbin.Shared.RootCollectionItem;
 @inject NavigationManager NavigationManager;
-@inject IPartService PartService;
-@inject IPartUiService PartUiService;
+@inject IEquipmentService EquipmentService;
+@inject IEquipmentUiService EquipmentUiService;
 @inject IToastService ToastService;
 @inject IConfirmUiService ConfirmUiService;
 
 <table class="table border">
     <thead>
     <tr>
-        <th>Part type</th>
-        <th>Range</th>
-        <th>Part name</th>
-        <th>Package type</th>
-        <th>Value</th>
+        <th>Type</th>
+        <th>Name</th>
         <th>Manufacturer</th>
-        <th>Part number</th>
+        <th>Model number</th>
         <th>Location</th>
         <th>Quantity</th>
         <th>Actions</th>
     </tr>
     </thead>
     <tbody>
-    @foreach (var part in Parts)
+    @foreach (var item in Equipment)
     {
         <tr>
             <td>
 
-                @if (part.PartType.HasContent())
+                @if (item.EquipmentType.HasContent())
                 {
-                    <a href="/part/@part.Id">
-                        @part.PartType
+                    <a href="/equipment/@item.Id">
+                        @item.EquipmentType
                     </a>
                 }
                 else
@@ -43,10 +40,10 @@
                 }
             </td>
             <td>
-                @if (part.Range.HasContent())
+                @if (item.EquipmentName.HasContent())
                 {
-                    <a href="/part/@part.Id">
-                        @part.Range
+                    <a href="/equipment/@item.Id">
+                        @item.EquipmentName
                     </a>
                 }
                 else
@@ -55,10 +52,10 @@
                 }
             </td>
             <td>
-                @if (part.PartName.HasContent())
+                @if (item.Manufacturer.HasContent())
                 {
-                    <a href="/part/@part.Id">
-                        @part.PartName
+                    <a href="/equipment/@item.Id">
+                        @item.Manufacturer
                     </a>
                 }
                 else
@@ -67,10 +64,10 @@
                 }
             </td>
             <td>
-                @if (part.PackageType.HasContent())
+                @if (item.ModelNumber.HasContent())
                 {
-                    <a href="/part/@part.Id">
-                        @part.PackageType
+                    <a href="/equipment/@item.Id">
+                        @item.ModelNumber
                     </a>
                 }
                 else
@@ -79,10 +76,10 @@
                 }
             </td>
             <td>
-                @if (part.GetFormattedValue().HasContent())
+                @if (item.Location.HasContent())
                 {
-                    <a href="/part/@part.Id">
-                        @part.GetFormattedValue()
+                    <a href="/equipment/@item.Id">
+                        @item.Location
                     </a>
                 }
                 else
@@ -90,53 +87,17 @@
                     <span>---</span>
                 }
             </td>
-            <td>
-                @if (part.Manufacturer.HasContent())
-                {
-                    <a href="/part/@part.Id">
-                        @part.Manufacturer
-                    </a>
-                }
-                else
-                {
-                    <span>---</span>
-                }
-            </td>
-            <td>
-                @if (part.PartNumber.HasContent())
-                {
-                    <a href="/part/@part.Id">
-                        @part.PartNumber
-                    </a>
-                }
-                else
-                {
-                    <span>---</span>
-                }
-            </td>
-            <td>
-                @if (part.Location.HasContent())
-                {
-                    <a href="/part/@part.Id">
-                        @part.Location
-                    </a>
-                }
-                else
-                {
-                    <span>---</span>
-                }
-            </td>
-            <td style="@(part.Quantity <= 0 ? "color:#f55" : "")">
-                <ItemQuantity Part="@part"
+            <td style="@(item.Quantity <= 0 ? "color:#f55" : string.Empty)">
+                <ItemQuantity Equipment="@item"
                               Outline="true"/>
             </td>
             <td>
                 <div class="btn-group" role="group">
                     <button type="button"
-                            @onclick="@(() => NavigationManager.NavigateTo($"/part/{part.Id}"))"
+                            @onclick="@(() => NavigationManager.NavigateTo($"/equipment/{item.Id}"))"
                             @onclick:preventDefault
                             class="btn btn-outline-primary btn-sm"
-                            title="Open part details">
+                            title="Open equipment details">
                         <i class="oi oi-eye"></i>
                     </button>
                     <div class="btn-group" role="group">
@@ -151,7 +112,7 @@
                                 <button class="dropdown-item"
                                         type="button"
                                         @onclick:preventDefault
-                                        @onclick="@(() => EditPart(part))">
+                                        @onclick="@(() => EditEquipment(item))">
                                     Edit in place
                                 </button>
                             </li>
@@ -159,16 +120,16 @@
                                 <button class="dropdown-item"
                                         type="button"
                                         @onclick:preventDefault
-                                        @onclick="@(() => NavigationManager.NavigateTo($"/part/{part.Id}"))">
-                                    Open part details
+                                        @onclick="@(() => NavigationManager.NavigateTo($"/equipment/{item.Id}"))">
+                                    Open equipment details
                                 </button>
                             </li>
                             <li>
                                 <button class="dropdown-item"
                                         type="button"
                                         @onclick:preventDefault
-                                        @onclick="@(() => DuplicatePart(part))">
-                                    Duplicate part
+                                        @onclick="@(() => DuplicateEquipment(item))">
+                                    Duplicate equipment
                                 </button>
                             </li>
                             <li>
@@ -178,8 +139,8 @@
                                 <button class="dropdown-item"
                                         type="button"
                                         @onclick:preventDefault
-                                        @onclick="@(() => DeletePart(part))">
-                                    Delete part
+                                        @onclick="@(() => DeleteEquipment(item))">
+                                    Delete equipment
                                 </button>
                             </li>
                         </ul>
@@ -194,46 +155,48 @@
 @code {
 
     [Parameter]
-    public required List<Part> Parts { get; set; }
+    public required List<Equipment> Equipment { get; set; }
 
-    private async void EditPart(Part part)
+    private async void EditEquipment(Equipment equipment)
     {
-        await PartUiService.EditPart(part);
+        await EquipmentUiService.EditEquipment(equipment);
         StateHasChanged();
     }
 
-    private async void DeletePart(Part part)
+    private async void DeleteEquipment(Equipment equipment)
     {
-        var confirmResult = await ConfirmUiService.Confirm("Delete part", "Are you sure you want to delete this part?");
+        var confirmResult = await ConfirmUiService.Confirm(
+            "Delete equipment", 
+            "Are you sure you want to delete this equipment?");
 
         if (confirmResult == ConfirmResult.Cancelled) return;
             
-        part.IsDeleted = true;
-        await PartService.UpdatePart(part);
-        Parts.Remove(part);
+        equipment.IsDeleted = true;
+        await EquipmentService.UpdateEquipment(equipment);
+        Equipment.Remove(equipment);
 
         ToastService.ShowSuccess(
-            message: "The part has been deleted. You can recover it from the rubbish bin.",
+            message: "The equipment has been deleted. You can recover it from the rubbish bin.",
             settings: settings =>
             {
-               settings.OnClick = () => NavigationManager.NavigateTo("/rubbish-bin");
+               settings.OnClick = () => NavigationManager.NavigateTo("/equipment-rubbish-bin");
             });
         StateHasChanged();
     }
 
-    private async void DuplicatePart(Part part)
+    private async void DuplicateEquipment(Equipment equipment)
     {
         var confirmResult = await ConfirmUiService.Confirm(
-            "Duplicate part",
-            "Are you sure you want to duplicate this part?");
+            "Duplicate equipment",
+            "Are you sure you want to duplicate this equipment?");
         if (confirmResult == ConfirmResult.Cancelled) return;
         
-        var duplicatePart = await PartService.Duplicate(part);
+        var duplicate = await EquipmentService.Duplicate(equipment);
         
         NavigationManager.NavigateTo(
-            $"/part/{duplicatePart.Id}?d=1",
+            $"/equipment/{duplicate.Id}?d=1",
             forceLoad: true);
-        ToastService.ShowSuccess("The part has been duplicated, you are working on the duplicate part now");
+        ToastService.ShowSuccess("The equipment has been duplicated, you are working on the duplicate now");
     }
 
 }

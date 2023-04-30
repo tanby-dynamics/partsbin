@@ -1,0 +1,183 @@
+@using partsbin.Services
+@using System.Text
+@using partsbin.BusinessLogic.Models
+@using partsbin.BusinessLogic.Services
+@inject IPartUiService PartUiService;
+@inject IEquipmentUiService EquipmentUiService;
+@inject IToastService ToastService;
+@inject IPartService PartService;
+@inject IEquipmentService EquipmentService;
+
+<span class="keep-together">
+    <button class="btn btn-light btn-sm"
+           @onclick="DecreaseQuantity"
+           @onclick:preventDefault
+           title="Decrease quantity">
+        <i class="oi oi-minus"></i>
+    </button>
+    <button class="btn btn-sm @GetButtonClass()"
+            style="min-width:4em;"
+            @onclick="EditQuantity"
+            @onclick:preventDefault
+            title="Edit quantity">
+        @Part?.Quantity
+        @Equipment?.Quantity
+    </button>
+    <button class="btn btn-light"
+            @onclick="IncreaseQuantity"
+            @onclick:preventDefault
+            title="Increase quantity">
+        <i class="oi oi-plus"></i>
+    </button>
+    <em style="font-size:small;margin-top:10px">
+        @if (Part is not null)
+        {
+            @(Part.QuantityIsApproximate ? "Quantity is approximate" : "Quantity is exact")
+        }
+        @if (Equipment is not null)
+        {
+            @(Equipment.QuantityIsApproximate ? "Quantity is approximate" : "Quantity is exact")
+        }
+        <a href="#" style="" role="button"
+           @onclick="ToggleQuantityIsApproximate"
+           @onclick:preventDefault>
+            Toggle
+        </a>
+    </em>
+    
+</span>
+                                
+@code {
+    [Parameter]
+    public Part? Part { get; set; }
+    [Parameter]
+    public Equipment? Equipment { get; set; }
+    [Parameter]
+    public EventCallback<Part> PartChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<Equipment> EquipmentChanged { get; set; }
+
+    [Parameter]
+    public bool Outline { get; set; } = false;
+    
+    private string GetButtonClass()
+    {
+        var sb = new StringBuilder();
+        
+        sb.Append("btn");
+        
+        if (Outline)
+        {
+            sb.Append("-outline");
+        }
+
+        if (Part is not null) sb.Append(Part.Quantity > 0 ? "-primary" : "-danger");
+        if (Equipment is not null) sb.Append(Equipment.Quantity > 0 ? "-primary" : "-danger");
+        
+        return sb.ToString();
+    }
+
+    private async void EditQuantity()
+    {
+        if (Part is not null) await EditQuantity(Part);
+        if (Equipment is not null) await EditQuantity(Equipment);
+    }
+
+    private async Task EditQuantity(Part part)
+    {
+        var previousQuantity = part.Quantity;
+        
+        await PartUiService.EditQuantity(part);
+        
+        if (previousQuantity == part.Quantity) return;
+        
+        if (part.Quantity < 0)
+        {
+            ToastService.ShowWarning("The part quantity has been set to less than zero. It has still been saved.");
+        }
+        else
+        {
+            ToastService.ShowSuccess("The part quantity has been updated");
+        }
+        
+        StateHasChanged();
+        await PartChanged.InvokeAsync(part);
+    }
+
+    private async Task EditQuantity(Equipment equipment)
+    {
+        var previousQuantity = equipment.Quantity;
+
+        await EquipmentUiService.EditQuantity(equipment);
+
+        if (previousQuantity == equipment.Quantity) return;
+
+        if (equipment.Quantity < 0)
+        {
+            ToastService.ShowWarning("The item quantity has been set to less than zero. It has still been saved.");
+        }
+        else
+        {
+            ToastService.ShowSuccess("The item quantity has been updated");
+        }
+
+        StateHasChanged();
+        await EquipmentChanged.InvokeAsync(equipment);
+    }
+
+    private async void IncreaseQuantity()
+    {
+        if (Part is not null)
+        {
+            Part.Quantity++;
+            await PartService.UpdatePart(Part);
+            await PartChanged.InvokeAsync(Part);
+        }
+
+        if (Equipment is not null)
+        {
+            Equipment.Quantity++;
+            await EquipmentService.UpdateEquipment(Equipment);
+            await EquipmentChanged.InvokeAsync(Equipment);
+        }
+
+        StateHasChanged();
+    }
+    
+    private async void DecreaseQuantity()
+    {
+        if (Part is not null)
+        {
+            Part.Quantity--;
+            await PartService.UpdatePart(Part);
+            await PartChanged.InvokeAsync(Part);
+        }
+
+        if (Equipment is not null)
+        {
+            Equipment.Quantity--;
+            await EquipmentService.UpdateEquipment(Equipment);
+            await EquipmentChanged.InvokeAsync(Equipment);
+        }
+
+        StateHasChanged();
+    }
+
+    private async void ToggleQuantityIsApproximate()
+    {
+        if (Part is not null)
+        {
+            Part.QuantityIsApproximate = !Part.QuantityIsApproximate;
+            await PartService.UpdatePart(Part);
+        }
+
+        if (Equipment is not null)
+        {
+            Equipment.QuantityIsApproximate = !Equipment.QuantityIsApproximate;
+            await EquipmentService.UpdateEquipment(Equipment);
+        }
+
+        StateHasChanged();
+    }
+}

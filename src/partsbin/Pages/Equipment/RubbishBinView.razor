@@ -1,0 +1,100 @@
+@page "/equipment-rubbish-bin"
+@using partsbin.BusinessLogic.Helpers
+@using partsbin.BusinessLogic.Models
+@using partsbin.BusinessLogic.Services
+@inject IEquipmentService EquipmentService
+@inject IToastService ToastService;
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col"><h3>Equipment Rubbish bin</h3></div>
+        <div class="col-2 text-end">
+            <button class="btn btn-danger"
+                    @onclick="EmptyRubbishBin"
+                    @onclick:preventDefault>
+                Empty permanently
+            </button>
+        </div>
+    </div>
+</div>
+<br/>
+
+@if (!_equipment.Any())
+{
+    <div class="alert alert-info" role="alert">
+        No equipment have been deleted
+    </div>
+}
+else
+{
+    <table class="table border">
+        <thead>
+        <tr>
+            <th>Equipment type</th>
+            <th>Equipment name</th>
+            <th>Manufacturer</th>
+            <th>Model number</th>
+            <th>Location</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var equipment in _equipment)
+        {
+            <tr>
+                <td>@equipment.EquipmentType.PresentationFormat()</td>
+                <td>@equipment.EquipmentName.PresentationFormat()</td>
+                <td>@equipment.Manufacturer.PresentationFormat()</td>
+                <td>@equipment.ModelNumber.PresentationFormat()</td>
+                <td>@equipment.Location.PresentationFormat()</td>
+                <td>@equipment.GetFormattedQuantity()</td>
+                <td>
+                    <button class="btn btn-outline-success"
+                            @onclick="@(() => RestoreEquipment(equipment))"
+                            @onclick:preventDefault
+                            title="Restore equipment">
+                        <i class="oi oi-action-undo"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Equipment> _equipment = new();
+
+    protected override async void OnParametersSet()
+    {
+        await RefreshData();
+    }
+
+    private async Task RefreshData()
+    {
+        _equipment = (await EquipmentService.GetDeletedEquipment())
+            .OrderBy(x => x.EquipmentType)
+            .ThenBy(x => x.EquipmentName)
+            .ThenBy(x => x.ModelNumber)
+            .ToList();
+        StateHasChanged();
+    }
+
+    private async Task RestoreEquipment(Equipment equipment)
+    {
+        equipment.IsDeleted = false;
+        await EquipmentService.UpdateEquipment(equipment);
+        _equipment.Remove(equipment);
+        ToastService.ShowSuccess("The equipment has been restored");
+        StateHasChanged();
+    }
+
+    private async Task EmptyRubbishBin()
+    {
+        await EquipmentService.EmptyRubbishBin();
+        _equipment.Clear();
+        ToastService.ShowSuccess("The rubbish bin has been emptied");
+        StateHasChanged();
+    }
+}

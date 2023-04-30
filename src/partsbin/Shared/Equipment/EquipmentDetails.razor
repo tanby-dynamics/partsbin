@@ -1,0 +1,69 @@
+@using partsbin.Helpers
+@using System.Net
+@using partsbin.BusinessLogic.Helpers
+@using partsbin.BusinessLogic.Models
+
+@if (Equipment.EquipmentType.HasContent())
+{
+    <span>
+        Equipment type:
+        <a href="/all-equipment/by-equipment-type/@Equipment.EquipmentType">
+            <strong>@Equipment.EquipmentType</strong>
+        </a>
+    </span>
+    <br/>
+}
+@if (Equipment.EquipmentName.HasContent())
+{
+    <span>
+        Equipment name: 
+        <a href="/all-equipment/by-equipment-name/@Equipment.EquipmentName">
+            <strong>@Equipment.EquipmentName</strong>
+        </a>
+    </span>
+    <br/>
+}
+@if (Equipment.Manufacturer.HasContent())
+{
+    <span>
+        Manufacturer:
+        <a href="/all-equipment/by-manufacturer/@Equipment.Manufacturer">
+            <strong>@Equipment.Manufacturer</strong>
+        </a>
+    </span>
+    <br/>
+}
+@if (Equipment.ModelNumber.HasContent())
+{
+    <span>
+        Model number:
+        <a href="/all-equipment/by-model-number/@Equipment.ModelNumber">
+            <strong>@Equipment.ModelNumber</strong>
+        </a>
+        <a href="https://www.google.com/search?q=@UrlEncode(Equipment.ModelNumber ?? string.Empty)"
+           target="_blank" title="Google this model number">
+            <i class="oi oi-magnifying-glass"></i>
+        </a>
+    </span>
+    <br/>
+}
+@if (Equipment.Location.HasContent())
+{
+    <span>
+        Location:
+        <a href="/all-equipment/by-location/@Equipment.Location">
+            <strong>@Equipment.Location</strong>
+        </a>
+    </span>
+    <br/>
+}
+
+@code {
+    [Parameter]
+    public required Equipment Equipment { get; set; }
+
+    string UrlEncode(string input)
+    {
+        return WebUtility.UrlEncode(input);
+    }
+}

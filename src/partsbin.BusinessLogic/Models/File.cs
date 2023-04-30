@@ -4,6 +4,7 @@ public class File : IHasNotes
 {
     public int Id { get; set; }
     public int? PartId { get; set; } = null;
+    public int? EquipmentId { get; set; } = null;
     public required string FileName { get; init; }
     public required string ContentType { get; set; }
     public string FileId { get; set; } = string.Empty;

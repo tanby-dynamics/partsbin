@@ -6,7 +6,8 @@ namespace partsbin.BusinessLogic.Services;
 
 public interface IImageService
 {
-    Task Upload(IBrowserFile file, Part? part = null);
+    Task Upload(IBrowserFile file, Part part);
+    Task Upload(IBrowserFile file, Equipment equipment);
     Task Delete(Image image);
     /// <summary>
     /// Pull the specified image from file storage and return it as a Base64
@@ -15,9 +16,11 @@ public interface IImageService
     /// <param name="image"></param>
     /// <returns>The content of the image as a Base64 encoded URL</returns>
     Task<string> GetBase64Url(Image image);
-    Task<IEnumerable<Image>> GetAllImagesForPart(Part part);
+    Task<IEnumerable<Image>> GetAllImages(Part part);
+    Task<IEnumerable<Image>> GetAllImages(Equipment equipment);
     Task UpdateImage(Image image);
-    Task DuplicateImageIntoPart(Image sourceImage, Part part);
+    Task DuplicateImage(Image sourceImage, Part part);
+    Task DuplicateImage(Image sourceImage, Equipment equipment);
 }
 
 public class ImageService : IImageService
@@ -29,7 +32,17 @@ public class ImageService : IImageService
         _dbFactory = dbFactory;
     }
 
-    public async Task Upload(IBrowserFile file, Part? part = null)
+    public Task Upload(IBrowserFile file, Part part)
+    {
+        return Upload(file, part: part, equipment: null);
+    }
+
+    public Task Upload(IBrowserFile file, Equipment equipment)
+    {
+        return Upload(file, part: null, equipment: equipment);
+    }
+
+    private async Task Upload(IBrowserFile file, Part? part = null, Equipment? equipment = null)
     {
         using var db = await _dbFactory.GetDatabase();
         var images = db.GetCollection<Image>();
@@ -37,7 +50,8 @@ public class ImageService : IImageService
         {
             FileName = file.Name,
             ContentType = file.ContentType,
-            PartId = part?.Id
+            PartId = part?.Id,
+            EquipmentId = equipment?.Id
         };
         await images.InsertAsync(image);
 
@@ -81,12 +95,24 @@ public class ImageService : IImageService
         return $"data:{image.ContentType};base64,{base64}";
     }
 
-    public async Task<IEnumerable<Image>> GetAllImagesForPart(Part part)
+    public Task<IEnumerable<Image>> GetAllImages(Part part)
+    {
+        return GetAllImages(part: part, equipment: null);
+    }
+
+    public Task<IEnumerable<Image>> GetAllImages(Equipment equipment)
+    {
+        return GetAllImages(part: null, equipment: equipment);
+    }
+
+    private async Task<IEnumerable<Image>> GetAllImages(Part? part, Equipment? equipment)
     {
         using var db = await _dbFactory.GetDatabase();
+        var partId = part?.Id ?? -1;
+        var equipmentId = equipment?.Id ?? -1;
 
         var images = await db.GetCollection<Image>().Query()
-            .Where(x => x.PartId == part.Id)
+            .Where(x => x.PartId == partId || x.EquipmentId == equipmentId)
             .ToListAsync();
         
         return images;
@@ -98,7 +124,17 @@ public class ImageService : IImageService
         await db.GetCollection<Image>().UpdateAsync(image);
     }
 
-    public async Task DuplicateImageIntoPart(Image sourceImage, Part part)
+    public Task DuplicateImage(Image sourceImage, Part part)
+    {
+        return DuplicateImage(sourceImage, part, null);
+    }
+
+    public Task DuplicateImage(Image sourceImage, Equipment equipment)
+    {
+        return DuplicateImage(sourceImage, null, equipment);
+    }
+
+    private async Task DuplicateImage(Image sourceImage, Part? part, Equipment? equipment)
     {
         using var db = await _dbFactory.GetDatabase();
         
@@ -106,7 +142,8 @@ public class ImageService : IImageService
         var images = db.GetCollection<Image>();
         var duplicateImage = new Image
         {
-            PartId = part.Id,
+            PartId = part?.Id,
+            EquipmentId = equipment?.Id,
             FileName = sourceImage.FileName,
             ContentType = sourceImage.ContentType,
             Notes = sourceImage.Notes,

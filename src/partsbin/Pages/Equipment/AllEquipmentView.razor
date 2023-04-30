@@ -1,0 +1,96 @@
+@page "/all-equipment/{byType?}/{qualifier?}"
+@using partsbin.Helpers
+@using partsbin.Services
+@using partsbin.BusinessLogic.Helpers
+@using partsbin.BusinessLogic.Models
+@using partsbin.BusinessLogic.Services
+@using partsbin.Shared.Equipment;
+@inject NavigationManager NavigationManager;
+@inject IEquipmentService EquipmentService;
+
+<h3>
+    All equipment
+    @if (ByType.HasContent())
+    {
+        <span>by </span>
+        switch (ByType)
+        {
+            case "by-equipment-type":
+                <span>equipment type</span>
+                break;
+            case "by-equipment-name":
+                <span>equipment name</span>
+                break;
+            case "by-manufacturer":
+                <span>manufacturer</span>
+                break;
+            case "by-location":
+                <span>location</span>
+                break;
+            case "by-model-number":
+                <span>model number</span>
+                break;
+            default:
+                <span>???</span>
+                break;
+        }
+        <span>
+            <em>&nbsp;@Qualifier&nbsp;</em>
+            <button class="btn btn-link btn-sm"
+                    @onclick="@(() => NavigationManager.NavigateTo("/all-equipment"))">
+                clear filter
+            </button>
+        </span>
+    }
+</h3>
+
+<div class="row">
+    <div class="container-fluid">
+        @if (_equipment is null)
+        {
+            <p>
+                <em>Loading...</em>
+            </p>
+        }
+        else if (!_equipment.Any())
+        {
+            <div class="alert alert-info" role="alert">
+                No equipment has been added
+            </div>
+        }
+        else
+        {
+            <div class="mt-2">
+                <EquipmentList Equipment="_equipment"/>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<Equipment>? _equipment;
+
+    [Parameter]
+    public string? ByType { get; set; }
+
+    [Parameter]
+    public string? Qualifier { get; set; }
+
+    protected override async void OnParametersSet()
+    {
+        await RefreshData();
+    }
+
+    private async Task RefreshData()
+    {
+        var qualifier = Qualifier?.ToLower();
+
+        _equipment = (await EquipmentService.GetAllEquipment(ByType, qualifier))
+            .OrderBy(x => x.EquipmentType)
+            .ThenBy(x => x.EquipmentName)
+            .ThenBy(x => x.ModelNumber)
+            .ToList();
+
+        StateHasChanged();
+    }
+}

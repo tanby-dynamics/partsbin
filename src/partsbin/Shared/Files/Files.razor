@@ -58,7 +58,9 @@
 
 @code {
     [Parameter]
-    public required Part Part { get; set; }
+    public Part? Part { get; set; }
+    [Parameter]
+    public Equipment? Equipment { get; set; }
     private IEnumerable<File>? _files = null;
 
     protected override async void OnInitialized()
@@ -68,7 +70,7 @@
 
     private async Task UploadFile(IBrowserFile file)
     {
-        await FileService.Upload(file, part: Part);
+        await FileService.Upload(file, Part, Equipment);
     }
 
     private async void UploadFiles(InputFileChangeEventArgs arg)
@@ -92,10 +94,14 @@
 
     async Task<IEnumerable<File>> GetFiles()
     {
-        var files = (await FileService.GetAllFilesForPart(Part))
-            .OrderBy(x => x.Id);
+        var files = Enumerable.Empty<File>();
+        
+        if (Part is not null) files = await FileService.GetAllFiles(Part);
+        if (Equipment is not null) files = await FileService.GetAllFiles(Equipment);
 
-        return files.ToList();
+        return files
+            .OrderBy(x => x.Id)
+            .ToList();
     }
 
     async Task DeleteFile(File file)

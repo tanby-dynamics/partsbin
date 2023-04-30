@@ -1,0 +1,59 @@
+@page "/equipment-search/{searchPhrase}"
+@using partsbin.Services
+@using partsbin.BusinessLogic.Helpers
+@using partsbin.BusinessLogic.Models
+@using partsbin.BusinessLogic.Services
+@using partsbin.Shared.Equipment;
+@inject IEquipmentSearchService EquipmentSearchService;
+@inject IEquipmentService EquipmentService;
+
+@if (_equipment is null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!_equipment.Any())
+{
+    <div class="alert alert-info" role="alert">
+        No results matching <em>@SearchPhrase</em>
+    </div>
+}
+else
+{
+    <h3>
+        Showing 
+        <strong>@_equipment.Count</strong> 
+        results for 
+        <em>@SearchPhrase</em>
+    </h3>
+    <EquipmentList Equipment="_equipment"/>
+}                                                                             
+
+@code {
+    [Parameter]
+    public required string SearchPhrase { get; set; }
+
+    private List<Equipment>? _equipment;
+
+    protected override async void OnInitialized()
+    {
+        await RefreshData();
+    }
+
+    protected override async void OnParametersSet()
+    {
+        await RefreshData();
+    }
+
+    private async Task RefreshData()
+    {
+        var equipmentIds = EquipmentSearchService.Search(SearchPhrase);
+        
+        _equipment = (await EquipmentService.GetEquipmentWithIds(equipmentIds))
+            .OrderBy(x => x.EquipmentType)
+            .ThenBy(x => x.EquipmentName)
+            .ThenBy(x => x.ModelNumber)
+            .ToList();
+
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,47 @@
+@page "/equipment-types"
+@using partsbin.Services
+@using partsbin.BusinessLogic.Services
+@inject IEquipmentFieldService EquipmentFieldService;
+
+<h3>Equipment types</h3>
+
+@if (!_equipmentTypes.Any())
+{
+    <div class="alert alert-info" role="alert">
+        No equipment types have been added
+    </div>
+}
+else
+{
+    <table class="table border">
+        <thead>
+        <tr>
+            <th>Equipment type</th>
+            <th>Total quantity</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var equipmentType in _equipmentTypes)
+        {
+            <tr>
+                <td>
+                    <a href="/all-equipment/by-equipment-type/@equipmentType.equipmentType">
+                        @equipmentType.equipmentType
+                    </a>
+                </td>
+                <td>@equipmentType.quantity</td>
+            </tr>
+        }
+        </tbody>
+    </table>    
+}
+
+@code {
+    private IEnumerable<(string equipmentType, int quantity)> _equipmentTypes = new List<(string, int)>();
+
+    protected override async void OnInitialized()
+    {
+        _equipmentTypes = await EquipmentFieldService.GetUniqueEquipmentTypesAndCounts();
+        StateHasChanged();
+    }
+}

@@ -5,6 +5,7 @@
 @using partsbin.BusinessLogic.Models
 @using partsbin.BusinessLogic.Services
 @inject IPartService PartService; 
+@inject IEquipmentService EquipmentService; 
 @inject IToastService ToastService;
 @inject ISupplierUiService SupplierUiService;
 @inject IRuntimeConfigService RuntimeConfigService;
@@ -27,7 +28,7 @@
     </div>
     <div class="card-body">
         <div class="card-text">
-            @foreach (var supplier in Part.Suppliers)
+            @foreach (var supplier in _suppliers)
             {
                 <div class="row" style="margin-top:10px">
                     <div class="col-12">
@@ -50,7 +51,7 @@
                                     <p>
                                     <a href="@supplier.PartUrl"
                                        target="_blank">
-                                        Link to part
+                                        Link to item
                                     </a>
                                     </p>
                                 }
@@ -91,24 +92,34 @@
 
 @code {
     [Parameter]
-    public required Part Part { get; set; }
+    public Part? Part { get; set; }
+    [Parameter]
+    public Equipment? Equipment { get; set; }
     private CultureInfo _cultureInfo = CultureInfo.InvariantCulture;
+    private IEnumerable<Supplier> _suppliers = Enumerable.Empty<Supplier>();
 
     protected override async void OnInitialized()
     {
         var config = await RuntimeConfigService.GetRuntimeConfig();
         _cultureInfo = CultureInfo.GetCultureInfo(config.CultureName);
+
+        if (Part is not null) _suppliers = Part.Suppliers;
+        else if (Equipment is not null) _suppliers = Equipment.Suppliers;
     }
 
     private async void Add()
     {
-        await SupplierUiService.AddSupplier(Part);
+        if (Part is not null) await SupplierUiService.AddSupplier(Part);
+        if (Equipment is not null) await SupplierUiService.AddSupplier(Equipment);
+
         StateHasChanged();
     }
     
     private async void Edit(Supplier supplier)
     {
-        await SupplierUiService.EditSupplier(Part, supplier);
+        if (Part is not null) await SupplierUiService.EditSupplier(Part, supplier);
+        if (Equipment is not null) await SupplierUiService.EditSupplier(Equipment, supplier);
+        
         StateHasChanged();
     }
 
@@ -116,11 +127,21 @@
     {
         var confirmResult = await ConfirmUiService.Confirm(
             "Deleting supplier",
-            "Are you sure you want to delete this supplier? It will only be removed for this part. This action cannot be undone.");
+            "Are you sure you want to delete this supplier? It will only be removed for this item. This action cannot be undone.");
         if (confirmResult == ConfirmResult.Cancelled) return;
         
-        Part.Suppliers.Remove(supplier);
-        await PartService.UpdatePart(Part);
+        if (Part is not null)
+        {
+            Part.Suppliers.Remove(supplier);
+            await PartService.UpdatePart(Part);
+        }
+
+        if (Equipment is not null)
+        {
+            Equipment.Suppliers.Remove(supplier);
+            await EquipmentService.UpdateEquipment(Equipment);
+        }        
+
         ToastService.ShowSuccess("The supplier has been deleted");
         StateHasChanged();
     }

@@ -1,8 +1,10 @@
 @using partsbin.BusinessLogic.Helpers
 @using partsbin.BusinessLogic.Services
+@using partsbin.BusinessLogic.Models;
 @using partsbin.Services
 @inject IToastService ToastService;
 @inject IPartService PartService;
+@inject IEquipmentService EquipmentService;
 @inject IConfirmUiService ConfirmUiService;
 @inject ILocationUiService LocationUiService;
 
@@ -49,6 +51,8 @@
 </EditForm>
 
 @code {
+    [Parameter]
+    public RootCollectionItemType ItemType { get; set; }
     public string OriginalLocation { get; set; } = string.Empty;
     public string NewLocation { get; set; } = string.Empty;
     [CascadingParameter]
@@ -78,11 +82,14 @@
 
         try 
         {
-            var partCount = await PartService.UpdateLocations(
-                OriginalLocation, 
-                NewLocation);
+            var count = await (ItemType switch
+            {
+                RootCollectionItemType.Part => PartService.UpdateLocations(OriginalLocation, NewLocation),
+                RootCollectionItemType.Equipment => EquipmentService.UpdateLocations(OriginalLocation, NewLocation),
+                _ => Task.FromResult(0)
+            });
 
-                await Modal!.CloseAsync(ModalResult.Ok(partCount));
+            await Modal!.CloseAsync(ModalResult.Ok(count));
         }
         catch (InvalidOperationException ex)
         {
@@ -93,13 +100,36 @@
 
     private async void SelectOriginalLocation()
     {
-        OriginalLocation = await LocationUiService.SelectLocation(OriginalLocation);
+        OriginalLocation = await (ItemType switch
+        {
+            RootCollectionItemType.Part => LocationUiService.SelectPartLocation(OriginalLocation),
+            RootCollectionItemType.Equipment => LocationUiService.SelectEquipmentLocation(OriginalLocation),
+            _ => Task.FromResult(string.Empty)
+        });
+
         StateHasChanged();
     }
 
     private async void SelectNewLocation()
     {
-        NewLocation = await LocationUiService.SelectLocation(NewLocation);
+        NewLocation = await (ItemType switch
+        {
+            RootCollectionItemType.Part => LocationUiService.SelectPartLocation(NewLocation),
+            RootCollectionItemType.Equipment => LocationUiService.SelectEquipmentLocation(NewLocation),
+            _ => Task.FromResult(string.Empty)
+        });
+
+/*
+        switch (ItemType)
+        {
+            case RootCollectionItemType.Part:
+                NewLocation = await LocationUiService.SelectPartLocation(NewLocation);
+                break;
+            case RootCollectionItemType.Equipment:
+                NewLocation = await LocationUiService.SelectEquipmentLocation(NewLocation);
+                break;
+        }
+*/        
         StateHasChanged();
     }
 }

@@ -1,19 +1,20 @@
-@page "/part/{Id:int}"
+@page "/equipment/{Id:int}"
 @using partsbin.Services
 @using partsbin.BusinessLogic.Helpers
 @using partsbin.BusinessLogic.Models
 @using partsbin.BusinessLogic.Services
 @using partsbin.Shared.RootCollectionItem;
-@inject IPartService PartService;
-@inject IPartUiService PartUiService;
+@using partsbin.Shared.Equipment;
+@inject IEquipmentService EquipmentService;
+@inject IEquipmentUiService EquipmentUiService;
 @inject IToastService ToastService;
 @inject NavigationManager NavigationManager;
 @inject IConfirmUiService ConfirmUiService;
 
-@if (_part is not null)
+@if (_equipment is not null)
 {
     <h3>
-        @_part.GetDescription() - @_part.GetFormattedQuantity()
+        @_equipment.GetDescription() - @_equipment.GetFormattedQuantity()
         @if (Duplicate == 1)
         {
             <strong>&nbsp;(duplicate)</strong>
@@ -22,20 +23,27 @@
 }
 else
 {
-    <div class="alert alert-danger" role="alert">
-        <h3 class="alert-heading">Part not found</h3>
-        <p>The part could not be found. You might have followed an invalid link, or the part may have been deleted.</p>
-    </div>
+    if (!_loading)
+    {
+        <div class="alert alert-danger" role="alert">
+            <h3 class="alert-heading">Equipment not found</h3>
+            <p>The equipment could not be found. You might have followed an invalid link, or the equipment may have been deleted.</p>
+        </div>
+    }
+    else
+    {
+        <h3>Loading...</h3>
+    }
 }
 
-@if (_part is not null)
+@if (_equipment is not null)
 {
     <div class="card">
         <h5 class="card-header">
             <div class="row">
                 <div class="col-6">
-                    <ItemQuantity Part="_part"
-                                  PartChanged="@OnPartChanged"/>
+                    <ItemQuantity Equipment="_equipment"
+                                       EquipmentChanged="@OnEquipmentChanged"/>
                 </div>
                 <div class="col-6 text-end">
                     <div class="dropdown">
@@ -50,8 +58,8 @@ else
                                 <button class="dropdown-item"
                                         type="button"
                                         @onclick:preventDefault
-                                        @onclick="@DuplicatePart">
-                                    Duplicate part
+                                        @onclick="@DuplicateEquipment">
+                                    Duplicate equipment
                                 </button>
                             </li>
                             <li><hr class="dropdown-divider"/></li>
@@ -59,8 +67,8 @@ else
                                 <button class="dropdown-item"
                                         type="button"
                                         @onclick:preventDefault
-                                        @onclick="@DeletePart">
-                                    Delete part
+                                        @onclick="@DeleteEquipment">
+                                    Delete equipment
                                 </button>
                             </li>
                         </ul>
@@ -74,7 +82,7 @@ else
                     <div class="row">
                         <div class="col-lg-4 col-md-12">
                             <p class="card-text">
-                                <PartDetails Part="_part"/>
+                                <EquipmentDetails Equipment="_equipment"/>
                             </p>
                         </div>
                         <div class="col-lg-8 col-md-12">
@@ -92,9 +100,9 @@ else
                             </h4>
                             @if (!_isEditingNotes)
                             {
-                                @if (_part.HtmlNotes.HasContent())
+                                @if (_equipment.HtmlNotes.HasContent())
                                 {
-                                    @((MarkupString)_part.HtmlNotes)
+                                    @((MarkupString)_equipment.HtmlNotes)
                                 }
                                 else
                                 {
@@ -105,7 +113,7 @@ else
                             }
                             else
                             {
-                                <PartNotesEditor Part="_part"
+                                <EquipmentNotesEditor Equipment="_equipment"
                                                  OnEditComplete="CompleteEditingNotes"
                                                  OnEditCancelled="CancelEditingNotes"/>
                             }
@@ -125,14 +133,14 @@ else
     <br/>
     <div class="row">
         <div class="col-6">
-            <Documentation Part="_part"/>
+            <Documentation Equipment="_equipment"/>
             <br/>
-            <PartSuppliers Part="_part"/>
+            <PartSuppliers Equipment="_equipment"/>
         </div>
         <div class="col-6">
-            <Gallery Part="_part"/>'
+            <Gallery Equipment="_equipment"/>'
             <br/>
-            <Files Part="_part"/>
+            <Files Equipment="_equipment"/>
         </div>
     </div>
 }
@@ -140,8 +148,9 @@ else
 @code {
     [Parameter]
     public int Id { get; set; }
-    private Part? _part;
+    private Equipment? _equipment;
     private bool _isEditingNotes;
+    private bool _loading;
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "d")]
@@ -149,20 +158,22 @@ else
 
     protected override async void OnInitialized()
     {
+        _loading = true;
         await RefreshData();
     }
 
     private async Task RefreshData()
     {
-        _part = await PartService.GetPart(Id);
+        _equipment = await EquipmentService.GetEquipment(Id);
+        _loading = false;
         StateHasChanged();
     }
 
     private async void Edit()
     {
-        await PartUiService.EditPart(_part!);
+        await EquipmentUiService.EditEquipment(_equipment!);
         await RefreshData();
-        ToastService.ShowSuccess("The part details have been updated");
+        ToastService.ShowSuccess("The equipment details have been updated");
     }
 
     private void EditNotes()
@@ -184,27 +195,27 @@ else
         StateHasChanged();
     }
 
-    private async void DuplicatePart()
+    private async void DuplicateEquipment()
     {
         var confirmResult = await ConfirmUiService.Confirm(
-            "Duplicating part",
-            "Are you sure you want to duplicate this part?");
+            "Duplicating equipment",
+            "Are you sure you want to duplicate this equipment?");
         if (confirmResult == ConfirmResult.Cancelled) return;
         
-        var duplicatePart = await PartService.Duplicate(_part!);
+        var duplicateEquipment = await EquipmentService.Duplicate(_equipment!);
         NavigationManager.NavigateTo(
-            $"/part/{duplicatePart.Id}?d=1",
+            $"/equipment/{duplicateEquipment.Id}?d=1",
             forceLoad: true);
-        ToastService.ShowSuccess("The part has been duplicated, you are working on the duplicate part now");
+        ToastService.ShowSuccess("The equipment has been duplicated, you are working on the duplicate now");
     }
 
-    private async Task DeletePart()
+    private async Task DeleteEquipment()
     {
-        var result = await ConfirmUiService.Confirm("Delete part", "Are you sure you want to delete this part?");
+        var result = await ConfirmUiService.Confirm("Delete equipment", "Are you sure you want to delete this piece of equipment?");
         if (result == ConfirmResult.Cancelled) return;
             
-        _part!.IsDeleted = true;
-        await PartService.UpdatePart(_part);
+        _equipment!.IsDeleted = true;
+        await EquipmentService.UpdateEquipment(_equipment);
         
         ToastService.ShowSuccess(
             "The part has been deleted. You can recover it from the rubbish bin.",
@@ -212,9 +223,9 @@ else
         NavigationManager.NavigateTo("/");
     }
 
-    private void OnPartChanged(Part part)
+    private void OnEquipmentChanged(Equipment equipment)
     {
-        _part = part;
+        _equipment = equipment;
         StateHasChanged();
     }
 }

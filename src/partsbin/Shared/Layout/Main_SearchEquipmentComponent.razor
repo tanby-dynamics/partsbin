@@ -1,0 +1,30 @@
+@using partsbin.Services
+@inject NavigationManager NavigationManager;
+@inject INavUiService NavUiService;
+
+<form class="d-flex" role="search">
+    <div class="input-group">
+        <InputText type="search"
+                   class="form-control"
+                   placeholder="Search for equipment"
+                   aria-label="Search for equipment"
+                   @bind-Value="_searchPhrase"/>
+        <button class="btn btn-outline-success"
+                type="submit"
+                title="Search"
+                @onclick:preventDefault
+                @onclick="@PerformSearch">
+            <i class="oi oi-magnifying-glass"></i>
+        </button>
+    </div>
+</form>
+
+@code {
+    private string _searchPhrase = string.Empty;
+
+    private async void PerformSearch()
+    {
+        await NavUiService.HideNavbar();
+        NavigationManager.NavigateTo($"/equipment-search/{_searchPhrase}");
+    }
+}

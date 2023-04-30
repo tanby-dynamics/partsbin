@@ -6,42 +6,39 @@ using partsbin.BusinessLogic.Models;
 
 namespace partsbin.BusinessLogic.Services;
 
-public interface IPartSearchService
+public interface IEquipmentSearchService
 {
     IEnumerable<int> Search(string phrase);
-    void IndexPart(Part part);
-    void RemovePart(Part part);
+    void IndexEquipment(Equipment equipment);
+    void RemoveEquipment(Equipment equipment);
     void ClearIndex();
 }
 
-public class PartSearchService : IPartSearchService
+public class EquipmentSearchService : IEquipmentSearchService
 {
     private readonly ISearchFactory _searchFactory;
     private const int SearchHitLimit = 1000;
 
-    public PartSearchService(ISearchFactory searchFactory)
+    public EquipmentSearchService(ISearchFactory searchFactory)
     {
         _searchFactory = searchFactory;
     }
 
-    private static IEnumerable<(string FieldName, Func<Part, string> ValueAccessor)> GetIndexFields()
+    private static IEnumerable<(string FieldName, Func<Equipment, string> ValueAccessor)> GetIndexFields()
     {
-        yield return ("PartType", x => x.PartType ?? string.Empty);
-        yield return ("Range", x => x.Range ?? string.Empty);
-        yield return ("Location", x => x.Location ?? string.Empty);
+        yield return ("EquipmentType", x => x.EquipmentType ?? string.Empty);
+        yield return ("EquipmentName", x => x.EquipmentName ?? string.Empty);
         yield return ("Manufacturer", x => x.Manufacturer ?? string.Empty);
+        yield return ("ModelNumber", x => x.ModelNumber ?? string.Empty);
+        yield return ("Location", x => x.Location ?? string.Empty);
         yield return ("HtmlNotes", x => x.HtmlNotes ?? string.Empty);
-        yield return ("PackageType", x => x.PackageType ?? string.Empty);
-        yield return ("FormattedValue", x => x.GetFormattedValue());
-        yield return ("PartName", x => x.PartName ?? string.Empty);
-        yield return ("PartNumber", x => x.PartNumber ?? string.Empty);
     }
     
     /// <summary>
     /// 
     /// </summary>
     /// <param name="phrase"></param>
-    /// <returns>A list of part ids that match the search phrase</returns>
+    /// <returns>A list of equipment ids that match the search phrase</returns>
     public IEnumerable<int> Search(string phrase)
     {
         phrase = phrase.ToLower();
@@ -76,10 +73,10 @@ public class PartSearchService : IPartSearchService
             combinedQuery.Add(query, Occur.SHOULD);
         }
         var booleanQuery = new BooleanQuery();
-        // limit to parts
-        var rootCollectionItemTypeTerm = new Term("RootCollectionItemType", RootCollectionItemType.Part.ToString());
+        // limit to equipment
+        var rootCollectionItemTypeTerm = new Term("RootCollectionItemType", RootCollectionItemType.Equipment.ToString());
         booleanQuery.Add(new TermQuery(rootCollectionItemTypeTerm), Occur.MUST);
-        // Add combined query
+        // add combined query
         booleanQuery.Add(combinedQuery, Occur.MUST);
 
         // Do the actual search and get a list of part IDs
@@ -96,16 +93,16 @@ public class PartSearchService : IPartSearchService
         return partIds;
     }
 
-    public void IndexPart(Part part)
+    public void IndexEquipment(Equipment equipment)
     {
         var document = new Document
         {
-            new Int64Field("Id", part.Id, Field.Store.YES)
+            new Int64Field("Id", equipment.Id, Field.Store.YES)
         };
         var indexFields = GetIndexFields()
             .Select(field => new StringField(
                 field.FieldName,
-                field.ValueAccessor(part).ToLower(),
+                field.ValueAccessor(equipment).ToLower(),
                 Field.Store.YES));
         
         foreach (var field in indexFields)
@@ -113,7 +110,7 @@ public class PartSearchService : IPartSearchService
             document.Add(field);
         }
 
-        document.Add(new StringField("RootCollectionItemType", RootCollectionItemType.Part.ToString(), Field.Store.YES));
+        document.Add(new StringField("RootCollectionItemType", RootCollectionItemType.Equipment.ToString(), Field.Store.YES));
         
         using var dir = _searchFactory.GetDirectory();
         using var writer = _searchFactory.GetWriter(dir);
@@ -121,12 +118,12 @@ public class PartSearchService : IPartSearchService
         writer.Flush(true, true);
     }
 
-    public void RemovePart(Part part)
+    public void RemoveEquipment(Equipment equipment)
     {
         using var dir = _searchFactory.GetDirectory();
         using var writer = _searchFactory.GetWriter(dir);
 
-        var term = new Term("Id", part.Id.ToString());
+        var term = new Term("Id", equipment.Id.ToString());
         
         writer.DeleteDocuments(term);
         writer.Commit();

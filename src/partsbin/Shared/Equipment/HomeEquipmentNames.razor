@@ -1,0 +1,87 @@
+@using partsbin.Services
+@using partsbin.BusinessLogic.Services
+@inject IEquipmentFieldService EquipmentFieldService;
+@inject IEquipmentUiService EquipmentUiService;
+@inject NavigationManager NavigationManager;
+
+<h4>Equipment names</h4>
+
+@if (_data is null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!_data.Any())
+{
+    <div class="alert alert-info" role="alert">
+        No equipment with a type specified have been added
+    </div>
+}
+else
+{
+    <table class="table border">
+        <thead>
+        <tr>
+            <th>Type</th>
+            <th>Quantity</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in _data)
+        {
+            <tr>
+                <td>
+                    <a href="/all-equipment/by-equipment-name/@item.equipmentName"
+                       title="View all equipment with this name">
+                        @item.equipmentName
+                    </a>
+                </td>
+                <td>@item.quantity</td>
+                <td>
+                    <div class="input-group">
+                        <button class="btn btn-sm btn-outline-primary form-control"
+                                type="button"
+                                onclick:preventDefault
+                                onclick="@(() => AddEquipment(item.equipmentName))"
+                                title="@($"Add equipment with name {item.equipmentName}")">
+                            <i class="oi oi-plus"></i>
+                        </button>
+                        <a class="btn btn-sm btn-outline-secondary form-control"
+                           href="/all-equipment/by-equipment-name/@item.equipmentName"
+                           title="@($"View all equipment with name {item.equipmentName}")">
+                            <i class="oi oi-eye" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    protected override async void OnInitialized()
+    {
+        await RefreshData();
+    }
+
+    private async Task RefreshData()
+    {
+        _data = (await EquipmentFieldService.GetUniqueEquipmentNamesAndCounts())
+            .OrderBy(x => x.equipmentName)
+            .ToList();
+        StateHasChanged();
+    }
+
+    private List<(string equipmentName, int quantity)>? _data;
+
+    private async void AddEquipment(string equipmentName)
+    {
+        var equipment = await EquipmentUiService.AddEquipment(equipmentName);
+
+        if (equipment is not null)
+        {
+            NavigationManager.NavigateTo($"/equipment/{equipment.Id}");
+        }
+    }
+}

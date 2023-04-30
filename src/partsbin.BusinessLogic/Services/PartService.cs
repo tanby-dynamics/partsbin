@@ -126,16 +126,16 @@ public class PartService : IPartService
     {
         var duplicatePart = await AddPart(source.DeepClone());
 
-        var sourceImages = await _imageService.GetAllImagesForPart(source);
+        var sourceImages = await _imageService.GetAllImages(source);
         foreach (var image in sourceImages)
         {
-            await _imageService.DuplicateImageIntoPart(image, duplicatePart);
+            await _imageService.DuplicateImage(image, duplicatePart);
         }
 
-        var sourceFiles = await _fileService.GetAllFilesForPart(source);
+        var sourceFiles = await _fileService.GetAllFiles(source);
         foreach (var file in sourceFiles)
         {
-            await _fileService.DuplicateFileIntoPart(file, duplicatePart);
+            await _fileService.DuplicateFile(file, duplicatePart);
         }
 
         return duplicatePart;

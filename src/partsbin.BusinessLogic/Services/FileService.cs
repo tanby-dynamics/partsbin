@@ -9,11 +9,13 @@ namespace partsbin.BusinessLogic.Services;
 public interface IFileService
 {
     Task DownloadFile(string fileName, string dataUrl);
-    Task Upload(IBrowserFile browserFile, Part? part = null);
+    Task Upload(IBrowserFile browserFile, Part? part = null, Equipment? equipment = null);
     Task Delete(File file);
-    Task<IEnumerable<File>> GetAllFilesForPart(Part part);
+    Task<IEnumerable<File>> GetAllFiles(Part part);
+    Task<IEnumerable<File>> GetAllFiles(Equipment equipment);
     Task UpdateFile(File file);
-    Task DuplicateFileIntoPart(File sourceFile, Part part);
+    Task DuplicateFile(File sourceFile, Part part);
+    Task DuplicateFile(File sourceFile, Equipment equipment);
 
 }
 
@@ -33,7 +35,7 @@ public class FileService : IFileService
         await _jsRuntime.InvokeAsync<object>("Blazor.downloadFile", fileName, dataUrl);
     }
     
-    public async Task Upload(IBrowserFile browserFile, Part? part = null)
+    public async Task Upload(IBrowserFile browserFile, Part? part = null, Equipment? equipment = null)
     {
         using var db = await _dbFactory.GetDatabase();
         
@@ -43,7 +45,8 @@ public class FileService : IFileService
         {
             FileName = browserFile.Name,
             ContentType = browserFile.ContentType,
-            PartId = part?.Id
+            PartId = part?.Id,
+            EquipmentId = equipment?.Id
         };
         await files.InsertAsync(file);
 
@@ -73,13 +76,19 @@ public class FileService : IFileService
         }
         await db.GetCollection<File>().DeleteAsync(file.Id);
     }
+
+    public Task<IEnumerable<File>> GetAllFiles(Part part) => GetAllFiles(part, null);
     
-    public async Task<IEnumerable<File>> GetAllFilesForPart(Part part)
+    public Task<IEnumerable<File>> GetAllFiles(Equipment equipment) => GetAllFiles(null, equipment);
+    
+    private async Task<IEnumerable<File>> GetAllFiles(Part? part, Equipment? equipment)
     {
         using var db = await _dbFactory.GetDatabase();
+        var partId = part?.Id ?? -1;
+        var equipmentId = equipment?.Id ?? -1;
 
         var files = await db.GetCollection<File>().Query()
-            .Where(x => x.PartId == part.Id)
+            .Where(x => x.PartId == partId || x.EquipmentId == equipmentId)
             .ToListAsync();
         
         return files;
@@ -91,7 +100,17 @@ public class FileService : IFileService
         await db.GetCollection<File>().UpdateAsync(file);
     }
 
-    public async Task DuplicateFileIntoPart(File sourceFile, Part part)
+    public Task DuplicateFile(File sourceFile, Part part)
+    {
+        return DuplicateFile(sourceFile, part, null);
+    }
+
+    public Task DuplicateFile(File sourceFile, Equipment equipment)
+    {
+        return DuplicateFile(sourceFile, null, equipment);
+    }
+
+    private async Task DuplicateFile(File sourceFile, Part? part, Equipment? equipment)
     {
         using var db = await _dbFactory.GetDatabase();
         
@@ -99,7 +118,8 @@ public class FileService : IFileService
         var files = db.GetCollection<File>();
         var duplicateFile = new File
         {
-            PartId = part.Id,
+            PartId = part?.Id,
+            EquipmentId = equipment?.Id,
             FileName = sourceFile.FileName,
             ContentType = sourceFile.ContentType,
             Notes = sourceFile.Notes,
@@ -120,5 +140,4 @@ public class FileService : IFileService
         duplicateFile.FileId = fileInfo.Id;
         await files.UpdateAsync(duplicateFile);
     }
-
 }

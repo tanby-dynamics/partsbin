@@ -1,0 +1,78 @@
+@using partsbin.Helpers
+@using partsbin.Services
+@using partsbin.BusinessLogic.Helpers
+@using partsbin.BusinessLogic.Models
+@using partsbin.BusinessLogic.Services
+@inject IEquipmentService EquipmentService;
+
+<div class="form-group">
+    <div>
+         <small>(CMD-K or Control-K to insert link)</small>
+        <QuillEditor @ref="@_quillEditor"
+                     Placeholder="Enter notes here">
+            <ToolbarContent>
+                <EditorToolbarContent/>
+            </ToolbarContent>
+            <EditorContent></EditorContent>
+        </QuillEditor>
+    </div>
+    <div style="margin-top:10px">
+        <button @onclick="SaveNotes"
+                class="btn btn-sm btn-outline-primary">
+            Save
+        </button>
+        <button @onclick="CancelEditNotes"
+                class="btn btn-sm btn-outline-primary">
+            Cancel
+        </button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public required Equipment Equipment { get; set; }
+    [Parameter]
+    public EventCallback OnEditComplete { get; set; }
+    [Parameter]
+    public EventCallback OnEditCancelled { get; set; }
+
+    private QuillEditor? _quillEditor;
+    private bool _contentLoaded;
+    private string _originalNotes = string.Empty;
+    private string _originalHtmlNotes = string.Empty;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_quillEditor is null) return;
+        if (_contentLoaded) return;
+
+        if (Equipment.Notes.HasContent())
+        {
+            _originalNotes = Equipment.Notes;
+            _originalHtmlNotes = Equipment.HtmlNotes;
+            
+            await _quillEditor.LoadContent(Equipment.Notes);
+        }
+
+        _contentLoaded = true;
+    }
+
+    private async void SaveNotes()
+    {
+        Equipment.Notes = await _quillEditor!.GetContent();
+        Equipment.HtmlNotes = await _quillEditor.GetHtml();
+        
+        await EquipmentService.UpdateEquipment(Equipment);
+        await OnEditComplete.InvokeAsync();
+    }
+
+    private async void CancelEditNotes()
+    {
+        Equipment.Notes = _originalNotes;
+        Equipment.HtmlNotes = _originalHtmlNotes;
+
+        await OnEditCancelled.InvokeAsync();
+    }
+}
+
+

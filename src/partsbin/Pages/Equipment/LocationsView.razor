@@ -1,0 +1,47 @@
+@page "/equipment-locations"
+@using partsbin.Services
+@using partsbin.BusinessLogic.Services
+@inject IEquipmentFieldService EquipmentFieldService;
+
+<h3>Locations</h3>
+
+@if (!_locations.Any())
+{
+    <div class="alert alert-info" role="alert">
+        No locations have been added
+    </div>
+}
+else
+{
+    <table class="table border">
+        <thead>
+        <tr>
+            <th>Location</th>
+            <th>Total quantity</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var location in _locations)
+        {
+            <tr>
+                <td>
+                    <a href="/all-equipment/by-location/@location.location">
+                        @location.location
+                    </a>
+                </td>
+                <td>@location.quantity</td>
+            </tr>
+        }
+        </tbody>
+    </table>    
+}
+
+@code {
+    private IEnumerable<(string location, int quantity)> _locations = new List<(string, int)>();
+
+    protected override async void OnInitialized()
+    {
+        _locations = await EquipmentFieldService.GetUniqueLocationsAndCounts();
+        StateHasChanged();
+    }
+}

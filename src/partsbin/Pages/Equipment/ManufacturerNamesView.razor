@@ -1,0 +1,47 @@
+@page "/manufacturer-names"
+@using partsbin.Services
+@using partsbin.BusinessLogic.Services
+@inject IEquipmentFieldService EquipmentFieldService;
+
+<h3>Part names</h3>
+
+@if (!_equipmentNames.Any())
+{
+    <div class="alert alert-info" role="alert">
+        No equipment names have been added
+    </div>
+}
+else
+{
+    <table class="table border">
+        <thead>
+        <tr>
+            <th>Equipment names</th>
+            <th>Total quantity</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var equipmentName in _equipmentNames)
+        {
+            <tr>
+                <td>
+                    <a href="/all-equipment/by-equipment-name/@equipmentName.equipmentName">
+                        @equipmentName.equipmentName
+                    </a>
+                </td>
+                <td>@equipmentName.quantity</td>
+            </tr>
+        }
+        </tbody>
+    </table>    
+}
+
+@code {
+    private IEnumerable<(string equipmentName, int quantity)> _equipmentNames = new List<(string, int)>();
+
+    protected override async void OnInitialized()
+    {
+        _equipmentNames = await EquipmentFieldService.GetUniqueEquipmentNamesAndCounts();
+        StateHasChanged();
+    }
+}

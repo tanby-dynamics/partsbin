@@ -1,6 +1,8 @@
 @using System.Reflection
 @using partsbin.Services
 @inject INavUiService NavUiService;
+@inject IEquipmentUiService EquipmentUiService;
+@inject NavigationManager NavigationManager;
 
 <nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
@@ -46,6 +48,8 @@
                             <span class="oi oi-box" aria-hidden="true"></span> All parts
                         </NavLink>
                     </li>
+
+                    <!-- Parts -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle"
                            href="#"
@@ -99,6 +103,51 @@
                             </li>
                         </ul>
                     </li>
+
+                    <!-- Equipment -->
+                    <li class="nav-item" style="margin-bottom:1rem;margin-top:1rem">
+                        <Main_SearchEquipmentComponent/>
+                    </li>                    
+                    <li class="nav-item" style="margin-bottom:1rem">
+                        <button class="btn btn-success"
+                                @onclick="@AddEquipment">
+                            <span class="oi oi-plus" aria-hidden="true"></span>
+                            Add equipment
+                        </button>
+                    </li>                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle"
+                           href="#"
+                           role="button"
+                           data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            <span class="oi oi-box" aria-hidden="true"></span> Equipment drill-down
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li>
+                                <NavLink class="nav-link" 
+                                         href="/equipment-types"
+                                         @onclick="@NavUiService.HideNavbar">
+                                    Equipment type
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink class="nav-link" 
+                                         href="/equipment-locations"
+                                         @onclick="@NavUiService.HideNavbar">
+                                    Locations
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink class="nav-link" 
+                                         href="/equipment-manufacturers"
+                                         @onclick="@NavUiService.HideNavbar">
+                                    Manufacturers
+                                </NavLink>
+                            </li>
+                        </ul>
+                    </li>
+
                     <li>
                         <NavLink class="nav-link" 
                                  href="/admin"
@@ -124,8 +173,17 @@
     </div>
 </nav>
 
-
-
 @code {
     private static string Version => "partsbin v" + Assembly.GetEntryAssembly()?.GetName().Version;
+
+    private async Task AddEquipment()
+    {
+        await NavUiService.HideNavbar();
+        var equipment = await EquipmentUiService.AddEquipment();
+
+        if (equipment is not null)
+        {
+            NavigationManager.NavigateTo($"/equipment/{equipment.Id}", forceLoad: true);
+        }
+    }
 }

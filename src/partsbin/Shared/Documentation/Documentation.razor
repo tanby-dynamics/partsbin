@@ -4,6 +4,7 @@
 @using partsbin.BusinessLogic.Models
 @using partsbin.BusinessLogic.Services
 @inject IPartService PartService; 
+@inject IEquipmentService EquipmentService; 
 @inject IToastService ToastService;
 @inject IPartDocumentUiService PartDocumentUiService;
 @inject IConfirmUiService ConfirmUiService;
@@ -25,7 +26,7 @@
     </div>
     <div class="card-body">
         <div class="card-text">
-            @foreach (var document in Part.Documents)
+            @foreach (var document in _documents)
             {
                 <div class="row" style="margin-top:10px">
                     <div class="col-12">
@@ -69,29 +70,53 @@
 
 @code {
     [Parameter]
-    public required Part Part { get; set; }
+    public Part? Part { get; set; }
+    [Parameter]
+    public Equipment? Equipment { get; set; }
+    private IEnumerable<PartDocument> _documents = Enumerable.Empty<PartDocument>();
+
+    protected override void OnInitialized()
+    {
+        if (Part is not null) _documents = Part.Documents;
+        if (Equipment is not null) _documents = Equipment.Documents;
+    }
 
     private async void Add()
     {
-        await PartDocumentUiService.AddDocument(Part);
+        if (Part is not null) await PartDocumentUiService.AddDocument(Part);
+        if (Equipment is not null) await PartDocumentUiService.AddDocument(Equipment);
+
         StateHasChanged();
     }
     
     private async void Edit(PartDocument document)
     {
-        await PartDocumentUiService.EditDocument(Part, document);
+        if (Part is not null) await PartDocumentUiService.EditDocument(Part, document);
+        if (Equipment is not null) await PartDocumentUiService.EditDocument(Equipment, document);
+
         StateHasChanged();
     }
 
     private async void Delete(PartDocument document)
     {
+        var type = Part is not null ? "part" : "piece of equipment";
         var confirmResult = await ConfirmUiService.Confirm(
-            "Deleting supplier",
-            "Are you sure you want to delete this supplier? It will only be deleted for this part. This action cannot be undone.");
+            "Deleting document",
+            $"Are you sure you want to delete this document? It will only be deleted for this {type}. This action cannot be undone.");
         if (confirmResult == ConfirmResult.Cancelled) return;
         
-        Part.Documents.Remove(document);
-        await PartService.UpdatePart(Part);
+        if (Part is not null)
+        {
+            Part.Documents.Remove(document);
+            await PartService.UpdatePart(Part);
+        }
+
+        if (Equipment is not null)
+        {
+            Equipment.Documents.Remove(document);
+            await EquipmentService.UpdateEquipment(Equipment);
+        }
+
         ToastService.ShowSuccess("The document has been deleted");
         StateHasChanged();
     }

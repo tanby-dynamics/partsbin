@@ -1,0 +1,217 @@
+@using Microsoft.AspNetCore.Components
+@using partsbin.BusinessLogic.Helpers
+@using partsbin.BusinessLogic.Models
+@using partsbin.BusinessLogic.Services
+@using partsbin.Services
+@inject IToastService ToastService;
+@inject IEquipmentService EquipmentService;
+@inject NavigationManager NavigationManager;
+@inject IEquipmentUiService EquipmentUiService;
+@inject IConfirmUiService ConfirmUiService;
+
+<EditForm Model="@Equipment" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="form-group">
+        <div style="margin-top: 10px;">
+            <label for="equipmentType">Equipment type</label>
+            <div class="input-group">
+                <InputText id="equipmentType"
+                           class="form-control"
+                           placeholder="Equipment type"
+                           @bind-Value="Equipment!.EquipmentType"/>
+                <button class="btn btn-outline-secondary"
+                        @onclick:preventDefault
+                        @onclick="@SelectEquipmentType">
+                    <i class="oi oi-magnifying-glass"></i>
+                </button>
+            </div>
+        </div>
+        <div style="margin-top: 10px;">
+            <label for="partName">Equipment name</label>
+            <div class="input-group">
+                <InputText id="partName"
+                           class="form-control"
+                           placeholder="Name"
+                           @bind-Value="Equipment!.EquipmentName"/>
+                <button class="btn btn-outline-secondary"
+                        @onclick:preventDefault
+                        @onclick="@SelectEquipmentName">
+                    <i class="oi oi-magnifying-glass"></i>
+                </button>
+            </div>
+        </div>
+        <div style="margin-top: 10px;">
+            <label for="manufacturer">Manufacturer</label>
+            <div class="input-group">
+                <InputText id="manufacturer"
+                           class="form-control"
+                           placeholder="Manufacturer "
+                           @bind-Value="Equipment!.Manufacturer"/>
+                <button class="btn btn-outline-secondary"
+                        @onclick:preventDefault
+                        @onclick="@SelectManufacturer">
+                    <i class="oi oi-magnifying-glass"></i>
+                </button>
+            </div>
+        </div>
+        <div style="margin-top: 10px;">
+            <label for="modelNumber">Model number</label>
+            <div class="input-group">
+                <InputText id="modelNumber"
+                           class="form-control"
+                           placeholder="Model number"
+                           @bind-Value="Equipment.ModelNumber"/>
+                <button class="btn btn-outline-secondary"
+                        @onclick:preventDefault
+                        @onclick="@SelectModelNumber">
+                    <i class="oi oi-magnifying-glass"></i>
+                </button>
+            </div>
+        </div>
+        @if (_isNew)
+        {
+            <div style="margin-top: 10px;">
+                <label for="quantity">Quantity</label>
+                <span class="input-group">
+                    <InputNumber id="quantity"
+                                class="form-control"
+                                placeholder="Quantity"
+                                @bind-Value="Equipment!.Quantity"/>
+                    <span class="input-group-text">
+                        <label>
+                            <input class="form-check-input mt-0"
+                                   type="checkbox" 
+                                   @bind-value="Equipment!.QuantityIsApproximate"
+                                   aria-label="Quantity is approximate">
+                            Approximate
+                        </label>
+                    </span>
+                </span>
+            </div>
+        }
+        <div>
+            <label for="location">Location</label>
+            <div class="input-group">
+                <InputText id="location"
+                           class="form-control"
+                           placeholder="Location"
+                           @bind-Value="Equipment!.Location"/>
+                <button class="btn btn-outline-secondary"
+                        @onclick:preventDefault
+                        @onclick="@SelectLocation">
+                    <i class="oi oi-magnifying-glass"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div style="margin-top: 10px;">
+        <button type="submit" class="btn btn-outline-primary">
+            @(_isNew ? "Add" : "Update")
+        </button>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public Equipment? Equipment { get; set; }
+
+    [Parameter]
+    public string? EquipmentType { get; set; }
+    [Parameter]
+    public string? Location { get; set; }
+    [Parameter]
+    public string? Manufacturer { get; set; }
+
+    private bool _isNew;
+
+    [CascadingParameter]
+    BlazoredModalInstance? Modal { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _isNew = Equipment is null;
+        Equipment ??= new Equipment
+        {
+            EquipmentType = EquipmentType ?? string.Empty,
+            Location = Location ?? string.Empty,
+            Manufacturer = Manufacturer ?? string.Empty
+        };
+
+        StateHasChanged();
+    }
+
+    private async void HandleValidSubmit()
+    {
+        if (Equipment is null)
+        {
+            throw new InvalidOperationException("Equipment item should not be null at this point");
+        }
+        
+        try
+        {
+            if (_isNew)
+            {
+                Equipment = await EquipmentService.AddEquipment(Equipment!);
+                NavigationManager.NavigateTo($"/equipment/{Equipment.Id}",
+                    forceLoad: true);
+            }
+            else
+            {
+                await EquipmentService.UpdateEquipment(Equipment!);
+            }
+
+            await Modal!.CloseAsync(ModalResult.Ok(Equipment));
+        }
+        catch (InvalidOperationException ex)
+        {
+            ToastService.ShowError(ex.Message);
+        }
+    }
+
+    private async void SelectEquipmentType()
+    {
+        if (Equipment is null) return;
+        var previous = Equipment.EquipmentType;
+        await EquipmentUiService.SelectEquipmentType(Equipment);
+        if (previous == Equipment.EquipmentType) return;
+        StateHasChanged();
+    }
+
+    private async void SelectEquipmentName()
+    {
+        if (Equipment is null) return;
+        var previous = Equipment.EquipmentName;
+        await EquipmentUiService.SelectEquipmentName(Equipment);
+        if (previous == Equipment.EquipmentName) return;
+        StateHasChanged();
+    }
+
+    private async void SelectManufacturer()
+    {
+        if (Equipment is null) return;
+        var previous = Equipment.Manufacturer;
+        await EquipmentUiService.SelectManufacturer(Equipment);
+        if (previous == Equipment.Manufacturer) return;
+        StateHasChanged();
+    }
+    
+    private async void SelectModelNumber()
+    {
+        if (Equipment is null) return;
+        var previous = Equipment.ModelNumber;
+        await EquipmentUiService.SelectModelNumber(Equipment);
+        if (previous == Equipment.ModelNumber) return;
+        StateHasChanged();
+    }
+
+    private async void SelectLocation()
+    {
+        if (Equipment is null) return;
+        var previous = Equipment.Location;
+        await EquipmentUiService.SelectLocation(Equipment);
+        if (previous == Equipment.Location) return;
+        StateHasChanged();
+    }
+
+}
