@@ -16,6 +16,8 @@ layout: page
     </p>
 </aside>
 
+**If you are upgrading from version 0.8 or below, the internal port the partsbin listens to changed to 8080. Update your `docker-compose.yml` file following the [installation guide](/installation-guide).**
+
 **If you are upgrading from version 0.7 or below, you will need to [reindex your parts and equipment manually](/posts/2023-04-30-release-0.8)**
 
 Attention all hobbyist hardware hackers and engineers! Are you tired of sifting through piles of disorganised electronic components and struggling to keep track of what you have? Look no further!
@@ -32,16 +34,14 @@ It's free, open source with a liberal license (MIT), and easy to install via a D
 
     <pre>
 docker pull becdetat/partsbin:latest
-docker run -v ~/partsbin/data:/data -p 8080:80 -d becdetat/partsbin:latest</pre>
+docker run -v ~/partsbin/data:/data -p 8080:8080 -d becdetat/partsbin:latest</pre>
 
     <p>You should now be able to access partsbin at <code>http://localhost:8080</code>, and the data should be stored at <code>~/partsbin/data</code>.</p>
 </aside>
 
-Get it from [Docker](https://hub.docker.com/repository/docker/becdetat/partsbin), but the recommended method is to copy [docker-compose.yaml](https://github.com/becdetat/partsbin/blob/main/docker-compose.yaml) to somewhere safe, edit it to suit your setup, and run `docker compose up -d` to make the magic happen.
+Get it from [Docker](https://hub.docker.com/repository/docker/becdetat/partsbin), or see the [installation guide](/installation-guide) for detailed installation and upgrade instructions.
 
-See the [installation guide](/installation-guide) for detailed installation and upgrade instructions.
-
-By default, when installed using `docker compose`, partsbin will run on port 8080—access it via [http://localhost:8080](http://localhost:8080).
+By default, when installed using `docker compose`, partsbin will run on port 8035—access it via [http://localhost:8035](http://localhost:8035).
 
 It's totally self-hosted—I have no plans to develop any kind of security or user management, so you should make sure it's restricted to your home/work network.
 
@@ -50,8 +50,3 @@ The design also means that multiple users and concurrency may be an issue. This 
 Follow development at <https://github.com/becdetat/partsbin>.
 
 partsbin is a project by [Rebecca Scott](https://becdetat.com), allegedly a human who codes and plays with Arduinos, and pays for hundreds of dollars of components at ebay and aliexpress by working as an IT consultant at [SixPivot](https://sixpivot.com.au).
-
-Follow <a rel="me" href="https://tech.lgbt/@partsbin">@partsbin@tech.lgbt</a> on Mastodon for updates.
-
-Thanks to my good friend ChatGPT for helping out with the above copy.
-
