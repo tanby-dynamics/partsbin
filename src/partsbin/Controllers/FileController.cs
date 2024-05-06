@@ -44,7 +44,7 @@ public class FileController : Controller
             Inline = false,
             Size = file.Length
         };
-        Response.Headers.Add("Content-Disposition", contentDisposition.ToString());
+        Response.Headers.Append("Content-Disposition", contentDisposition.ToString());
 
         return File(
             fileStream: memoryStream, 
