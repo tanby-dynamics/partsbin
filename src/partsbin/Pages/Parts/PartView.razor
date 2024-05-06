@@ -163,6 +163,7 @@ else
     private async void Edit()
     {
         await PartUiService.EditPart(_part!);
+        Duplicate = null;
         await RefreshData();
         ToastService.ShowSuccess("The part details have been updated");
     }
@@ -176,6 +177,7 @@ else
     private void CompleteEditingNotes()
     {
         _isEditingNotes = false;
+        Duplicate = null;
         ToastService.ShowSuccess("The notes have been updated");
         StateHasChanged();
     }
@@ -217,6 +219,7 @@ else
     private void OnPartChanged(Part part)
     {
         _part = part;
+        Duplicate = null;
         StateHasChanged();
     }
 }
