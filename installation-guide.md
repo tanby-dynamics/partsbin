@@ -5,6 +5,7 @@ permalink: /installation-guide
 ---
 
 ## Have you any Docker?
+
 First you'll need to have [Docker](https://www.docker.com/) installed. Probably the easiest method is just to download an installer for your system. There are other hacker-friendly methods like using homebrew but I won't cover them here.
 
 Ok, so you now have a Docker. Make sure you've got command line tooling working as well. You can test that by opening a terminal and executing:
@@ -43,6 +44,7 @@ Go to <http://localhost:8080> and you should be greeted with an empty partsbin h
 If there are issues, you can either check the container in the Docker dashboard, or try running it from the terminal without detached mode enabled (which will let you see any errors). Just use `docker compose up` (without the `-d`) to run the container attached to the terminal.
 
 ### Upgrading
+
 When a new version of partsbin is released, you can upgrade simply by travelling to where you put `docker-compose.yaml` and running the following:
 
 ```
