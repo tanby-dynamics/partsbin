@@ -12,12 +12,12 @@ It's not really intended for use at a scale of more than a few simultaneous user
 
 The data file location is configurable, I suggest using `docker compose` per the [installation guide](https://partsbin.page/installation-guide) and putting it in Dropbox, BackBlaze, or a NAS where it will be backed up automatically.
 
-
 ## Installation
+
 Please see the [installation guide](https://partsbin.page/installation-guide) on [partsbin.page](https://partsbin.page).
 
-
 ## Future plans
+
 Check out the [project board](https://github.com/users/becdetat/projects/3/views/4) to see what I've tentatively pencilled in. Note that there aren't any version numbers—I'll just be doing some work and releasing it as another point release whenever I'm happy with it.
 
 Please submit your ideas and suggestions [here](https://github.com/becdetat/partsbin/issues).
@@ -26,6 +26,7 @@ And of course, pull requests are always welcome.
 
 
 ## Design choices
+
 - Server-side Blazor, with help from [Blazored](https://github.com/Blazored)
 - Storage in [LiteDB](https://www.litedb.org/) (JSON store - really fun and fast both as a developer and performance at small scales)
 - Rich text editing via [Quill](https://quilljs.com/) (lovely, does image embeds as base64 encoded values)
@@ -34,8 +35,8 @@ And of course, pull requests are always welcome.
 - No tests - where we're going we don't need tests
 - No external dependencies, everything file based and in process - database is a single file document db, search is via Lucene.NET
 
-
 ## Technologies and libraries in use
+
 - Blazor (including Bootstrap)
 - [Blazored](https://github.com/Blazored) -  modals and toasts
 - [LiteDb](https://www.litedb.org/)
@@ -43,10 +44,12 @@ And of course, pull requests are always welcome.
 - [Quill](https://quilljs.com/), using a tutorial on [puresourcecode.com](https://www.puresourcecode.com/dotnet/blazor/create-a-blazor-component-for-quill/) to get it working
 
 ## Contributing
+
 You can contribute just by making bug reports or suggestions, or you can put your valuable time into writing new features or fixing bugs. See the [contribution guide](CONTRIB.md) for more information. Read through the [Code of Conduct](code-of-conduct.md) too please.
 
 All contributors (code, bug reports, suggestions) wiil be noted in the [Hall of Fame](hall-of-fame.md).
 
 
 ## Licenses
+
 The 555 timer icon is adapted from https://www.flickr.com/photos/41898857@N04/50226298472, which is licensed under Creative Commons Attribution 2.0 Generic (CC BY 2.0). No modifications have been made apart from cropping and converting to an icon.

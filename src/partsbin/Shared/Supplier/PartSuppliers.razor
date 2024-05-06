@@ -100,7 +100,7 @@
 
     protected override async void OnInitialized()
     {
-        var config = await RuntimeConfigService.GetRuntimeConfig();
+        var config = await RuntimeConfigService.GetRuntimeConfigAsync();
         _cultureInfo = CultureInfo.GetCultureInfo(config.CultureName);
 
         if (Part is not null) _suppliers = Part.Suppliers;

@@ -1,5 +1,6 @@
 using LiteDB.Async;
 using partsbin.BusinessLogic.Models;
+using Polly;
 
 namespace partsbin.BusinessLogic.Services;
 
@@ -16,14 +17,17 @@ public class DbFactory : IDbFactory
     {
         _isProduction = isProduction;
     }
-    private string DbPath => _isProduction
-        ? "/data/partsbin.db"
-        : "./partsbin-dev.db";
+    private string ConnectionString => _isProduction
+        ? "Filename=/data/partsbin.db; Connection=Shared;"
+        : "Filename=./partsbin-dev.db; Connection=Shared";
 
     public async Task<LiteDatabaseAsync> GetDatabase()
     {
-        var db = new LiteDatabaseAsync(DbPath);
-        
+        var policy = Policy
+            .Handle<IOException>()
+            .WaitAndRetry(5, _ => TimeSpan.FromSeconds(1));
+        var db = policy.Execute(() => new LiteDatabaseAsync(ConnectionString));
+
         // set up some indices
         var partCollection = db.GetCollection<Part>();
         await partCollection.EnsureIndexAsync(x => x.Location);    

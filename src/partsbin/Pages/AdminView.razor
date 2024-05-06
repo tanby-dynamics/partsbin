@@ -1,5 +1,4 @@
 @page "/admin"
-@using partsbin.Services
 @using partsbin.BusinessLogic.Services
 @using partsbin.BusinessLogic.Models
 @inject IPartSearchService PartSearchService
@@ -111,9 +110,9 @@
     <div class="col-4">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Runtime configuration</h5>
+                <h5 class="card-title">partsbin configuration</h5>
+                <p>Set the culture and home page sections.</p>
                 <p>
-                    
                     <button type="button"
                             class="btn btn-primary"
                             @onclick:preventDefault
@@ -130,7 +129,6 @@
 </div>
 
 @code {
-
     private async Task TriggerReindex()
     {
         ToastService.ShowInfo("Clearing parts and equipment search index");
@@ -151,7 +149,7 @@
 
     private async Task EditRuntimeConfiguration()
     {
-        var config = await RuntimeConfigService.GetRuntimeConfig();
+        var config = await RuntimeConfigService.GetRuntimeConfigAsync();
         var parameters = new ModalParameters
         {
             { "Config", config }
@@ -168,7 +166,7 @@
 
         if (!result.Confirmed) return;
         
-        ToastService.ShowSuccess("Runtime configuration updated");
+        ToastService.ShowSuccess("partsbin configuration updated");
     }
 
     private async Task BulkRenameLocation()

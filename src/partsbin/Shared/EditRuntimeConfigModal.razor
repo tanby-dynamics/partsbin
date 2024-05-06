@@ -1,8 +1,6 @@
 @using partsbin.Services
-@using System.Globalization
 @using partsbin.BusinessLogic.Models
 @using partsbin.BusinessLogic.Services
-@using partsbin.Helpers
 @inject IRuntimeConfigUiService RuntimeConfigUiService;
 @inject IRuntimeConfigService RuntimeConfigService;
 
@@ -12,7 +10,7 @@
     <ValidationSummary/>
     <div class="form-group">
         <div style="margin-top:10px">
-            <label for="name">Culture</label>
+            <label for="culture">Culture</label>
             <div class="input-group">
                 <InputText id="culture"
                            class="form-control"
@@ -23,6 +21,59 @@
                         @onclick="@SelectCulture">
                     <i class="oi oi-magnifying-glass"></i>
                 </button>
+            </div>
+        </div>
+        <div style="margin-top: 10px">
+            <label>Home page sections</label>
+            <div class="form-check form-switch">
+                <InputCheckbox
+                    id="homeShowPartTypes"
+                    @bind-Value="Config.HomeShowPartTypes"
+                    role="switch"
+                    class="form-check-input"/>
+                <label class="form-check-label" for="homeShowPartTypes">
+                    Part types
+                </label>
+            </div>
+            <div class="form-check form-switch">
+                <InputCheckbox
+                    id="homeShowManufacturers"
+                    @bind-Value="Config.HomeShowManufacturers"
+                    role="switch"
+                    class="form-check-input"/>
+                <label class="form-check-label" for="homeShowManufacturers">
+                    Manufacturers
+                </label>
+            </div>
+            <div class="form-check form-switch">
+                <InputCheckbox
+                    id="homeShowLocations"
+                    @bind-Value="Config.HomeShowLocations"
+                    role="switch"
+                    class="form-check-input"/>
+                <label class="form-check-label" for="homeShowLocations">
+                    Locations
+                </label>
+            </div>
+            <div class="form-check form-switch">
+                <InputCheckbox
+                    id="homeShowEquipmentTypes"
+                    @bind-Value="Config.HomeShowEquipmentTypes"
+                    role="switch"
+                    class="form-check-input"/>
+                <label class="form-check-label" for="homeShowEquipmentTypes">
+                    Equipment types
+                </label>
+            </div>
+            <div class="form-check form-switch">
+                <InputCheckbox
+                    id="homeShowEquipmentNames"
+                    @bind-Value="Config.HomeShowEquipmentNames"
+                    role="switch"
+                    class="form-check-input"/>
+                <label class="form-check-label" for="homeShowEquipmentNames">
+                    Equipment names
+                </label>
             </div>
         </div>
         <div style="margin-top:10px">

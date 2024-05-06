@@ -1,5 +1,8 @@
 ﻿@page "/"
 @using partsbin.Shared.Equipment;
+@using partsbin.BusinessLogic.Services
+@using partsbin.BusinessLogic.Models
+@inject IRuntimeConfigService RuntimeConfigService;
 
 <div class="row">
     <div class="col-12">
@@ -7,29 +10,73 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-lg-4 col-md-12">
-        <HomePartTypes/>
+@if (_config is null)
+{
+    <div class="row">
+        <div class="col-12">
+            Loading...
+        </div>
     </div>
-    <div class="col-lg-4 col-md-12">
-        <HomeManufacturers/>
+}
+else if (_config.NoHomeSectionsShown)
+{
+    <div class="row">
+        <div class="col-12">
+            No home sections are configured. Set them up in <a href="/admin">Admin</a>.
+        </div>
     </div>
-    <div class="col-lg-4 col-md-12">
-        <HomeLocations/>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-lg-12"><h4>Equipment</h4></div>
-</div>
-<div class="row">
-    <div class="col-lg-4 col-md-12">
-        <HomeEquipmentTypes/>
-    </div>
-    <div class="col-lg-4 col-md-12">
-        <HomeEquipmentNames/>
-    </div>
-</div>
+}
+else
+{
+    @if (_config.HomeShowPartTypes || _config.HomeShowManufacturers || _config.HomeShowLocations)
+    {
+        <div class="row">
+            @if (_config.HomeShowPartTypes)
+            {
+                <div class="col-lg-4 col-md-12">
+                    <HomePartTypes/>
+                </div>
+            }
+            @if (_config.HomeShowManufacturers)
+            {
+                <div class="col-lg-4 col-md-12">
+                    <HomeManufacturers/>
+                </div>
+            }
+            @if (_config.HomeShowLocations)
+            {
+                <div class="col-lg-4 col-md-12">
+                    <HomeLocations/>
+                </div>
+            }
+        </div>
+    }
+    
+    @if (_config.HomeShowEquipmentNames || _config.HomeShowEquipmentTypes)
+    {
+        <div class="row">
+            @if (_config.HomeShowEquipmentTypes)
+            {
+                <div class="col-lg-4 col-md-12">
+                    <HomeEquipmentTypes/>
+                </div>
+            }
+            @if (_config.HomeShowEquipmentNames)
+            {
+                <div class="col-lg-4 col-md-12">
+                    <HomeEquipmentNames/>
+                </div>
+            }
+        </div>
+    }
+}
 
 @code {
+    private RuntimeConfig? _config;
+
+    protected override async void OnInitialized()
+    {
+        _config = await RuntimeConfigService.GetRuntimeConfigAsync();
+        StateHasChanged();
+    }
 }

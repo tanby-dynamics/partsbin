@@ -13,6 +13,7 @@
       <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
       <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.4" />
       <PackageReference Include="Microsoft.JSInterop" Version="7.0.4" />
+      <PackageReference Include="Polly" Version="8.3.1" />
     </ItemGroup>
 
 </Project>

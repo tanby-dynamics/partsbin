@@ -5,7 +5,7 @@ namespace partsbin.BusinessLogic.Services;
 
 public interface IRuntimeConfigService
 {
-    Task<RuntimeConfig> GetRuntimeConfig();
+    Task<RuntimeConfig> GetRuntimeConfigAsync();
     Task SetRuntimeConfig(RuntimeConfig config);
 }
 
@@ -18,18 +18,26 @@ public class RuntimeConfigService : IRuntimeConfigService
         _dbFactory = dbFactory;
     }
 
-    public async Task<RuntimeConfig> GetRuntimeConfig()
+    public async Task<RuntimeConfig> GetRuntimeConfigAsync()
     {
         using var db = await _dbFactory.GetDatabase();
         var config = await db.GetCollection<RuntimeConfig>()
             .Query()
             .SingleOrDefaultAsync();
 
-        if (config is not null) return config;
+        if (config is not null)
+        {
+            return config;
+        }
         
         var newConfig = new RuntimeConfig
         {
-            CultureName = CultureInfo.CurrentCulture.Name
+            CultureName = CultureInfo.CurrentCulture.Name,
+            HomeShowPartTypes = true,
+            HomeShowManufacturers = true,
+            HomeShowLocations = false,
+            HomeShowEquipmentTypes = true,
+            HomeShowEquipmentNames = true
         };
         
         await SetRuntimeConfig(newConfig);
