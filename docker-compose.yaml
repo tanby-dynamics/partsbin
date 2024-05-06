@@ -1,11 +1,15 @@
+-- This is used to test the Dockerfile in development.
+-- See https://partsbin.page/installation-guide for an example
+-- docker-compose.yml for production use on your homelab.
 services:
   app:
-    image: becdetat/partsbin:latest
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    image: partsbin
     ports:
-      # Map port 80 (internal) to port 8080 (host)
-      - 8080:80
+      - 8080:8080
     volumes:
-      # Update the first part of this (before the ':') to somewhere safe
       - ./data:/data
 volumes:
   data:
