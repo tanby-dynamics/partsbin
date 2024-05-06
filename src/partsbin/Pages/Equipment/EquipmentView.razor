@@ -3,6 +3,7 @@
 @using partsbin.BusinessLogic.Helpers
 @using partsbin.BusinessLogic.Models
 @using partsbin.BusinessLogic.Services
+@using partsbin.BusinessLogic.Services.EquipmentServices
 @using partsbin.Shared.RootCollectionItem;
 @using partsbin.Shared.Equipment;
 @inject IEquipmentService EquipmentService;
@@ -10,6 +11,7 @@
 @inject IToastService ToastService;
 @inject NavigationManager NavigationManager;
 @inject IConfirmUiService ConfirmUiService;
+@inject IDuplicateEquipment DuplicateEquipment;
 
 @if (_equipment is not null)
 {
@@ -58,7 +60,7 @@ else
                                 <button class="dropdown-item"
                                         type="button"
                                         @onclick:preventDefault
-                                        @onclick="@DuplicateEquipment">
+                                        @onclick="@PerformDuplication">
                                     Duplicate equipment
                                 </button>
                             </li>
@@ -195,14 +197,14 @@ else
         StateHasChanged();
     }
 
-    private async void DuplicateEquipment()
+    private async void PerformDuplication()
     {
         var confirmResult = await ConfirmUiService.Confirm(
             "Duplicating equipment",
             "Are you sure you want to duplicate this equipment?");
         if (confirmResult == ConfirmResult.Cancelled) return;
         
-        var duplicateEquipment = await EquipmentService.Duplicate(_equipment!);
+        var duplicateEquipment = await DuplicateEquipment.ExecuteAsync(_equipment!);
         NavigationManager.NavigateTo(
             $"/equipment/{duplicateEquipment.Id}?d=1",
             forceLoad: true);

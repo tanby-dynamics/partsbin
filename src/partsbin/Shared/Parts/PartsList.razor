@@ -3,12 +3,14 @@
 @using partsbin.BusinessLogic.Helpers
 @using partsbin.BusinessLogic.Models
 @using partsbin.BusinessLogic.Services
+@using partsbin.BusinessLogic.Services.PartServices
 @using partsbin.Shared.RootCollectionItem;
 @inject NavigationManager NavigationManager;
 @inject IPartService PartService;
 @inject IPartUiService PartUiService;
 @inject IToastService ToastService;
 @inject IConfirmUiService ConfirmUiService;
+@inject IDuplicatePart DuplicatePart;
 
 <table class="table border">
     <thead>
@@ -167,7 +169,7 @@
                                 <button class="dropdown-item"
                                         type="button"
                                         @onclick:preventDefault
-                                        @onclick="@(() => DuplicatePart(part))">
+                                        @onclick="@(() => DuplicateThisPart(part))">
                                     Duplicate part
                                 </button>
                             </li>
@@ -221,14 +223,14 @@
         StateHasChanged();
     }
 
-    private async void DuplicatePart(Part part)
+    private async void DuplicateThisPart(Part part)
     {
         var confirmResult = await ConfirmUiService.Confirm(
             "Duplicate part",
             "Are you sure you want to duplicate this part?");
         if (confirmResult == ConfirmResult.Cancelled) return;
         
-        var duplicatePart = await PartService.Duplicate(part);
+        var duplicatePart = await DuplicatePart.ExecuteAsync(part);
         
         NavigationManager.NavigateTo(
             $"/part/{duplicatePart.Id}?d=1",

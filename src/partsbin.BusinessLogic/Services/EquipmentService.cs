@@ -12,7 +12,6 @@ public interface IEquipmentService
     Task<IEnumerable<Equipment>> GetAllEquipment(string? byType = null, string? qualifier = null);
     Task<IEnumerable<Equipment>> GetDeletedEquipment();
     Task EmptyRubbishBin();
-    Task<Equipment> Duplicate(Equipment source);
     Task<IEnumerable<Equipment>> GetEquipmentWithIds(IEnumerable<int> ids);
     Task<int> UpdateLocations(string originalLocation, string newLocation);
 }
@@ -119,24 +118,7 @@ public class EquipmentService : IEquipmentService
         }
     }
 
-    public async Task<Equipment> Duplicate(Equipment source)
-    {
-        var duplicate = await AddEquipment(source.DeepClone());
-
-        var sourceImages = await _imageService.GetAllImages(source);
-        foreach (var image in sourceImages)
-        {
-            await _imageService.DuplicateImage(image, duplicate);
-        }
-
-        var sourceFiles = await _fileService.GetAllFiles(source);
-        foreach (var file in sourceFiles)
-        {
-            await _fileService.DuplicateFile(file, duplicate);
-        }
-
-        return duplicate;
-    }
+    
 
     public async Task<IEnumerable<Equipment>> GetEquipmentWithIds(IEnumerable<int> ids)
     {

@@ -5,27 +5,6 @@ namespace partsbin.BusinessLogic.Helpers;
 
 public static class EquipmentExtensions
 {
-    /// <summary>
-    /// Clones every property of this piece of equipment, except for the ID
-    /// </summary>
-    /// <returns>A deep clone of this piece of equipment</returns>
-    public static Equipment DeepClone(this Equipment source)
-    {
-        return new Equipment
-        {
-            EquipmentType = source.EquipmentType,
-            EquipmentName = source.EquipmentName,
-            Location = source.Location,
-            Manufacturer = source.Manufacturer,
-            HtmlNotes = source.HtmlNotes,
-            Documents = source.Documents.ToList(),  // this might be a problem
-            Suppliers = source.Suppliers.ToList(),
-            Notes = source.Notes,
-            Quantity = source.Quantity,
-            QuantityIsApproximate = source.QuantityIsApproximate
-        };
-    }
-    
     public static string GetDescription(this Equipment equipment)
     {
         var sb = new StringBuilder();

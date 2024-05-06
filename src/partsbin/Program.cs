@@ -1,6 +1,8 @@
 ﻿using Blazored.Modal;
 using Blazored.Toast;
 using partsbin.BusinessLogic.Services;
+using partsbin.BusinessLogic.Services.EquipmentServices;
+using partsbin.BusinessLogic.Services.PartServices;
 using partsbin.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,7 +34,9 @@ builder.Services
     .AddScoped<ISupplierService, SupplierService>()
     .AddScoped<IPartDocumentUiService, PartDocumentUiService>()
     .AddScoped<IRuntimeConfigUiService, RuntimeConfigUiService>()
-    .AddScoped<IConfirmUiService, ConfirmUiService>();
+    .AddScoped<IConfirmUiService, ConfirmUiService>()
+    .AddScoped<IDuplicateEquipment, DuplicateEquipment>()
+    .AddScoped<IDuplicatePart, DuplicatePart>();
 
 var app = builder.Build();
 

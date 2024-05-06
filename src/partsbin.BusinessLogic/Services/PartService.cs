@@ -1,4 +1,3 @@
-using partsbin.BusinessLogic.Helpers;
 using partsbin.BusinessLogic.Models;
 using File = partsbin.BusinessLogic.Models.File;
 
@@ -12,7 +11,6 @@ public interface IPartService
     Task<IEnumerable<Part>> GetAllParts(string? byType = null, string? qualifier = null);
     Task<IEnumerable<Part>> GetDeletedParts();
     Task EmptyRubbishBin();
-    Task<Part> Duplicate(Part source);
     Task<IEnumerable<Part>> GetPartsWithIds(IEnumerable<int> ids);
     Task<bool> IsThisDuplicatePartNumber(string partNumber, int? excludePartId = null);
     Task<int> UpdateLocations(string originalLocation, string newLocation);
@@ -120,25 +118,6 @@ public class PartService : IPartService
             // Delete the part (Suppliers and Documentation are part of the Part)
             await db.GetCollection<Part>().DeleteAsync(part.Id);
         }
-    }
-
-    public async Task<Part> Duplicate(Part source)
-    {
-        var duplicatePart = await AddPart(source.DeepClone());
-
-        var sourceImages = await _imageService.GetAllImages(source);
-        foreach (var image in sourceImages)
-        {
-            await _imageService.DuplicateImage(image, duplicatePart);
-        }
-
-        var sourceFiles = await _fileService.GetAllFiles(source);
-        foreach (var file in sourceFiles)
-        {
-            await _fileService.DuplicateFile(file, duplicatePart);
-        }
-
-        return duplicatePart;
     }
 
     public async Task<IEnumerable<Part>> GetPartsWithIds(IEnumerable<int> ids)

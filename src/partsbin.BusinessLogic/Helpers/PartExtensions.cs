@@ -5,32 +5,6 @@ namespace partsbin.BusinessLogic.Helpers;
 
 public static class PartExtensions
 {
-    /// <summary>
-    /// Clones every property of this part, except for the ID
-    /// Note that the gallery is not duplicated as it lives outside of the Part
-    /// </summary>
-    /// <returns>A deep clone of this part</returns>
-    public static Part DeepClone(this Part source)
-    {
-        return new Part
-        {
-            PartType = source.PartType,
-            Range = source.Range,
-            Location = source.Location,
-            Manufacturer = source.Manufacturer,
-            HtmlNotes = source.HtmlNotes,
-            Documents = source.Documents.ToList(),  // this might be a problem
-            Suppliers = source.Suppliers.ToList(),
-            Notes = source.Notes,
-            PackageType = source.PackageType,
-            Value = source.Value,
-            ValueUnit = source.ValueUnit,
-            PartName = source.PartName,
-            PartNumber = source.PartNumber,
-            Quantity = source.Quantity
-        };
-    }
-    
     public static string GetDescription(this Part part)
     {
             var sb = new StringBuilder();
