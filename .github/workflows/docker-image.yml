@@ -28,20 +28,3 @@ jobs:
           tags: |
             becdetat/partsbin:${{ github.run_number }}
             becdetat/partsbin:latest
-  # Create a tagged GitHub release
-  create-gh-release:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    steps:
-      - 
-        name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        with:
-          tag_name: ${{ format('release-{0}', github.run_number) }}
-          release_name: Release ${{ github.run_number }}
-          body: Automated release created by GitHub Actions
-          draft: false
-          prerelease: false
